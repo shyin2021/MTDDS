@@ -1,4 +1,4 @@
-# MTD-DS: An SLA-aware Decision Support Benchmark for Multi-tenant Parallel DBMSs
+# MTD-DS: an SLA-aware Decision Support Benchmark for Multi-tenant Parallel DBMSs
 Authors: Shaoyi Yin <sup>1</sup>, Franck Morvan <sup>1</sup>, Jorge Martinez-Gil <sup>2</sup>, Abdelkader Hameurlain <sup>1</sup>
 - <sup>1</sup> Paul Sabatier University, Toulouse, France
 - <sup>2</sup> Software Competence Center Hagenberg GmbH, Hagenberg, Austria
@@ -17,7 +17,7 @@ In order to generate bills and compute various scores related to the benchmark m
 - SLF4J-simple (https://mvnrepository.com/artifact/org.slf4j/slf4j-simple). In our experiments, we used the version 1.7.36 (slf4j-simple-1.7.36.jar).
 
 The source code structure is shown below.
-- --src
+- src
 - ----core
 - --------Metrics.java: _to compute the final scores of the benchmark metrics_
 - --------PerfSLOGenerator.java: _to generate the performance SLOs_
