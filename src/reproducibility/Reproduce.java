@@ -112,15 +112,15 @@ public class Reproduce {
 		
 		// Initialize the SQLite database (mtdds.db).
 		System.out.println("[REPRODUCE] Creating and initializing a SQLite database mtdds.db to compute the metric's values...");
-//		tools.DBInitialization.initDB();
+		tools.DBInitialization.initDB();
 		System.out.println("[REPRODUCE] SQLite database mtdds.db initialized.");
 		
 		// Transform the execution traces from Format1 to Format2, and load them into mtdds.db
 		// Input: Execution traces with Format1 (TenantName, QueryNumber, ThreadName, Event, TimeStamp)
 		// Output: Execution traces with Format2 (SUTNumber, clusterSize, arrivalRateFactor, TenantName, QueryNumber, ThreadName, LaunchTime, StartTime, FinishTime);
 		System.out.println("[REPRODUCE] Transform the execution traces from Format1 to Format2...");
-//		tools.ExecutionTraceTransformer.transformAllTraces(1, "files\\step8ExecTraces\\SUT1", 15, "files\\step8FormatedTraces\\SUT1");
-//		tools.ExecutionTraceTransformer.transformAllTraces(2, "files\\step8ExecTraces\\SUT2", 15, "files\\step8FormatedTraces\\SUT2");
+		tools.ExecutionTraceTransformer.transformAllTraces(1, "files\\step8ExecTraces\\SUT1", 15, "files\\step8FormatedTraces\\SUT1");
+		tools.ExecutionTraceTransformer.transformAllTraces(2, "files\\step8ExecTraces\\SUT2", 15, "files\\step8FormatedTraces\\SUT2");
 		System.out.println("[REPRODUCE] Execution Traces transformed.");
 		
 		/*** Step 9 - Final scores computation ***/

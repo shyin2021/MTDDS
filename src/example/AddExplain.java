@@ -28,7 +28,7 @@ public class AddExplain{
 				// analyze the row to see if a query starts just after
 				String[] data = row.split(" ");
 				if(data.length > 1 && data[1].equals("start")){
-					queriesWriter.append("\\o "+ path_for_plans + "/" + output_file + "_q" + data[3] + ".pl");
+					queriesWriter.append("\\o "+ path_for_plans + "/" + output_file + "_q" + data[3] + ".plan.txt");
 					queriesWriter.append("\n");
 					queriesWriter.append("explain analyze ");
 				}

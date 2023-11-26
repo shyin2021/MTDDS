@@ -1,5 +1,5 @@
 -- start query 1 in stream 0 using template query1.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q1.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q1.plan.txt
 explain analyze with customer_total_return as
 (select sr_customer_sk as ctr_customer_sk
 ,sr_store_sk as ctr_store_sk
@@ -25,7 +25,7 @@ limit 100;
 
 -- end query 1 in stream 0 using template query1.tpl
 -- start query 2 in stream 0 using template query2.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q2.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q2.plan.txt
 explain analyze with wscs as
  (select sold_date_sk
         ,sales_price
@@ -86,7 +86,7 @@ explain analyze with wscs as
 
 -- end query 2 in stream 0 using template query2.tpl
 -- start query 3 in stream 0 using template query3.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q3.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q3.plan.txt
 explain analyze select  dt.d_year 
        ,item.i_brand_id brand_id 
        ,item.i_brand brand
@@ -108,7 +108,7 @@ explain analyze select  dt.d_year
 
 -- end query 3 in stream 0 using template query3.tpl
 -- start query 4 in stream 0 using template query4.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q4.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q4.plan.txt
 explain analyze with year_total as (
  select c_customer_id customer_id
        ,c_first_name customer_first_name
@@ -225,7 +225,7 @@ limit 100;
 
 -- end query 4 in stream 0 using template query4.tpl
 -- start query 5 in stream 0 using template query5.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q5.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q5.plan.txt
 explain analyze with ssr as
  (select s_store_id,
         sum(sales_price) as sales,
@@ -354,7 +354,7 @@ explain analyze with ssr as
 
 -- end query 5 in stream 0 using template query5.tpl
 -- start query 6 in stream 0 using template query6.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q6.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q6.plan.txt
 explain analyze select  a.ca_state state, count(*) cnt
  from customer_address a
      ,customer c
@@ -381,7 +381,7 @@ explain analyze select  a.ca_state state, count(*) cnt
 
 -- end query 6 in stream 0 using template query6.tpl
 -- start query 7 in stream 0 using template query7.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q7.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q7.plan.txt
 explain analyze select  i_item_id, 
         avg(ss_quantity) agg1,
         avg(ss_list_price) agg2,
@@ -403,7 +403,7 @@ explain analyze select  i_item_id,
 
 -- end query 7 in stream 0 using template query7.tpl
 -- start query 8 in stream 0 using template query8.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q8.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q8.plan.txt
 explain analyze select  s_store_name
       ,sum(ss_net_profit)
  from store_sales
@@ -512,7 +512,7 @@ explain analyze select  s_store_name
 
 -- end query 8 in stream 0 using template query8.tpl
 -- start query 9 in stream 0 using template query9.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q9.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q9.plan.txt
 explain analyze select case when (select count(*) 
                   from store_sales 
                   where ss_quantity between 1 and 20) > 1071
@@ -564,7 +564,7 @@ where r_reason_sk = 1
 
 -- end query 9 in stream 0 using template query9.tpl
 -- start query 10 in stream 0 using template query10.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q10.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q10.plan.txt
 explain analyze select  
   cd_gender,
   cd_marital_status,
@@ -624,7 +624,7 @@ limit 100;
 
 -- end query 10 in stream 0 using template query10.tpl
 -- start query 11 in stream 0 using template query11.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q11.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q11.plan.txt
 explain analyze with year_total as (
  select c_customer_id customer_id
        ,c_first_name customer_first_name
@@ -706,7 +706,7 @@ limit 100;
 
 -- end query 11 in stream 0 using template query11.tpl
 -- start query 12 in stream 0 using template query12.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q12.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q12.plan.txt
 explain analyze select  i_item_id
       ,i_item_desc 
       ,i_category 
@@ -741,7 +741,7 @@ limit 100;
 
 -- end query 12 in stream 0 using template query12.tpl
 -- start query 13 in stream 0 using template query13.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q13.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q13.plan.txt
 explain analyze select avg(ss_quantity)
        ,avg(ss_ext_sales_price)
        ,avg(ss_ext_wholesale_cost)
@@ -794,7 +794,7 @@ explain analyze select avg(ss_quantity)
 
 -- end query 13 in stream 0 using template query13.tpl
 -- start query 14 in stream 0 using template query14.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q14.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q14.plan.txt
 explain analyze with  cross_items as
  (select i_item_sk ss_item_sk
  from item,
@@ -1005,7 +1005,7 @@ with  cross_items as
 
 -- end query 14 in stream 0 using template query14.tpl
 -- start query 15 in stream 0 using template query15.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q15.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q15.plan.txt
 explain analyze select  ca_zip
        ,sum(cs_sales_price)
  from catalog_sales
@@ -1026,7 +1026,7 @@ explain analyze select  ca_zip
 
 -- end query 15 in stream 0 using template query15.tpl
 -- start query 16 in stream 0 using template query16.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q16.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q16.plan.txt
 explain analyze select  
    count(distinct cs_order_number) as "order count"
   ,sum(cs_ext_ship_cost) as "total shipping cost"
@@ -1058,7 +1058,7 @@ limit 100;
 
 -- end query 16 in stream 0 using template query16.tpl
 -- start query 17 in stream 0 using template query17.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q17.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q17.plan.txt
 explain analyze select  i_item_id
        ,i_item_desc
        ,s_state
@@ -1104,7 +1104,7 @@ limit 100;
 
 -- end query 17 in stream 0 using template query17.tpl
 -- start query 18 in stream 0 using template query18.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q18.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q18.plan.txt
 explain analyze select  i_item_id,
         ca_country,
         ca_state, 
@@ -1139,7 +1139,7 @@ explain analyze select  i_item_id,
 
 -- end query 18 in stream 0 using template query18.tpl
 -- start query 19 in stream 0 using template query19.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q19.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q19.plan.txt
 explain analyze select  i_brand_id brand_id, i_brand brand, i_manufact_id, i_manufact,
  	sum(ss_ext_sales_price) ext_price
  from date_dim, store_sales, item,customer,customer_address,store
@@ -1165,7 +1165,7 @@ limit 100 ;
 
 -- end query 19 in stream 0 using template query19.tpl
 -- start query 20 in stream 0 using template query20.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q20.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q20.plan.txt
 explain analyze select  i_item_id
        ,i_item_desc 
        ,i_category 
@@ -1196,7 +1196,7 @@ limit 100;
 
 -- end query 20 in stream 0 using template query20.tpl
 -- start query 21 in stream 0 using template query21.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q21.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q21.plan.txt
 explain analyze select  *
  from(select w_warehouse_name
             ,i_item_id
@@ -1227,7 +1227,7 @@ explain analyze select  *
 
 -- end query 21 in stream 0 using template query21.tpl
 -- start query 22 in stream 0 using template query22.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q22.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q22.plan.txt
 explain analyze select  i_product_name
              ,i_brand
              ,i_class
@@ -1248,7 +1248,7 @@ limit 100;
 
 -- end query 22 in stream 0 using template query22.tpl
 -- start query 23 in stream 0 using template query23.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q23.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q23.plan.txt
 explain analyze with frequent_ss_items as 
  (select substr(i_item_desc,1,30) itemdesc,i_item_sk item_sk,d_date solddate,count(*) cnt
   from store_sales
@@ -1356,7 +1356,7 @@ with frequent_ss_items as
 
 -- end query 23 in stream 0 using template query23.tpl
 -- start query 24 in stream 0 using template query24.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q24.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q24.plan.txt
 explain analyze with ssales as
 (select c_last_name
       ,c_first_name
@@ -1464,7 +1464,7 @@ order by c_last_name
 
 -- end query 24 in stream 0 using template query24.tpl
 -- start query 25 in stream 0 using template query25.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q25.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q25.plan.txt
 explain analyze select  
  i_item_id
  ,i_item_desc
@@ -1513,7 +1513,7 @@ explain analyze select
 
 -- end query 25 in stream 0 using template query25.tpl
 -- start query 26 in stream 0 using template query26.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q26.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q26.plan.txt
 explain analyze select  i_item_id, 
         avg(cs_quantity) agg1,
         avg(cs_list_price) agg2,
@@ -1535,7 +1535,7 @@ explain analyze select  i_item_id,
 
 -- end query 26 in stream 0 using template query26.tpl
 -- start query 27 in stream 0 using template query27.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q27.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q27.plan.txt
 explain analyze select  i_item_id,
         s_state, grouping(s_state) g_state,
         avg(ss_quantity) agg1,
@@ -1559,7 +1559,7 @@ explain analyze select  i_item_id,
 
 -- end query 27 in stream 0 using template query27.tpl
 -- start query 28 in stream 0 using template query28.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q28.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q28.plan.txt
 explain analyze select  *
 from (select avg(ss_list_price) B1_LP
             ,count(ss_list_price) B1_CNT
@@ -1613,7 +1613,7 @@ limit 100;
 
 -- end query 28 in stream 0 using template query28.tpl
 -- start query 29 in stream 0 using template query29.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q29.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q29.plan.txt
 explain analyze select   
      i_item_id
     ,i_item_desc
@@ -1661,7 +1661,7 @@ explain analyze select
 
 -- end query 29 in stream 0 using template query29.tpl
 -- start query 30 in stream 0 using template query30.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q30.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q30.plan.txt
 explain analyze with customer_total_return as
  (select wr_returning_customer_sk as ctr_customer_sk
         ,ca_state as ctr_state, 
@@ -1693,7 +1693,7 @@ limit 100;
 
 -- end query 30 in stream 0 using template query30.tpl
 -- start query 31 in stream 0 using template query31.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q31.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q31.plan.txt
 explain analyze with ss as
  (select ca_county,d_qoy, d_year,sum(ss_ext_sales_price) as store_sales
  from store_sales,date_dim,customer_address
@@ -1746,7 +1746,7 @@ explain analyze with ss as
 
 -- end query 31 in stream 0 using template query31.tpl
 -- start query 32 in stream 0 using template query32.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q32.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q32.plan.txt
 explain analyze select  sum(cs_ext_discount_amt)  as "excess discount amount" 
 from 
    catalog_sales 
@@ -1775,7 +1775,7 @@ limit 100;
 
 -- end query 32 in stream 0 using template query32.tpl
 -- start query 33 in stream 0 using template query33.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q33.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q33.plan.txt
 explain analyze with ss as (
  select
           i_manufact_id,sum(ss_ext_sales_price) total_sales
@@ -1851,7 +1851,7 @@ limit 100;
 
 -- end query 33 in stream 0 using template query33.tpl
 -- start query 34 in stream 0 using template query34.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q34.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q34.plan.txt
 explain analyze select c_last_name
        ,c_first_name
        ,c_salutation
@@ -1883,7 +1883,7 @@ explain analyze select c_last_name
 
 -- end query 34 in stream 0 using template query34.tpl
 -- start query 35 in stream 0 using template query35.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q35.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q35.plan.txt
 explain analyze select   
   ca_state,
   cd_gender,
@@ -1942,7 +1942,7 @@ explain analyze select
 
 -- end query 35 in stream 0 using template query35.tpl
 -- start query 36 in stream 0 using template query36.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q36.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q36.plan.txt
 explain analyze select  
     sum(ss_net_profit)/sum(ss_ext_sales_price) as gross_margin
    ,i_category
@@ -1973,7 +1973,7 @@ explain analyze select
 
 -- end query 36 in stream 0 using template query36.tpl
 -- start query 37 in stream 0 using template query37.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q37.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q37.plan.txt
 explain analyze select  i_item_id
        ,i_item_desc
        ,i_current_price
@@ -1991,7 +1991,7 @@ explain analyze select  i_item_id
 
 -- end query 37 in stream 0 using template query37.tpl
 -- start query 38 in stream 0 using template query38.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q38.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q38.plan.txt
 explain analyze select  count(*) from (
     select distinct c_last_name, c_first_name, d_date
     from store_sales, date_dim, customer
@@ -2015,7 +2015,7 @@ limit 100;
 
 -- end query 38 in stream 0 using template query38.tpl
 -- start query 39 in stream 0 using template query39.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q39.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q39.plan.txt
 explain analyze with inv as
 (select w_warehouse_name,w_warehouse_sk,i_item_sk,d_moy
        ,stdev,mean, case mean when 0 then null else stdev/mean end cov
@@ -2070,7 +2070,7 @@ order by inv1.w_warehouse_sk,inv1.i_item_sk,inv1.d_moy,inv1.mean,inv1.cov
 
 -- end query 39 in stream 0 using template query39.tpl
 -- start query 40 in stream 0 using template query40.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q40.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q40.plan.txt
 explain analyze select  
    w_state
   ,i_item_id
@@ -2099,7 +2099,7 @@ limit 100;
 
 -- end query 40 in stream 0 using template query40.tpl
 -- start query 41 in stream 0 using template query41.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q41.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q41.plan.txt
 explain analyze select  distinct(i_product_name)
  from item i1
  where i_manufact_id between 704 and 704+40 
@@ -2152,7 +2152,7 @@ explain analyze select  distinct(i_product_name)
 
 -- end query 41 in stream 0 using template query41.tpl
 -- start query 42 in stream 0 using template query42.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q42.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q42.plan.txt
 explain analyze select  dt.d_year
  	,item.i_category_id
  	,item.i_category
@@ -2175,7 +2175,7 @@ limit 100 ;
 
 -- end query 42 in stream 0 using template query42.tpl
 -- start query 43 in stream 0 using template query43.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q43.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q43.plan.txt
 explain analyze select  s_store_name, s_store_id,
         sum(case when (d_day_name='Sunday') then ss_sales_price else null end) sun_sales,
         sum(case when (d_day_name='Monday') then ss_sales_price else null end) mon_sales,
@@ -2195,7 +2195,7 @@ explain analyze select  s_store_name, s_store_id,
 
 -- end query 43 in stream 0 using template query43.tpl
 -- start query 44 in stream 0 using template query44.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q44.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q44.plan.txt
 explain analyze select  asceding.rnk, i1.i_product_name best_performing, i2.i_product_name worst_performing
 from(select *
      from (select item_sk,rank() over (order by rank_col asc) rnk
@@ -2231,7 +2231,7 @@ limit 100;
 
 -- end query 44 in stream 0 using template query44.tpl
 -- start query 45 in stream 0 using template query45.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q45.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q45.plan.txt
 explain analyze select  ca_zip, ca_city, sum(ws_sales_price)
  from web_sales, customer, customer_address, date_dim, item
  where ws_bill_customer_sk = c_customer_sk
@@ -2252,7 +2252,7 @@ explain analyze select  ca_zip, ca_city, sum(ws_sales_price)
 
 -- end query 45 in stream 0 using template query45.tpl
 -- start query 46 in stream 0 using template query46.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q46.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q46.plan.txt
 explain analyze select  c_last_name
        ,c_first_name
        ,ca_city
@@ -2288,7 +2288,7 @@ explain analyze select  c_last_name
 
 -- end query 46 in stream 0 using template query46.tpl
 -- start query 47 in stream 0 using template query47.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q47.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q47.plan.txt
 explain analyze with v1 as(
  select i_category, i_brand,
         s_store_name, s_company_name,
@@ -2340,7 +2340,7 @@ explain analyze with v1 as(
 
 -- end query 47 in stream 0 using template query47.tpl
 -- start query 48 in stream 0 using template query48.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q48.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q48.plan.txt
 explain analyze select sum (ss_quantity)
  from store_sales, store, customer_demographics, customer_address, date_dim
  where s_store_sk = ss_store_sk
@@ -2408,7 +2408,7 @@ explain analyze select sum (ss_quantity)
 
 -- end query 48 in stream 0 using template query48.tpl
 -- start query 49 in stream 0 using template query49.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q49.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q49.plan.txt
 explain analyze select  channel, item, return_ratio, return_rank, currency_rank from
  (select
  'web' as channel
@@ -2538,7 +2538,7 @@ explain analyze select  channel, item, return_ratio, return_rank, currency_rank 
 
 -- end query 49 in stream 0 using template query49.tpl
 -- start query 50 in stream 0 using template query50.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q50.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q50.plan.txt
 explain analyze select  
    s_store_name
   ,s_company_id
@@ -2598,7 +2598,7 @@ limit 100;
 
 -- end query 50 in stream 0 using template query50.tpl
 -- start query 51 in stream 0 using template query51.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q51.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q51.plan.txt
 explain analyze WITH web_v1 as (
 select
   ws_item_sk item_sk, d_date,
@@ -2644,7 +2644,7 @@ limit 100;
 
 -- end query 51 in stream 0 using template query51.tpl
 -- start query 52 in stream 0 using template query52.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q52.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q52.plan.txt
 explain analyze select  dt.d_year
  	,item.i_brand_id brand_id
  	,item.i_brand brand
@@ -2667,7 +2667,7 @@ limit 100 ;
 
 -- end query 52 in stream 0 using template query52.tpl
 -- start query 53 in stream 0 using template query53.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q53.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q53.plan.txt
 explain analyze select  * from 
 (select i_manufact_id,
 sum(ss_sales_price) sum_sales,
@@ -2696,7 +2696,7 @@ limit 100;
 
 -- end query 53 in stream 0 using template query53.tpl
 -- start query 54 in stream 0 using template query54.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q54.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q54.plan.txt
 explain analyze with my_customers as (
  select distinct c_customer_sk
         , c_current_addr_sk
@@ -2753,7 +2753,7 @@ explain analyze with my_customers as (
 
 -- end query 54 in stream 0 using template query54.tpl
 -- start query 55 in stream 0 using template query55.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q55.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q55.plan.txt
 explain analyze select  i_brand_id brand_id, i_brand brand,
  	sum(ss_ext_sales_price) ext_price
  from date_dim, store_sales, item
@@ -2768,7 +2768,7 @@ limit 100 ;
 
 -- end query 55 in stream 0 using template query55.tpl
 -- start query 56 in stream 0 using template query56.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q56.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q56.plan.txt
 explain analyze with ss as (
  select i_item_id,sum(ss_ext_sales_price) total_sales
  from
@@ -2838,7 +2838,7 @@ where i_color in ('powder','orchid','pink'))
 
 -- end query 56 in stream 0 using template query56.tpl
 -- start query 57 in stream 0 using template query57.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q57.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q57.plan.txt
 explain analyze with v1 as(
  select i_category, i_brand,
         cc_name,
@@ -2887,7 +2887,7 @@ explain analyze with v1 as(
 
 -- end query 57 in stream 0 using template query57.tpl
 -- start query 58 in stream 0 using template query58.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q58.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q58.plan.txt
 explain analyze with ss_items as
  (select i_item_id item_id
         ,sum(ss_ext_sales_price) ss_item_rev 
@@ -2953,7 +2953,7 @@ explain analyze with ss_items as
 
 -- end query 58 in stream 0 using template query58.tpl
 -- start query 59 in stream 0 using template query59.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q59.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q59.plan.txt
 explain analyze with wss as 
  (select d_week_seq,
         ss_store_sk,
@@ -2998,7 +2998,7 @@ limit 100;
 
 -- end query 59 in stream 0 using template query59.tpl
 -- start query 60 in stream 0 using template query60.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q60.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q60.plan.txt
 explain analyze with ss as (
  select
           i_item_id,sum(ss_ext_sales_price) total_sales
@@ -3077,7 +3077,7 @@ where i_category in ('Jewelry'))
 
 -- end query 60 in stream 0 using template query60.tpl
 -- start query 61 in stream 0 using template query61.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q61.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q61.plan.txt
 explain analyze select  promotions,total,cast(promotions as decimal(15,4))/cast(total as decimal(15,4))*100
 from
   (select sum(ss_ext_sales_price) promotions
@@ -3122,7 +3122,7 @@ limit 100;
 
 -- end query 61 in stream 0 using template query61.tpl
 -- start query 62 in stream 0 using template query62.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q62.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q62.plan.txt
 explain analyze select  
    substr(w_warehouse_name,1,20)
   ,sm_type
@@ -3158,7 +3158,7 @@ limit 100;
 
 -- end query 62 in stream 0 using template query62.tpl
 -- start query 63 in stream 0 using template query63.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q63.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q63.plan.txt
 explain analyze select  * 
 from (select i_manager_id
              ,sum(ss_sales_price) sum_sales
@@ -3188,7 +3188,7 @@ limit 100;
 
 -- end query 63 in stream 0 using template query63.tpl
 -- start query 64 in stream 0 using template query64.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q64.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q64.plan.txt
 explain analyze with cs_ui as
  (select cs_item_sk
         ,sum(cs_ext_list_price) as sale,sum(cr_refunded_cash+cr_reversed_charge+cr_store_credit) as refund
@@ -3310,7 +3310,7 @@ order by cs1.product_name
 
 -- end query 64 in stream 0 using template query64.tpl
 -- start query 65 in stream 0 using template query65.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q65.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q65.plan.txt
 explain analyze select 
 	s_store_name,
 	i_item_desc,
@@ -3340,7 +3340,7 @@ limit 100;
 
 -- end query 65 in stream 0 using template query65.tpl
 -- start query 66 in stream 0 using template query66.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q66.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q66.plan.txt
 explain analyze select   
          w_warehouse_name
  	,w_warehouse_sq_ft
@@ -3561,7 +3561,7 @@ explain analyze select
 
 -- end query 66 in stream 0 using template query66.tpl
 -- start query 67 in stream 0 using template query67.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q67.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q67.plan.txt
 explain analyze select  *
 from (select i_category
             ,i_class
@@ -3606,7 +3606,7 @@ limit 100;
 
 -- end query 67 in stream 0 using template query67.tpl
 -- start query 68 in stream 0 using template query68.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q68.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q68.plan.txt
 explain analyze select  c_last_name
        ,c_first_name
        ,ca_city
@@ -3649,7 +3649,7 @@ explain analyze select  c_last_name
 
 -- end query 68 in stream 0 using template query68.tpl
 -- start query 69 in stream 0 using template query69.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q69.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q69.plan.txt
 explain analyze select  
   cd_gender,
   cd_marital_status,
@@ -3697,7 +3697,7 @@ explain analyze select
 
 -- end query 69 in stream 0 using template query69.tpl
 -- start query 70 in stream 0 using template query70.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q70.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q70.plan.txt
 explain analyze select  
     sum(ss_net_profit) as total_sum
    ,s_state
@@ -3736,7 +3736,7 @@ explain analyze select
 
 -- end query 70 in stream 0 using template query70.tpl
 -- start query 71 in stream 0 using template query71.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q71.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q71.plan.txt
 explain analyze select i_brand_id brand_id, i_brand brand,t_hour,t_minute,
  	sum(ext_price) ext_price
  from item, (select ws_ext_sales_price as ext_price, 
@@ -3777,7 +3777,7 @@ explain analyze select i_brand_id brand_id, i_brand brand,t_hour,t_minute,
 
 -- end query 71 in stream 0 using template query71.tpl
 -- start query 72 in stream 0 using template query72.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q72.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q72.plan.txt
 explain analyze select  i_item_desc
       ,w_warehouse_name
       ,d1.d_week_seq
@@ -3807,7 +3807,7 @@ limit 100;
 
 -- end query 72 in stream 0 using template query72.tpl
 -- start query 73 in stream 0 using template query73.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q73.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q73.plan.txt
 explain analyze select c_last_name
        ,c_first_name
        ,c_salutation
@@ -3836,7 +3836,7 @@ explain analyze select c_last_name
 
 -- end query 73 in stream 0 using template query73.tpl
 -- start query 74 in stream 0 using template query74.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q74.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q74.plan.txt
 explain analyze with year_total as (
  select c_customer_id customer_id
        ,c_first_name customer_first_name
@@ -3898,7 +3898,7 @@ limit 100;
 
 -- end query 74 in stream 0 using template query74.tpl
 -- start query 75 in stream 0 using template query75.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q75.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q75.plan.txt
 explain analyze WITH all_sales AS (
  SELECT d_year
        ,i_brand_id
@@ -3969,7 +3969,7 @@ explain analyze WITH all_sales AS (
 
 -- end query 75 in stream 0 using template query75.tpl
 -- start query 76 in stream 0 using template query76.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q76.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q76.plan.txt
 explain analyze select  channel, col_name, d_year, d_qoy, i_category, COUNT(*) sales_cnt, SUM(ext_sales_price) sales_amt FROM (
         SELECT 'store' as channel, 'ss_customer_sk' col_name, d_year, d_qoy, i_category, ss_ext_sales_price ext_sales_price
          FROM store_sales, item, date_dim
@@ -3994,7 +3994,7 @@ limit 100;
 
 -- end query 76 in stream 0 using template query76.tpl
 -- start query 77 in stream 0 using template query77.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q77.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q77.plan.txt
 explain analyze with ss as
  (select s_store_sk,
          sum(ss_ext_sales_price) as sales,
@@ -4103,7 +4103,7 @@ explain analyze with ss as
 
 -- end query 77 in stream 0 using template query77.tpl
 -- start query 78 in stream 0 using template query78.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q78.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q78.plan.txt
 explain analyze with ws as
   (select d_year AS ws_sold_year, ws_item_sk,
     ws_bill_customer_sk ws_customer_sk,
@@ -4162,7 +4162,7 @@ limit 100;
 
 -- end query 78 in stream 0 using template query78.tpl
 -- start query 79 in stream 0 using template query79.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q79.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q79.plan.txt
 explain analyze select 
   c_last_name,c_first_name,substr(s_city,1,30),ss_ticket_number,amt,profit
   from
@@ -4186,7 +4186,7 @@ limit 100;
 
 -- end query 79 in stream 0 using template query79.tpl
 -- start query 80 in stream 0 using template query80.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q80.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q80.plan.txt
 explain analyze with ssr as
  (select  s_store_id as store_id,
           sum(ss_ext_sales_price) as sales,
@@ -4283,7 +4283,7 @@ group by web_site_id)
 
 -- end query 80 in stream 0 using template query80.tpl
 -- start query 81 in stream 0 using template query81.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q81.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q81.plan.txt
 explain analyze with customer_total_return as
  (select cr_returning_customer_sk as ctr_customer_sk
         ,ca_state as ctr_state, 
@@ -4315,7 +4315,7 @@ explain analyze with customer_total_return as
 
 -- end query 81 in stream 0 using template query81.tpl
 -- start query 82 in stream 0 using template query82.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q82.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q82.plan.txt
 explain analyze select  i_item_id
        ,i_item_desc
        ,i_current_price
@@ -4333,7 +4333,7 @@ explain analyze select  i_item_id
 
 -- end query 82 in stream 0 using template query82.tpl
 -- start query 83 in stream 0 using template query83.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q83.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q83.plan.txt
 explain analyze with sr_items as
  (select i_item_id item_id,
         sum(sr_return_quantity) sr_item_qty
@@ -4401,7 +4401,7 @@ explain analyze with sr_items as
 
 -- end query 83 in stream 0 using template query83.tpl
 -- start query 84 in stream 0 using template query84.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q84.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q84.plan.txt
 explain analyze select  c_customer_id as customer_id
        , coalesce(c_last_name,'') || ', ' || coalesce(c_first_name,'') as customername
  from customer
@@ -4423,7 +4423,7 @@ explain analyze select  c_customer_id as customer_id
 
 -- end query 84 in stream 0 using template query84.tpl
 -- start query 85 in stream 0 using template query85.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q85.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q85.plan.txt
 explain analyze select  substr(r_reason_desc,1,20)
        ,avg(ws_quantity)
        ,avg(wr_refunded_cash)
@@ -4508,7 +4508,7 @@ limit 100;
 
 -- end query 85 in stream 0 using template query85.tpl
 -- start query 86 in stream 0 using template query86.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q86.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q86.plan.txt
 explain analyze select   
     sum(ws_net_paid) as total_sum
    ,i_category
@@ -4535,7 +4535,7 @@ explain analyze select
 
 -- end query 86 in stream 0 using template query86.tpl
 -- start query 87 in stream 0 using template query87.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q87.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q87.plan.txt
 explain analyze select count(*) 
 from ((select distinct c_last_name, c_first_name, d_date
        from store_sales, date_dim, customer
@@ -4559,7 +4559,7 @@ from ((select distinct c_last_name, c_first_name, d_date
 
 -- end query 87 in stream 0 using template query87.tpl
 -- start query 88 in stream 0 using template query88.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q88.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q88.plan.txt
 explain analyze select  *
 from
  (select count(*) h8_30_to_9
@@ -4654,7 +4654,7 @@ from
 
 -- end query 88 in stream 0 using template query88.tpl
 -- start query 89 in stream 0 using template query89.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q89.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q89.plan.txt
 explain analyze select  *
 from(
 select i_category, i_class, i_brand,
@@ -4683,7 +4683,7 @@ limit 100;
 
 -- end query 89 in stream 0 using template query89.tpl
 -- start query 90 in stream 0 using template query90.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q90.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q90.plan.txt
 explain analyze select  cast(amc as decimal(15,4))/cast(pmc as decimal(15,4)) am_pm_ratio
  from ( select count(*) amc
        from web_sales, household_demographics , time_dim, web_page
@@ -4706,7 +4706,7 @@ explain analyze select  cast(amc as decimal(15,4))/cast(pmc as decimal(15,4)) am
 
 -- end query 90 in stream 0 using template query90.tpl
 -- start query 91 in stream 0 using template query91.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q91.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q91.plan.txt
 explain analyze select  
         cc_call_center_id Call_Center,
         cc_name Call_Center_Name,
@@ -4738,7 +4738,7 @@ order by sum(cr_net_loss) desc;
 
 -- end query 91 in stream 0 using template query91.tpl
 -- start query 92 in stream 0 using template query92.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q92.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q92.plan.txt
 explain analyze select  
    sum(ws_ext_discount_amt)  as "Excess Discount Amount" 
 from 
@@ -4769,7 +4769,7 @@ limit 100;
 
 -- end query 92 in stream 0 using template query92.tpl
 -- start query 93 in stream 0 using template query93.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q93.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q93.plan.txt
 explain analyze select  ss_customer_sk
             ,sum(act_sales) sumsales
       from (select ss_item_sk
@@ -4788,7 +4788,7 @@ limit 100;
 
 -- end query 93 in stream 0 using template query93.tpl
 -- start query 94 in stream 0 using template query94.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q94.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q94.plan.txt
 explain analyze select  
    count(distinct ws_order_number) as "order count"
   ,sum(ws_ext_ship_cost) as "total shipping cost"
@@ -4818,7 +4818,7 @@ limit 100;
 
 -- end query 94 in stream 0 using template query94.tpl
 -- start query 95 in stream 0 using template query95.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q95.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q95.plan.txt
 explain analyze with ws_wh as
 (select ws1.ws_order_number,ws1.ws_warehouse_sk wh1,ws2.ws_warehouse_sk wh2
  from web_sales ws1,web_sales ws2
@@ -4851,7 +4851,7 @@ limit 100;
 
 -- end query 95 in stream 0 using template query95.tpl
 -- start query 96 in stream 0 using template query96.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q96.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q96.plan.txt
 explain analyze select  count(*) 
 from store_sales
     ,household_demographics 
@@ -4868,7 +4868,7 @@ limit 100;
 
 -- end query 96 in stream 0 using template query96.tpl
 -- start query 97 in stream 0 using template query97.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q97.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q97.plan.txt
 explain analyze with ssci as (
 select ss_customer_sk customer_sk
       ,ss_item_sk item_sk
@@ -4894,7 +4894,7 @@ limit 100;
 
 -- end query 97 in stream 0 using template query97.tpl
 -- start query 98 in stream 0 using template query98.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q98.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q98.plan.txt
 explain analyze select i_item_id
       ,i_item_desc 
       ,i_category 
@@ -4928,7 +4928,7 @@ order by
 
 -- end query 98 in stream 0 using template query98.tpl
 -- start query 99 in stream 0 using template query99.tpl
-\o /home/postgres/mtdds/queries/s/query_0_s_q99.pl
+\o /home/postgres/mtdds/queries/s/query_0_s_q99.plan.txt
 explain analyze select  
    substr(w_warehouse_name,1,20)
   ,sm_type
