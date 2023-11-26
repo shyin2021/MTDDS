@@ -57,3 +57,5 @@ Step 8: PO_Metric 1 Bis and PO_Metric 2 Bis measurement)
 
 ## About the reproducibility
 The duration of the complete run is controled to be reasonable (less than 24 hours). However, the difficulty to reproduce all our (intermediate and final) experimental results is not the benchmarking run itself, but the deployment and configuration of the SUTs. It is very time consuming, and what's more, since the hardware used will be anyway different, the gathered numbers will also be different. However, these numbers are only the input of the core MTD-DS benchmark proposal. Therefore, we provide them directly in dedicated sub-folders in the "files" folder, so that the steps of the core benchmark proposal can be replayed (by using the program in ***src/reproducibility/Reproduce.java***). All these "directly provided" intemediate materials are in plain text format, so they can be easily visualized and checked, if necessary. 
+
+The code in the "scr" folder has been tested in Windows 10, while the code in the "files" folder was run in Linux (Ubuntu). If you use other platforms, you may need to change a small part of the code.
