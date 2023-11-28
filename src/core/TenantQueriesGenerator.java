@@ -13,7 +13,7 @@ public class TenantQueriesGenerator {
 	private static final int SimpleQueries[] = {28,93,3,12,20,41,42,43,52,55,86,98,15,21,22,36,37,53,63,80,81,82,89,96,97}; //25 queries
 	private static final int ComplexQueries[] = {4, 8, 9, 11, 13, 14, 17, 18, 23, 24, 25, 29, 31, 33, 39, 44, 46, 48, 49, 54, 56, 58, 59, 60, 61, 64, 65, 66, 69, 72, 74, 75, 76, 77, 78, 83, 85, 87, 88}; //39 queries
 	
-	public static void generateQueries(int TenantId, double TenantArrivalTime, int NbQueries, int lamda, int IdleRatio, int PeakRatio, int f_peak, String queryComplexity, FileWriter csvWriter) {
+	public static void generateQueries(int TenantId, double TenantArrivalTime, int NbQueries, int lambda, int IdleRatio, int PeakRatio, int f_peak, String queryComplexity, FileWriter csvWriter) {
 		
 		// generate the arrival time of each query
 		long y_pre = TenantId;
@@ -25,9 +25,9 @@ public class TenantQueriesGenerator {
 		double z = TenantArrivalTime;
 		
 		//compute the number of idle intervals
-		int NbIdleItvl = IdleRatio*NbQueries/(lamda*(100-IdleRatio));
+		int NbIdleItvl = IdleRatio*NbQueries/(lambda*(100-IdleRatio));
 		//compute the peak intervals
-		int NbPeakItvl = PeakRatio*NbQueries/(lamda*(100-PeakRatio));
+		int NbPeakItvl = PeakRatio*NbQueries/(lambda*(100-PeakRatio));
 		boolean peakTime = false;
 		
 		Random randGen = new Random(TenantId); // put a seed for the reproducibility
@@ -95,9 +95,9 @@ public class TenantQueriesGenerator {
 			// transformation to exponentially distributed values
 			double x;
 			if(!peakTime) {
-				x = Math.log(u)/(0-lamda);
+				x = Math.log(u)/(0-lambda);
 			} else {
-				x = Math.log(u)/(0-lamda*f_peak); //
+				x = Math.log(u)/(0-lambda*f_peak); //
 			}
 			// simulate the arrival times of a Poisson process
 			z = z_pre + x;
@@ -130,7 +130,7 @@ public class TenantQueriesGenerator {
 			    String queryComplexity = data[3];
 			    double ArrivalTime = Double.parseDouble(data[4].replace(",", "."));
 			    int NbQueries = Integer.parseInt(data[5]);
-			    int lamda = Integer.parseInt(data[6]);
+			    int lambda = Integer.parseInt(data[6]);
 			    int idleRatio = Integer.parseInt(data[7]);
 			    int peakRatio = Integer.parseInt(data[8]);
 			    int f_peak = Integer.parseInt(data[9]);
@@ -148,7 +148,7 @@ public class TenantQueriesGenerator {
 				csvWriter.append("ArrivalTimeInterval");
 				csvWriter.append("\n");
 
-			    generateQueries(TenantId, ArrivalTime, NbQueries, lamda, idleRatio, peakRatio, f_peak, queryComplexity, csvWriter);
+			    generateQueries(TenantId, ArrivalTime, NbQueries, lambda, idleRatio, peakRatio, f_peak, queryComplexity, csvWriter);
 				csvWriter.flush();
 				csvWriter.close();
 			}
@@ -187,12 +187,12 @@ public class TenantQueriesGenerator {
 			    String queryComplexity = data[3];
 			    double ArrivalTime = Double.parseDouble(data[4].replace(",", "."));
 			    int NbQueries = Integer.parseInt(data[5]);
-			    int lamda = Integer.parseInt(data[6]);
+			    int lambda = Integer.parseInt(data[6]);
 			    int idleRatio = Integer.parseInt(data[7]);
 			    int peakRatio = Integer.parseInt(data[8]);
 			    int f_peak = Integer.parseInt(data[9]);
 
-			    generateQueries(TenantId, ArrivalTime, NbQueries, lamda, idleRatio, peakRatio, f_peak, queryComplexity, csvWriter);
+			    generateQueries(TenantId, ArrivalTime, NbQueries, lambda, idleRatio, peakRatio, f_peak, queryComplexity, csvWriter);
 			}
 			//flush the data and close the files
 			csvWriter.flush();

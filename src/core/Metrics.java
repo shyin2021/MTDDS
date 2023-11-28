@@ -283,8 +283,7 @@ public class Metrics {
     }
 	
 	public static void main(String[] args) throws SQLException {
-//		int SUTNumber = Integer.parseInt(args[0]);
-//		String pricingModel = args[2];
+//		for unit test
 		int OARF = getPO_Metric2Bis_OARF(2, "QLSA", 5, 0.7);
 		System.out.println("OARF: " + OARF);
 	}

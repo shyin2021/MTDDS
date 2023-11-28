@@ -18,7 +18,7 @@ public class TenantsGenerator {
 		int m = 10000; // the maximum value of y
 		int a = 101; //
 		int b = 7; //
-		int lamda_t = 1; // the parameter lamda for tenant arrivals
+		int lambda_t = 1; // the parameter lambda for tenant arrivals
 		double z_pre = 0;
 		double z = 0;
 		
@@ -37,7 +37,7 @@ public class TenantsGenerator {
 			csvWriter.append(";");
 			csvWriter.append("NbQueries");
 			csvWriter.append(";");
-			csvWriter.append("Lamda");
+			csvWriter.append("Lambda");
 			csvWriter.append(";");
 			csvWriter.append("IdleRatio");
 			csvWriter.append(";");
@@ -51,7 +51,7 @@ public class TenantsGenerator {
 			for(int i=1; i<=NbTenants;i++) {		
 				double at = z*3; // 1 tenant per 3 time units in average
 				int nq = (int)(randGen.nextDouble(1)*91) + 10; // number of queries between 10 and 100
-				int lamda = (int)(randGen.nextDouble(1)*10)+1; // lamda between 1 and 10		
+				int lambda = (int)(randGen.nextDouble(1)*10)+1; // lambda between 1 and 10		
 				int ir = (int)(randGen.nextDouble(1)*50)+1; // idle ratio<=50			
 				int pr = (int)(randGen.nextDouble(1)*(100-ir))+1; // peak ratio<= 100 - idle ratio				
 				int f_peak = (int)(randGen.nextDouble(1)*2)+2; // peak factor			
@@ -121,7 +121,7 @@ public class TenantsGenerator {
 				csvWriter.append(";");
 				csvWriter.append(Integer.toString(nq));
 				csvWriter.append(";");
-				csvWriter.append(Integer.toString(lamda));
+				csvWriter.append(Integer.toString(lambda));
 				csvWriter.append(";");
 				csvWriter.append(Integer.toString(ir));
 				csvWriter.append(";");
@@ -144,7 +144,7 @@ public class TenantsGenerator {
 				double u= (double)y/(double)m;
 				// transformation to exponentially distributed values
 				double x;
-				x = Math.log(u)/(0-lamda_t);
+				x = Math.log(u)/(0-lambda_t);
 
 				// simulate the arrival times of a Poisson process
 				z = z_pre + x;

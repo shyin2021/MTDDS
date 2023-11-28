@@ -1,4 +1,4 @@
-cd /home/postgres/tpcds-kit/tools/tmp_l
+cd /home/postgres/tpcds-kit/tools/tmp_m
 for i in *.dat; do
     table=${i/.dat/}
     echo "Loading $table..."

@@ -131,7 +131,7 @@ public class Reproduce {
 		// Output: updated SQLite database (mtdds.db)
 		tools.InputFilesLoader.loadRSPrices("files\\benchmarkInputFiles\\RSPrices.csv");
 		tools.InputFilesLoader.loadDBSizesSF("files\\benchmarkInputFiles\\DBSizesSF.csv");
-		tools.InputFilesLoader.loadPriorityTTR("files\\benchmarkInputFiles\\PriorityTRT.csv");
+		tools.InputFilesLoader.loadPriorityTRT("files\\benchmarkInputFiles\\PriorityTRT.csv");
 		System.out.println("[REPRODUCE] Benchmark input files loaded into mtdds.db.");
 		
 		// Load the tenants file generated in Step 5

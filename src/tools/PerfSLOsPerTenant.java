@@ -120,7 +120,7 @@ public class PerfSLOsPerTenant {
 				
 				try {
 					// load data from the input file into the relation InitialTraces
-					csvReader = new BufferedReader(new FileReader(tenantsFile)); // TenantId, ArrivalTime, NbQueries, Lamda, IdleRatio, PeakRatio, f_peak, DBSize, QueriesComplexity, Priority
+					csvReader = new BufferedReader(new FileReader(tenantsFile)); // TenantId, Priority, DBSize, QueriesComplexity, ArrivalTime, NbQueries, Lamda, IdleRatio, PeakRatio, f_peak  
 					
 					//skip the file header
 					String row = csvReader.readLine();

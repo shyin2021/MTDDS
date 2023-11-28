@@ -31,7 +31,7 @@ public class MTTestsScriptWriter {
 			    String[] data = row.split(";");
 			    // retrieve the tenant's information
 			    String tenantId = data[0];
-			    String DB_size = data[7];
+			    String DB_size = data[2];
 			    // add lines in the create tenants file
 			    ctnWriter.append("create user tenant" + tenantId + " with password \'tenant" + tenantId + "\';\n");
 			    ctnWriter.append("alter user tenant" + tenantId + " with createrole createdb;\n");
@@ -109,10 +109,7 @@ public class MTTestsScriptWriter {
 		}
 	}
 	public static void main(String[] args) {
-		// args[0]: runId
-		// args[1]: generatedTenantsFile (tenants.csv)
-		// args[2]: sourceScriptDir including: creation.sql
-		// args[3]: outputDir
+		// for unit test
 		generateScripts(Integer.parseInt(args[0]), args[1], args[2], args[3]);
 	}
 }

@@ -51,7 +51,7 @@ public class DBInitialization {
 				+ "PRIMARY KEY (SUTNumber, clusterSize, arrivalRateFactor, timerName))";
 		String createTenants = "CREATE TABLE IF NOT EXISTS tenants(tenantId varchar(20) PRIMARY KEY, DBSize varchar(20), Priority varchar(20))";
 		String createDBSizesSF = "CREATE TABLE IF NOT EXISTS DBSizesSF(DBSize varchar(20), scaleFactor number(10), PRIMARY KEY(DBSize))";
-		String createPriorityTTR = "CREATE TABLE IF NOT EXISTS PriorityTTR(Priority varchar(20), TTR number(10,2), PRIMARY KEY(Priority))";
+		String createPriorityTRT = "CREATE TABLE IF NOT EXISTS PriorityTRT(Priority varchar(20), TRT number(10,2), PRIMARY KEY(Priority))";
 		String createRSPrices = "CREATE TABLE IF NOT EXISTS RSPrices(resourceType varchar(20), price number(10), unit varchar(20), PRIMARY KEY(resourceType))";
 		String createPerfSLOs = "CREATE TABLE IF NOT EXISTS perfSLOs(\r\n"
 				+ "		queryId varchar(20), \r\n"
@@ -106,8 +106,8 @@ public class DBInitialization {
 		}
 
 		try {
-			stm.execute(createPriorityTTR);
-			System.out.println("PriorityTTR created.");
+			stm.execute(createPriorityTRT);
+			System.out.println("PriorityTRT created.");
 		} catch (SQLException se) {
 			System.out.println(se);
 		}

@@ -134,10 +134,10 @@ public class InputFilesLoader {
 		}
 	}
 	
-	public static void loadPriorityTTR(String PriorityTTRFile) throws SQLException {
+	public static void loadPriorityTRT(String PriorityTRTFile) throws SQLException {
 		BufferedReader csvReader;
-		String deletePriorityTTR = "DELETE FROM PriorityTTR";
-		String insertPriorityTTR = "INSERT INTO PriorityTTR VALUES(?, ?)"; // Priority, TTR (tolerance threshold rate)
+		String deletePriorityTRT = "DELETE FROM PriorityTRT";
+		String insertPriorityTRT = "INSERT INTO PriorityTRT VALUES(?, ?)"; // Priority, TRT (tolerance rate threshold )
 		
 		Statement stm = null;
 		PreparedStatement pstm = null;
@@ -146,8 +146,8 @@ public class InputFilesLoader {
 		Connection conn = DBConnect();
 		try {
 	    	stm = conn.createStatement();
-	    	stm.executeUpdate(deletePriorityTTR);
-	    	System.out.println("PriorityTTR deleted.");
+	    	stm.executeUpdate(deletePriorityTRT);
+	    	System.out.println("PriorityTRT deleted.");
 	    } catch (SQLException se) {
 	    	System.out.println(se);
 	    } finally {
@@ -155,19 +155,19 @@ public class InputFilesLoader {
 	    }
 		
 		try {
-			// load data from the input file into the relation PriorityTTR
-			csvReader = new BufferedReader(new FileReader(PriorityTTRFile)); // Priority, TTR
+			// load data from the input file into the relation PriorityTRT
+			csvReader = new BufferedReader(new FileReader(PriorityTRTFile)); // Priority, TRT
 			
 			//skip the file header
 			String row = csvReader.readLine();
 			while ((row = csvReader.readLine()) != null) {
 			    String[] data = row.split(";");
 			    String Priority = data[0];
-			    double TTR = Double.parseDouble(data[1]);
+			    double TRT = Double.parseDouble(data[1]);
 			    try {
-			    	pstm = conn.prepareStatement(insertPriorityTTR);
+			    	pstm = conn.prepareStatement(insertPriorityTRT);
 			    	pstm.setString(1, Priority);
-			    	pstm.setDouble(2, TTR);
+			    	pstm.setDouble(2, TRT);
 			    	pstm.execute();
 			    } catch (SQLException se) {
 			    	System.out.println(se);
@@ -177,7 +177,7 @@ public class InputFilesLoader {
 			    }
 			}
 			csvReader.close();
-			System.out.println("PriorityTTR inserted.");
+			System.out.println("PriorityTRT inserted.");
 		} catch (IOException ie) {
 			System.out.println(ie);
 		} finally {
@@ -189,6 +189,6 @@ public class InputFilesLoader {
 	public static void main(String[] args) throws SQLException {
 		loadRSPrices(args[0]);
 		loadDBSizesSF(args[1]);
-		loadPriorityTTR(args[2]);
+		loadPriorityTRT(args[2]);
 	}
 }
