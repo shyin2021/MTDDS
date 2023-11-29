@@ -181,5 +181,6 @@ public class Reproduce {
 		/*** Export of data files for reproducing the Figures in the paper ***/
 		System.out.println("\n====== Exporting data files for reproducing the Figures in the paper ======");
 		example.DataForFigures.exportDataForAllFigure("files");
+		System.out.println("[REPRODUCE] Finished.");
 	}
 }

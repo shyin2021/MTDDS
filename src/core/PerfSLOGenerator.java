@@ -70,20 +70,20 @@ public class PerfSLOGenerator {
 			}
 			
 		try {
-			priorityTRTReader = new BufferedReader(new FileReader(PriorityTRTFile)); // Priority, TTR
+			priorityTRTReader = new BufferedReader(new FileReader(PriorityTRTFile)); // Priority, TRT
 						
 			//skip the file header
 			row = priorityTRTReader.readLine();
 			while ((row = priorityTRTReader.readLine()) != null) {
 				String[] data = row.split(";");
 				String Priority = data[0];
-				double TTR = Double.parseDouble(data[1]);
+				double TRT = Double.parseDouble(data[1]);
 				if(Priority.equals("Basic")) {
-					trb = TTR;
+					trb = TRT;
 				} else if (Priority.equals("Standard")) {
-					trs = TTR;
+					trs = TRT;
 				} else if (Priority.equals("Premium")) {
-					trp = TTR;
+					trp = TRT;
 				}
 			}
 			priorityTRTReader.close();

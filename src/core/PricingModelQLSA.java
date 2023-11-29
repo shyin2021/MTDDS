@@ -9,8 +9,8 @@ public class PricingModelQLSA {
 	public static void generateBills() throws SQLException {
 		//
 		String deleteBills = "DELETE FROM Price_per_query";
-		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, scaleFactor*(SELECT price FROM RSPrices WHERE resourceType='VM')*expectedExecTime*1.0/3600*(SELECT MAX(TTR) FROM PriorityTTR)/TTR*2 "
-				+ " FROM FormatedTraces FT, PerfSLOs_per_Tenant PPT, Tenants TN, PriorityTTR PTTR, DBSizesSF DS WHERE FT.tenantName=PPT.tenantId AND FT.queryName=PPT.queryId AND PPT.tenantId=TN.TenantID AND TN.Priority=PTTR.Priority AND TN.DBSize=DS.DBSize";
+		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, scaleFactor*(SELECT price FROM RSPrices WHERE resourceType='VM')*expectedExecTime*1.0/3600*(SELECT MAX(TRT) FROM PriorityTRT)/TRT*2 "
+				+ " FROM FormatedTraces FT, PerfSLOs_per_Tenant PPT, Tenants TN, PriorityTRT PTRT, DBSizesSF DS WHERE FT.tenantName=PPT.tenantId AND FT.queryName=PPT.queryId AND PPT.tenantId=TN.TenantID AND TN.Priority=PTRT.Priority AND TN.DBSize=DS.DBSize";
 		String updateBills1 = "UPDATE Price_per_query SET price_millicents = price_millicents * expectedExecTime/ realQCT WHERE (SUTNumber, clusterSize, arrivalRateFactor, tenantId, queryId, timerId)"
 				+ " IN (SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName FROM FormatedTraces FT, PerfSLOs_per_Tenant PPT WHERE FT.tenantName=PPT.tenantId AND FT.queryName=PPT.queryId AND "
 				+ "(FinishTime-LaunchTime)>expectedQCT AND (FinishTime-LaunchTime) <= perfSLO)";

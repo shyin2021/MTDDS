@@ -356,10 +356,10 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig7a = "SELECT tenantName, queryName, timerName, launchTime, startTime, finishTime, relativeLaunchTime, waitingTime, executionTime FROM FormatedTraces "
+			String readDataFig7b = "SELECT tenantName, queryName, timerName, launchTime, startTime, finishTime, relativeLaunchTime, waitingTime, executionTime FROM FormatedTraces "
 					+ "WHERE (timerName = 'Timer-89' OR (timerName >= 'Timer-90' AND timerName <= 'Timer-98') OR (timerName >= 'Timer-100' AND timerName <= 'Timer-109')) "
 					+ "AND SUTNumber=2 AND clusterSize=5 AND arrivalRateFactor=10 ORDER BY tenantName, timerName";
-			rst = stm.executeQuery(readDataFig7a);
+			rst = stm.executeQuery(readDataFig7b);
 			// read the tuples one by one and write them into a csv file
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			int rowNb = 0;
@@ -641,8 +641,8 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig11 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=5 AND pricingModel='QLSA'";
-			rst = stm.executeQuery(readDataFig11);
+			String readDataFig12 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=5 AND pricingModel='QLSA'";
+			rst = stm.executeQuery(readDataFig12);
 			// read the tuples one by one and write them into a csv file
 			while(rst.next()) {
 				csvWriter.append(Integer.toString(rst.getInt(1)));
