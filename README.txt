@@ -17,8 +17,10 @@ The source code structure is shown below.
 --------Metrics.java: to compute the final scores of the benchmark metrics 
 --------PerfSLOGenerator.java: to generate the performance SLOs
 --------PricingModelCommon.java: common functions used by all pricing models
+--------PricingModelIDS.java: a basic implementation of the IDS pricing model
 --------PricingModelQLSA.java: an instantiation of the QLSA pricing model
 --------PricingModelRCB.java: an instantiation of the RCB pricing model
+--------PricingModlSTB.java: a basic implementation of the STB pricing model
 --------TenantQueriesGenerator.java: to generate queries for each tenant
 --------TenantsGenerator.java: to generate the metedata of multiple tenants
 ----tools
@@ -30,8 +32,11 @@ The source code structure is shown below.
 ----example (code used to prepare an example benchmarking run, but code to execute on the SUTS are in the "files" folder)
 --------AddExplain.java: to add EXPLAIN ANALYZE before each query in order to print the query execution plans
 --------DataForFigures.java: to extract relevant data for visualization
+--------EnableNLforExists.java: to set enable_nestloop = on for several queries
+--------ErrorCorrectionForPG.java: fix several syntax errors with respect to PostgreSQL
 --------ExecTimeExtractor.java: to extract the execution times from the execution plan files
 --------MTTestsScriptWriter.java: to automatically generate scripts for the multi-tenant workload tests
+--------RewriteQueries_1_6_10_30_35_81.java: to rewrite six queries (q1, q6, q10, q30, q35, q81) so that Postgres-XL could execute them faster
 --------splitQueries.java: to split a file containg many SQL queries into separate files with one query in each
 ----reproducibility
 --------Reproduce.java: to replay the example benchmarking run
@@ -40,17 +45,15 @@ The "files" folder contains various files used and produced by the benchmarking 
 
 Main steps for a benchmarking run:
 Step 1: Data and queries generation
-Step 2: Databases load
-Step 3: Power tests
-Step 4: Performance SLO generation
-Step 5: Multi-tenant query workload generation
-Step 6: Multi-tenant query workload tests
-(Step 7: PO_Metric 1 and PO_Metric 2 measurement
+Step 2: Performance SLO generation
+Step 3: Multi-tenant query workload generation
+Step 4: Multi-tenant query workload tests
+(Step 5: PO_Metric 1 and PO_Metric 2 measurement
 AND/OR
-Step 8: PO_Metric 1 Bis and PO_Metric 2 Bis measurement)
-Step 9: Final scores computation
+Step 6: PO_Metric 1 Bis and PO_Metric 2 Bis measurement)
+Step 7: Final scores computation
 
 [About the reproducibility]
-The duration of the complete run is controled to be reasonable (less than 24 hours). However, the difficulty to reproduce all our (intermediate and final) experimental results is not the benchmarking run itself, but the deployment and configuration of the SUTs. It is very time consuming, and what's more, since the hardware used will be anyway different, the gathered numbers will also be different. However, these numbers are only the input of the core MTD-DS benchmark proposal. Therefore, we provide them directly in dedicated sub-folders in the "files" folder, so that the steps of the core benchmark proposal can be replayed. All these "directly provided" intemediate materials are in plain text format, so they can be easily visualized and checked, if necessary. 
+The duration of the complete run is controled to be reasonable (less than 72 hours). However, the difficulty for reproducing all our (intermediate and final) experimental results is not to run the benchmark itself, but to deploy and configure the SUTs. It is very time consuming, and what's more, since the hardware used will be anyway different, the gathered numbers will also be different. However, these numbers are only the input of the core MTD-DS benchmark proposal. Therefore, we provide them directly in dedicated sub-folders in the "files" folder, so that the steps of the core benchmark proposal can be replayed. All these "directly provided" intemediate materials are in plain text format, so they can be easily visualized and checked, if necessary. 
 
 
