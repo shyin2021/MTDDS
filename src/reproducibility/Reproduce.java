@@ -51,7 +51,7 @@ public class Reproduce {
 		example.EnableNLforExists.addCmd("files\\step1QueriesWithExplain\\m\\query_0_m.sql", "files\\step1QueriesWithExplain\\m\\query_0_m_nl_enabled.sql");
 		example.EnableNLforExists.addCmd("files\\step1QueriesWithExplain\\s\\query_0_s.sql", "files\\step1QueriesWithExplain\\s\\query_0_s_nl_enabled.sql");
 		
-		// With RewriteQueries_1_6_10_35.rewrite(), we rewrite the four queries (q1, q6, q10, q35) so that Postgres-XL could execute them faster, 
+		// With RewriteQueries_1_6_10_35.rewrite(), we rewrite the six queries (q1, q6, q10, q30, q35, q81) so that Postgres-XL could execute them faster, 
 		// knowing that this modification has no impact on the conclusion, since we do this for both SUTs (Systems Under Test)
 		// Input: a file in the folder step1QueriesWithExplain (e.g., query_0_s_nl_enabled.sql)
 		// Output: a file in the same folder (query_0_s_pgxl.sql)
