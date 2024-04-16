@@ -1,0 +1,10 @@
+                                                                        QUERY PLAN                                                                         
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1197431.74..1197431.78 rows=1 width=235) (actual time=1207.316..1207.323 rows=2 loops=1)
+   ->  GroupAggregate  (cost=1197431.74..1197431.78 rows=1 width=235) (actual time=1207.314..1207.320 rows=2 loops=1)
+         Group Key: item.i_item_id, item.i_item_desc, store.s_store_id, store.s_store_name
+         ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=1197431.74..1197431.75 rows=1 width=157) (actual time=1207.294..1207.295 rows=2 loops=1)
+ Planning time: 17.859 ms
+ Execution time: 1211.562 ms
+(6 rows)
+

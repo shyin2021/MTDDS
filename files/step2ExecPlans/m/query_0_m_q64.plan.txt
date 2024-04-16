@@ -1,0 +1,91 @@
+                                                                                                                      QUERY PLAN                                                                                                                      
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=1452602.82..1452602.83 rows=1 width=1310) (actual time=6591.380..6591.381 rows=15 loops=1)
+   Sort Key: cs1.product_name, cs1.store_name, cs2.cnt, cs1.s1, cs2.s1
+   Sort Method: quicksort  Memory: 28kB
+   CTE cs_ui
+     ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=530049.63..530122.15 rows=491 width=68) (actual time=1133.456..1535.884 rows=100413 loops=1)
+   CTE cross_sales
+     ->  GroupAggregate  (cost=922480.51..922480.57 rows=1 width=266) (actual time=6589.846..6590.579 rows=801 loops=1)
+           Group Key: i_item_sk, s_store_name, s_zip, ca_street_number, ca_street_name, ca_city, ca_zip, ca_street_number, ca_street_name, ca_city, ca_zip, d_year, d_year, d_year
+           ->  Sort  (cost=922480.51..922480.51 rows=1 width=177) (actual time=6589.835..6589.863 rows=801 loops=1)
+                 Sort Key: i_item_sk, s_store_name, s_zip, ca_street_number, ca_street_name, ca_city, ca_zip, ca_street_number, ca_street_name, ca_city, ca_zip, d_year, d_year, d_year
+                 Sort Method: quicksort  Memory: 237kB
+                 ->  Hash Join  (cost=874241.48..922480.50 rows=1 width=177) (actual time=5241.079..6588.253 rows=801 loops=1)
+                       Hash Cond: (ss_promo_sk = p_promo_sk)
+                       ->  Hash Join  (cost=874217.23..922456.24 rows=1 width=181) (actual time=5208.243..6555.080 rows=802 loops=1)
+                             Hash Cond: (hd_income_band_sk = ib_income_band_sk)
+                             ->  Hash Join  (cost=874215.78..922454.79 rows=1 width=185) (actual time=5184.964..6531.500 rows=802 loops=1)
+                                   Hash Cond: (cd_demo_sk = ss_cdemo_sk)
+                                   Join Filter: (cd_marital_status <> cd_marital_status)
+                                   Rows Removed by Join Filter: 187
+                                   ->  Remote Subquery Scan on all (dn4)  (cost=100.00..62264.80 rows=1920800 width=6) (actual time=25.841..797.557 rows=1920800 loops=1)
+                                   ->  Hash  (cost=874215.77..874215.77 rows=1 width=191) (actual time=5155.031..5155.031 rows=989 loops=1)
+                                         Buckets: 1024  Batches: 1  Memory Usage: 233kB
+                                         ->  Hash Join  (cost=825976.75..874215.77 rows=1 width=191) (actual time=3800.888..5154.175 rows=989 loops=1)
+                                               Hash Cond: (c_first_sales_date_sk = d_date_sk)
+                                               ->  Hash Join  (cost=822928.15..871167.16 rows=1 width=191) (actual time=3721.926..5074.620 rows=990 loops=1)
+                                                     Hash Cond: (c_first_shipto_date_sk = d_date_sk)
+                                                     ->  Hash Join  (cost=819879.55..868118.56 rows=1 width=191) (actual time=3643.660..4995.740 rows=998 loops=1)
+                                                           Hash Cond: (cd_demo_sk = c_current_cdemo_sk)
+                                                           ->  Remote Subquery Scan on all (dn4)  (cost=100.00..62264.80 rows=1920800 width=6) (actual time=28.862..804.120 rows=1920800 loops=1)
+                                                           ->  Hash  (cost=819879.53..819879.53 rows=1 width=193) (actual time=3614.589..3614.589 rows=998 loops=1)
+                                                                 Buckets: 1024  Batches: 1  Memory Usage: 238kB
+                                                                 ->  Hash Join  (cost=721653.36..819879.53 rows=1 width=193) (actual time=3517.068..3613.194 rows=1016 loops=1)
+                                                                       Hash Cond: (c_current_addr_sk = ca_address_sk)
+                                                                       ->  Hash Join  (cost=710593.36..808819.53 rows=1 width=157) (actual time=3207.264..3302.299 rows=1016 loops=1)
+                                                                             Hash Cond: (c_current_hdemo_sk = hd_demo_sk)
+                                                                             ->  Hash Join  (cost=710354.00..808580.16 rows=1 width=161) (actual time=3172.497..3266.670 rows=1065 loops=1)
+                                                                                   Hash Cond: (ss_customer_sk = c_customer_sk)
+                                                                                   ->  Hash Join  (cost=685269.00..783495.16 rows=1 width=145) (actual time=2639.006..2732.111 rows=1066 loops=1)
+                                                                                         Hash Cond: (ss_addr_sk = ca_address_sk)
+                                                                                         ->  Hash Join  (cost=674209.00..772435.16 rows=1 width=109) (actual time=2355.614..2447.693 rows=1076 loops=1)
+                                                                                               Hash Cond: (ss_sold_date_sk = d_date_sk)
+                                                                                               ->  Hash Join  (cost=671160.40..769386.55 rows=1 width=109) (actual time=2280.597..2371.975 rows=1089 loops=1)
+                                                                                                     Hash Cond: (ss_item_sk = cs_ui.cs_item_sk)
+                                                                                                     ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=671244.44..769470.64 rows=1 width=117) (actual time=702.080..789.773 rows=1089 loops=1)
+                                                                                                     ->  Hash  (cost=9.82..9.82 rows=491 width=4) (actual time=1578.457..1578.457 rows=100413 loops=1)
+                                                                                                           Buckets: 131072 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 4555kB
+                                                                                                           ->  CTE Scan on cs_ui  (cost=0.00..9.82 rows=491 width=4) (actual time=1133.461..1557.947 rows=100413 loops=1)
+                                                                                               ->  Hash  (cost=3185.13..3185.13 rows=73049 width=8) (actual time=74.703..74.703 rows=73049 loops=1)
+                                                                                                     Buckets: 131072  Batches: 1  Memory Usage: 3878kB
+                                                                                                     ->  Remote Subquery Scan on all (dn2)  (cost=100.00..3185.13 rows=73049 width=8) (actual time=20.579..48.843 rows=73049 loops=1)
+                                                                                         ->  Hash  (cost=20285.00..20285.00 rows=250000 width=44) (actual time=283.272..283.272 rows=250000 loops=1)
+                                                                                               Buckets: 262144  Batches: 1  Memory Usage: 21066kB
+                                                                                               ->  Remote Subquery Scan on all (dn2)  (cost=100.00..20285.00 rows=250000 width=44) (actual time=23.505..119.757 rows=250000 loops=1)
+                                                                                   ->  Hash  (cost=33435.00..33435.00 rows=500000 width=24) (actual time=533.295..533.295 rows=500000 loops=1)
+                                                                                         Buckets: 524288  Batches: 1  Memory Usage: 31167kB
+                                                                                         ->  Remote Subquery Scan on all (dn3)  (cost=100.00..33435.00 rows=500000 width=24) (actual time=28.399..222.731 rows=500000 loops=1)
+                                                                             ->  Hash  (cost=314.15..314.15 rows=7200 width=4) (actual time=34.756..34.756 rows=7200 loops=1)
+                                                                                   Buckets: 8192  Batches: 1  Memory Usage: 318kB
+                                                                                   ->  Remote Subquery Scan on all (dn4)  (cost=101.45..314.15 rows=7200 width=4) (actual time=25.397..31.112 rows=7200 loops=1)
+                                                                       ->  Hash  (cost=20285.00..20285.00 rows=250000 width=44) (actual time=309.616..309.616 rows=250000 loops=1)
+                                                                             Buckets: 262144  Batches: 1  Memory Usage: 21066kB
+                                                                             ->  Remote Subquery Scan on all (dn3)  (cost=100.00..20285.00 rows=250000 width=44) (actual time=29.075..133.287 rows=250000 loops=1)
+                                                     ->  Hash  (cost=3185.13..3185.13 rows=73049 width=8) (actual time=78.213..78.213 rows=73049 loops=1)
+                                                           Buckets: 131072  Batches: 1  Memory Usage: 3878kB
+                                                           ->  Remote Subquery Scan on all (dn1)  (cost=100.00..3185.13 rows=73049 width=8) (actual time=22.748..50.932 rows=73049 loops=1)
+                                               ->  Hash  (cost=3185.13..3185.13 rows=73049 width=8) (actual time=78.855..78.855 rows=73049 loops=1)
+                                                     Buckets: 131072  Batches: 1  Memory Usage: 3878kB
+                                                     ->  Remote Subquery Scan on all (dn3)  (cost=100.00..3185.13 rows=73049 width=8) (actual time=24.958..53.240 rows=73049 loops=1)
+                             ->  Hash  (cost=101.38..101.38 rows=20 width=4) (actual time=23.267..23.267 rows=20 loops=1)
+                                   Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                   ->  Remote Subquery Scan on all (dn2)  (cost=100.00..101.38 rows=20 width=4) (actual time=23.232..23.241 rows=20 loops=1)
+                       ->  Hash  (cost=122.50..122.50 rows=500 width=4) (actual time=32.830..32.831 rows=500 loops=1)
+                             Buckets: 1024  Batches: 1  Memory Usage: 26kB
+                             ->  Remote Subquery Scan on all (dn4)  (cost=100.00..122.50 rows=500 width=4) (actual time=32.355..32.531 rows=500 loops=1)
+   ->  Hash Join  (cost=0.04..0.09 rows=1 width=1310) (actual time=6591.246..6591.352 rows=15 loops=1)
+         Hash Cond: ((cs1.item_sk = cs2.item_sk) AND ((cs1.store_name)::text = (cs2.store_name)::text) AND (cs1.store_zip = cs2.store_zip))
+         Join Filter: (cs2.cnt <= cs1.cnt)
+         ->  CTE Scan on cross_sales cs1  (cost=0.00..0.02 rows=1 width=1206) (actual time=6589.849..6589.936 rows=171 loops=1)
+               Filter: (syear = 2000)
+               Rows Removed by Filter: 630
+         ->  Hash  (cost=0.02..0.02 rows=1 width=274) (actual time=1.379..1.379 rows=176 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 23kB
+               ->  CTE Scan on cross_sales cs2  (cost=0.00..0.02 rows=1 width=274) (actual time=0.006..1.339 rows=179 loops=1)
+                     Filter: (syear = 2001)
+                     Rows Removed by Filter: 622
+ Planning time: 63.207 ms
+ Execution time: 6630.205 ms
+(87 rows)
+

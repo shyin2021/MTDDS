@@ -1,0 +1,35 @@
+                                                                                                 QUERY PLAN                                                                                                 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=27014225.91..27014227.43 rows=100 width=110) (actual time=14641.524..14641.529 rows=10 loops=1)
+   ->  Merge Join  (cost=27014225.91..27018590.19 rows=288420 width=110) (actual time=14641.523..14641.528 rows=10 loops=1)
+         Merge Cond: (v11.rnk = v21.rnk)
+         ->  Sort  (cost=13507112.96..13507131.94 rows=7595 width=59) (actual time=7299.885..7299.886 rows=10 loops=1)
+               Sort Key: v11.rnk
+               Sort Method: quicksort  Memory: 26kB
+               ->  Hash Join  (cost=13505805.98..13506623.43 rows=7595 width=59) (actual time=7124.145..7299.873 rows=10 loops=1)
+                     Hash Cond: (v11.item_sk = i_item_sk)
+                     ->  Subquery Scan on v11  (cost=13487287.98..13488085.49 rows=7595 width=12) (actual time=6976.702..7152.420 rows=10 loops=1)
+                           Filter: (v11.rnk < 11)
+                           Rows Removed by Filter: 99956
+                           ->  WindowAgg  (cost=13487287.98..13487800.66 rows=22786 width=44) (actual time=6976.699..7145.136 rows=99966 loops=1)
+                                 ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=13487287.98..13487458.87 rows=22786 width=36) (actual time=6976.670..7099.481 rows=99966 loops=1)
+                     ->  Hash  (cost=28308.00..28308.00 rows=204000 width=55) (actual time=147.257..147.257 rows=204000 loops=1)
+                           Buckets: 262144  Batches: 1  Memory Usage: 19554kB
+                           ->  Remote Subquery Scan on all (dn1)  (cost=100.00..28308.00 rows=204000 width=55) (actual time=0.719..57.697 rows=204000 loops=1)
+         ->  Sort  (cost=13507112.96..13507131.94 rows=7595 width=59) (actual time=7341.634..7341.634 rows=10 loops=1)
+               Sort Key: v21.rnk
+               Sort Method: quicksort  Memory: 26kB
+               ->  Hash Join  (cost=13505805.98..13506623.43 rows=7595 width=59) (actual time=7166.024..7341.604 rows=10 loops=1)
+                     Hash Cond: (v21.item_sk = i_item_sk)
+                     ->  Subquery Scan on v21  (cost=13487287.98..13488085.49 rows=7595 width=12) (actual time=7010.123..7185.693 rows=10 loops=1)
+                           Filter: (v21.rnk < 11)
+                           Rows Removed by Filter: 99956
+                           ->  WindowAgg  (cost=13487287.98..13487800.66 rows=22786 width=44) (actual time=7010.120..7178.399 rows=99966 loops=1)
+                                 ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=13487287.98..13487458.87 rows=22786 width=36) (actual time=7010.098..7132.284 rows=99966 loops=1)
+                     ->  Hash  (cost=28308.00..28308.00 rows=204000 width=55) (actual time=155.302..155.302 rows=204000 loops=1)
+                           Buckets: 262144  Batches: 1  Memory Usage: 19554kB
+                           ->  Remote Subquery Scan on all (dn6)  (cost=100.00..28308.00 rows=204000 width=55) (actual time=1.712..62.787 rows=204000 loops=1)
+ Planning time: 1.261 ms
+ Execution time: 14651.302 ms
+(31 rows)
+

@@ -1,0 +1,13 @@
+                                                                           QUERY PLAN                                                                           
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=678900.92..678901.17 rows=100 width=91) (actual time=694.369..694.386 rows=67 loops=1)
+   ->  Sort  (cost=678900.92..678906.16 rows=2099 width=91) (actual time=694.367..694.374 rows=67 loops=1)
+         Sort Key: dt.d_year, (sum(store_sales.ss_sales_price)) DESC, item.i_brand_id
+         Sort Method: quicksort  Memory: 34kB
+         ->  Finalize GroupAggregate  (cost=678539.96..678820.69 rows=2099 width=91) (actual time=693.860..694.251 rows=67 loops=1)
+               Group Key: dt.d_year, item.i_brand, item.i_brand_id
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=678539.96..678772.58 rows=1750 width=91) (actual time=693.836..694.090 rows=69 loops=1)
+ Planning time: 0.471 ms
+ Execution time: 698.328 ms
+(9 rows)
+

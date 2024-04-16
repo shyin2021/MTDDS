@@ -1,0 +1,14 @@
+                                                                                                                                              QUERY PLAN                                                                                                                                              
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=8198670.52..8198670.77 rows=100 width=36) (actual time=11402.346..11402.354 rows=100 loops=1)
+   ->  Sort  (cost=8198670.52..8198671.25 rows=294 width=36) (actual time=11402.345..11402.348 rows=100 loops=1)
+         Sort Key: (sum(CASE WHEN (store_returns.sr_return_quantity IS NOT NULL) THEN (((store_sales.ss_quantity - store_returns.sr_return_quantity))::numeric * store_sales.ss_sales_price) ELSE ((store_sales.ss_quantity)::numeric * store_sales.ss_sales_price) END)), store_sales.ss_customer_sk
+         Sort Method: top-N heapsort  Memory: 32kB
+         ->  Finalize GroupAggregate  (cost=8198620.43..8198659.28 rows=294 width=36) (actual time=10464.386..11333.191 rows=424491 loops=1)
+               Group Key: store_sales.ss_customer_sk
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=8198620.43..8198653.77 rows=244 width=36) (actual time=10464.363..10995.911 rows=473906 loops=1)
+ Planning time: 1.892 ms
+ Execution time: 11431.512 ms
+(9 rows)
+
+SET

@@ -1,0 +1,13 @@
+                                                                                    QUERY PLAN                                                                                     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=3448041.22..3448041.22 rows=1 width=229) (actual time=4951.627..4951.641 rows=51 loops=1)
+   ->  Sort  (cost=3448041.22..3448041.22 rows=1 width=229) (actual time=4951.625..4951.631 rows=51 loops=1)
+         Sort Key: (substr((reason.r_reason_desc)::text, 1, 20)), (avg(web_sales.ws_quantity)), (avg(web_returns.wr_refunded_cash)), (avg(web_returns.wr_fee))
+         Sort Method: quicksort  Memory: 38kB
+         ->  GroupAggregate  (cost=3448041.16..3448041.21 rows=1 width=229) (actual time=4950.190..4951.523 rows=51 loops=1)
+               Group Key: reason.r_reason_desc
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=3448041.16..3448041.17 rows=1 width=117) (actual time=4950.135..4950.954 rows=152 loops=1)
+ Planning time: 10.338 ms
+ Execution time: 4970.044 ms
+(9 rows)
+

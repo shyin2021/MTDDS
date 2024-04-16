@@ -1,0 +1,12 @@
+                                                                                    QUERY PLAN                                                                                     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=104270.72..104270.72 rows=1 width=99) (actual time=398.800..398.802 rows=15 loops=1)
+   Sort Key: (sum(catalog_returns.cr_net_loss)) DESC
+   Sort Method: quicksort  Memory: 27kB
+   ->  GroupAggregate  (cost=104270.67..104270.71 rows=1 width=99) (actual time=398.668..398.774 rows=15 loops=1)
+         Group Key: call_center.cc_call_center_id, call_center.cc_name, call_center.cc_manager, customer_demographics.cd_marital_status, customer_demographics.cd_education_status
+         ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=104270.67..104270.68 rows=1 width=73) (actual time=398.643..398.726 rows=22 loops=1)
+ Planning time: 3.991 ms
+ Execution time: 403.266 ms
+(8 rows)
+

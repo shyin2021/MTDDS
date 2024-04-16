@@ -1,0 +1,57 @@
+                                                                                                                                                                                                                             QUERY PLAN                                                                                                                                                                                                                             
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=422237.04..422237.04 rows=1 width=210) (actual time=2086.074..2086.076 rows=43 loops=1)
+   Sort Key: ((ss3.store_sales / ss2.store_sales))
+   Sort Method: quicksort  Memory: 31kB
+   CTE ss
+     ->  Finalize HashAggregate  (cost=170142.16..188602.16 rows=1476800 width=54) (actual time=1550.846..1569.017 rows=35136 loops=1)
+           Group Key: ca_county, d_qoy, d_year
+           ->  Remote Subquery Scan on all (dn1)  (cost=125838.16..151682.16 rows=1476800 width=54) (actual time=1480.882..1505.681 rows=35136 loops=1)
+   CTE ws
+     ->  Finalize HashAggregate  (cost=59927.81..68920.11 rows=719384 width=54) (actual time=483.433..494.343 rows=23320 loops=1)
+           Group Key: ca_county, d_qoy, d_year
+           ->  Remote Subquery Scan on all (dn1)  (cost=38346.29..50935.51 rows=719384 width=54) (actual time=452.652..461.554 rows=23320 loops=1)
+   ->  Hash Join  (cost=127794.57..164714.76 rows=1 width=210) (actual time=2083.264..2086.047 rows=43 loops=1)
+         Hash Cond: ((ss2.ca_county)::text = (ss1.ca_county)::text)
+         Join Filter: ((CASE WHEN (ws1.web_sales > '0'::numeric) THEN (ws2.web_sales / ws1.web_sales) ELSE NULL::numeric END > CASE WHEN (ss1.store_sales > '0'::numeric) THEN (ss2.store_sales / ss1.store_sales) ELSE NULL::numeric END) AND (CASE WHEN (ws2.web_sales > '0'::numeric) THEN (ws3.web_sales / ws2.web_sales) ELSE NULL::numeric END > CASE WHEN (ss2.store_sales > '0'::numeric) THEN (ss3.store_sales / ss2.store_sales) ELSE NULL::numeric END))
+         Rows Removed by Join Filter: 324
+         ->  CTE Scan on ss ss2  (cost=0.00..36920.00 rows=37 width=110) (actual time=1550.864..1553.012 rows=1635 loops=1)
+               Filter: ((d_year = 1999) AND (d_qoy = 2))
+               Rows Removed by Filter: 33501
+         ->  Hash  (cost=127794.56..127794.56 rows=1 width=554) (actual time=532.310..532.310 rows=381 loops=1)
+               Buckets: 1024  Batches: 1  Memory Usage: 67kB
+               ->  Hash Join  (cost=90874.41..127794.56 rows=1 width=554) (actual time=529.833..532.193 rows=381 loops=1)
+                     Hash Cond: ((ss3.ca_county)::text = (ss1.ca_county)::text)
+                     ->  CTE Scan on ss ss3  (cost=0.00..36920.00 rows=37 width=110) (actual time=0.001..2.149 rows=1798 loops=1)
+                           Filter: ((d_year = 1999) AND (d_qoy = 3))
+                           Rows Removed by Filter: 33338
+                     ->  Hash  (cost=90874.40..90874.40 rows=1 width=444) (actual time=529.828..529.828 rows=384 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 58kB
+                           ->  Hash Join  (cost=53954.25..90874.40 rows=1 width=444) (actual time=503.207..529.690 rows=384 loops=1)
+                                 Hash Cond: ((ss1.ca_county)::text = (ws1.ca_county)::text)
+                                 ->  CTE Scan on ss ss1  (cost=0.00..36920.00 rows=37 width=114) (actual time=0.000..26.205 rows=1647 loops=1)
+                                       Filter: ((d_qoy = 1) AND (d_year = 1999))
+                                       Rows Removed by Filter: 33489
+                                 ->  Hash  (cost=53954.24..53954.24 rows=1 width=330) (actual time=503.202..503.202 rows=400 loops=1)
+                                       Buckets: 1024  Batches: 1  Memory Usage: 49kB
+                                       ->  Hash Join  (cost=35969.56..53954.24 rows=1 width=330) (actual time=501.523..503.108 rows=400 loops=1)
+                                             Hash Cond: ((ws3.ca_county)::text = (ws1.ca_county)::text)
+                                             ->  CTE Scan on ws ws3  (cost=0.00..17984.60 rows=18 width=110) (actual time=483.441..484.866 rows=1261 loops=1)
+                                                   Filter: ((d_year = 1999) AND (d_qoy = 3))
+                                                   Rows Removed by Filter: 22059
+                                             ->  Hash  (cost=35969.54..35969.54 rows=2 width=220) (actual time=18.075..18.075 rows=503 loops=1)
+                                                   Buckets: 1024  Batches: 1  Memory Usage: 48kB
+                                                   ->  Hash Join  (cost=17984.83..35969.54 rows=2 width=220) (actual time=16.402..17.979 rows=503 loops=1)
+                                                         Hash Cond: ((ws1.ca_county)::text = (ws2.ca_county)::text)
+                                                         ->  CTE Scan on ws ws1  (cost=0.00..17984.60 rows=18 width=110) (actual time=0.001..1.418 rows=911 loops=1)
+                                                               Filter: ((d_qoy = 1) AND (d_year = 1999))
+                                                               Rows Removed by Filter: 22409
+                                                         ->  Hash  (cost=17984.60..17984.60 rows=18 width=110) (actual time=16.397..16.397 rows=924 loops=1)
+                                                               Buckets: 1024  Batches: 1  Memory Usage: 59kB
+                                                               ->  CTE Scan on ws ws2  (cost=0.00..17984.60 rows=18 width=110) (actual time=0.022..16.239 rows=925 loops=1)
+                                                                     Filter: ((d_year = 1999) AND (d_qoy = 2))
+                                                                     Rows Removed by Filter: 22395
+ Planning time: 1.336 ms
+ Execution time: 2115.795 ms
+(53 rows)
+

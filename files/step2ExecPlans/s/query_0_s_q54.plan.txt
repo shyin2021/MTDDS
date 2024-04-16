@@ -1,0 +1,64 @@
+                                                                                   QUERY PLAN                                                                                   
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=210620.13..210620.14 rows=1 width=16) (actual time=1913.297..1913.297 rows=0 loops=1)
+   CTE my_customers
+     ->  Unique  (cost=122028.82..122028.84 rows=3 width=8) (actual time=1536.917..1536.980 rows=464 loops=1)
+           ->  Sort  (cost=122028.82..122028.83 rows=3 width=8) (actual time=1536.916..1536.932 rows=520 loops=1)
+                 Sort Key: c_customer_sk, c_current_addr_sk
+                 Sort Method: quicksort  Memory: 49kB
+                 ->  Hash Join  (cost=1734.43..122028.80 rows=3 width=8) (actual time=286.312..1536.782 rows=520 loops=1)
+                       Hash Cond: (cs_bill_customer_sk = c_customer_sk)
+                       ->  Hash Join  (cost=479.93..120774.29 rows=3 width=4) (actual time=209.604..1459.928 rows=521 loops=1)
+                             Hash Cond: (cs_item_sk = i_item_sk)
+                             ->  Hash Join  (cost=105.28..120397.15 rows=947 width=8) (actual time=136.603..1448.166 rows=22529 loops=1)
+                                   Hash Cond: (cs_sold_date_sk = d_date_sk)
+                                   ->  Append  (cost=100.00..114718.03 rows=2160964 width=12) (actual time=6.968..827.665 rows=2160932 loops=1)
+                                         ->  Remote Subquery Scan on all (dn1)  (cost=100.00..76427.66 rows=1441580 width=12) (actual time=6.967..472.546 rows=1441548 loops=1)
+                                         ->  Remote Subquery Scan on all (dn1)  (cost=100.00..38290.37 rows=719384 width=12) (actual time=4.983..238.420 rows=719384 loops=1)
+                                   ->  Hash  (cost=105.25..105.25 rows=8 width=4) (actual time=5.115..5.115 rows=31 loops=1)
+                                         Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                                         ->  Remote Subquery Scan on all (dn1)  (cost=100.16..105.25 rows=8 width=4) (actual time=5.069..5.081 rows=31 loops=1)
+                             ->  Hash  (cost=474.61..474.61 rows=12 width=4) (actual time=9.952..9.952 rows=451 loops=1)
+                                   Buckets: 1024  Batches: 1  Memory Usage: 24kB
+                                   ->  Remote Subquery Scan on all (dn1)  (cost=100.00..474.61 rows=12 width=4) (actual time=9.527..9.676 rows=451 loops=1)
+                       ->  Hash  (cost=1367.00..1367.00 rows=25000 width=8) (actual time=76.673..76.673 rows=100000 loops=1)
+                             Buckets: 131072 (originally 32768)  Batches: 1 (originally 1)  Memory Usage: 4931kB
+                             ->  Remote Subquery Scan on all (dn1)  (cost=100.00..1367.00 rows=25000 width=8) (actual time=5.421..44.248 rows=100000 loops=1)
+   CTE my_revenue
+     ->  GroupAggregate  (cost=88591.19..88591.21 rows=1 width=36) (actual time=1913.289..1913.289 rows=0 loops=1)
+           Group Key: my_customers.c_customer_sk
+           InitPlan 2 (returns $1)
+             ->  Remote Subquery Scan on all (dn1)  (cost=5.22..5.32 rows=8 width=4) (actual time=4.963..4.964 rows=1 loops=1)
+           InitPlan 3 (returns $2)
+             ->  Remote Subquery Scan on all (dn1)  (cost=5.22..5.32 rows=8 width=4) (actual time=5.906..5.907 rows=1 loops=1)
+           ->  Sort  (cost=88580.55..88580.55 rows=1 width=10) (actual time=1913.289..1913.289 rows=0 loops=1)
+                 Sort Key: my_customers.c_customer_sk
+                 Sort Method: quicksort  Memory: 25kB
+                 ->  Hash Join  (cost=465.61..88580.54 rows=1 width=10) (actual time=1913.287..1913.287 rows=0 loops=1)
+                       Hash Cond: (((ca_county)::text = (s_county)::text) AND (ca_state = s_state))
+                       ->  Hash Join  (cost=449.36..88563.65 rows=1 width=27) (actual time=1597.640..1904.131 rows=413 loops=1)
+                             Hash Cond: (ss_customer_sk = my_customers.c_customer_sk)
+                             ->  Remote Subquery Scan on all (dn1)  (cost=106.32..88382.06 rows=14352 width=10) (actual time=17.678..267.371 rows=76683 loops=1)
+                             ->  Hash  (cost=443.00..443.00 rows=3 width=21) (actual time=1579.736..1579.736 rows=464 loops=1)
+                                   Buckets: 1024  Batches: 1  Memory Usage: 33kB
+                                   ->  Hash Join  (cost=0.10..443.00 rows=3 width=21) (actual time=1543.217..1579.622 rows=464 loops=1)
+                                         Hash Cond: (ca_address_sk = my_customers.c_current_addr_sk)
+                                         ->  Remote Subquery Scan on all (dn1)  (cost=100.00..821.00 rows=12500 width=21) (actual time=6.001..25.968 rows=50000 loops=1)
+                                         ->  Hash  (cost=0.06..0.06 rows=3 width=8) (actual time=1537.060..1537.061 rows=464 loops=1)
+                                               Buckets: 1024  Batches: 1  Memory Usage: 27kB
+                                               ->  CTE Scan on my_customers  (cost=0.00..0.06 rows=3 width=8) (actual time=1536.919..1537.024 rows=464 loops=1)
+                       ->  Hash  (cost=119.00..119.00 rows=250 width=21) (actual time=9.039..9.039 rows=12 loops=1)
+                             Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                             ->  Remote Subquery Scan on all (dn1)  (cost=100.00..119.00 rows=250 width=21) (actual time=9.015..9.018 rows=12 loops=1)
+   CTE segments
+     ->  CTE Scan on my_revenue  (cost=0.00..0.03 rows=1 width=4) (actual time=1913.290..1913.290 rows=0 loops=1)
+   ->  Sort  (cost=0.05..0.05 rows=1 width=16) (actual time=1913.296..1913.296 rows=0 loops=1)
+         Sort Key: segments.segment, (count(*))
+         Sort Method: quicksort  Memory: 25kB
+         ->  HashAggregate  (cost=0.02..0.04 rows=1 width=16) (actual time=1913.292..1913.292 rows=0 loops=1)
+               Group Key: segments.segment
+               ->  CTE Scan on segments  (cost=0.00..0.02 rows=1 width=4) (actual time=1913.291..1913.291 rows=0 loops=1)
+ Planning time: 0.865 ms
+ Execution time: 1919.656 ms
+(60 rows)
+

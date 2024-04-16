@@ -1,0 +1,11 @@
+                                                                                                         QUERY PLAN                                                                                                         
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=9390568.46..9390572.21 rows=100 width=64) (actual time=8250.067..8253.740 rows=100 loops=1)
+   ->  Finalize GroupAggregate  (cost=9390568.46..9390778.46 rows=5600 width=64) (actual time=8250.066..8253.718 rows=100 loops=1)
+         Group Key: customer_demographics.cd_gender, customer_demographics.cd_marital_status, customer_demographics.cd_education_status, customer_demographics.cd_purchase_estimate, customer_demographics.cd_credit_rating
+         ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=9390568.46..9390610.46 rows=5600 width=48) (actual time=8250.024..8253.217 rows=594 loops=1)
+ Planning time: 1.160 ms
+ Execution time: 8268.098 ms
+(6 rows)
+
+SET

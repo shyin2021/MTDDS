@@ -1,0 +1,13 @@
+                                                                          QUERY PLAN                                                                           
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=676906.28..676906.53 rows=100 width=87) (actual time=679.629..679.656 rows=100 loops=1)
+   ->  Sort  (cost=676906.28..676906.55 rows=105 width=87) (actual time=679.627..679.638 rows=100 loops=1)
+         Sort Key: (sum(store_sales.ss_ext_sales_price)) DESC, item.i_brand_id
+         Sort Method: top-N heapsort  Memory: 48kB
+         ->  Finalize GroupAggregate  (cost=676888.98..676902.76 rows=105 width=87) (actual time=676.364..678.774 rows=321 loops=1)
+               Group Key: item.i_brand, item.i_brand_id
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=676888.98..676900.57 rows=88 width=87) (actual time=676.346..677.971 rows=385 loops=1)
+ Planning time: 0.282 ms
+ Execution time: 683.126 ms
+(9 rows)
+

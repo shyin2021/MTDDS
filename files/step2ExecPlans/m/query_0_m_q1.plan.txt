@@ -1,0 +1,36 @@
+                                                                                  QUERY PLAN                                                                                  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=90392.64..90392.89 rows=100 width=17) (actual time=1841.327..1841.337 rows=100 loops=1)
+   CTE customer_total_return
+     ->  Finalize GroupAggregate  (cost=63629.20..65505.22 rows=14368 width=40) (actual time=119.664..1099.197 rows=539554 loops=1)
+           Group Key: sr_customer_sk, sr_store_sk
+           ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=63629.20..65205.88 rows=11974 width=40) (actual time=119.629..718.160 rows=546067 loops=1)
+   ->  Sort  (cost=24887.42..24889.51 rows=838 width=17) (actual time=1841.326..1841.329 rows=100 loops=1)
+         Sort Key: c_customer_id
+         Sort Method: top-N heapsort  Memory: 38kB
+         ->  Merge Join  (cost=746.31..24855.39 rows=838 width=17) (actual time=1495.810..1815.256 rows=61621 loops=1)
+               Merge Cond: (c_customer_sk = ctr1.ctr_customer_sk)
+               ->  Remote Subquery Scan on all (dn4)  (cost=100.17..35946.68 rows=500000 width=21) (actual time=2.712..169.064 rows=499977 loops=1)
+               ->  Sort  (cost=746.14..748.24 rows=838 width=4) (actual time=1493.058..1495.994 rows=61622 loops=1)
+                     Sort Key: ctr1.ctr_customer_sk
+                     Sort Method: quicksort  Memory: 4425kB
+                     ->  Hash Join  (cost=372.91..705.45 rows=838 width=4) (actual time=1372.449..1487.974 rows=61636 loops=1)
+                           Hash Cond: (ctr1.ctr_store_sk = avg_ctr.ctr_store_sk)
+                           Join Filter: (ctr1.ctr_total_return > (avg_ctr.avg * 1.2))
+                           Rows Removed by Join Filter: 95590
+                           ->  Hash Join  (cost=6.71..332.59 rows=2514 width=44) (actual time=120.589..192.940 rows=157226 loops=1)
+                                 Hash Cond: (ctr1.ctr_store_sk = s_store_sk)
+                                 ->  CTE Scan on customer_total_return ctr1  (cost=0.00..287.36 rows=14368 width=40) (actual time=119.667..146.198 rows=539554 loops=1)
+                                 ->  Hash  (cost=106.59..106.59 rows=35 width=4) (actual time=0.907..0.907 rows=35 loops=1)
+                                       Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                                       ->  Remote Subquery Scan on all (dn4)  (cost=100.00..106.59 rows=35 width=4) (actual time=0.861..0.874 rows=35 loops=1)
+                           ->  Hash  (cost=363.70..363.70 rows=200 width=36) (actual time=1251.846..1251.846 rows=51 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 11kB
+                                 ->  Subquery Scan on avg_ctr  (cost=359.20..363.70 rows=200 width=36) (actual time=1251.808..1251.837 rows=52 loops=1)
+                                       ->  HashAggregate  (cost=359.20..361.70 rows=200 width=36) (actual time=1251.807..1251.833 rows=52 loops=1)
+                                             Group Key: customer_total_return.ctr_store_sk
+                                             ->  CTE Scan on customer_total_return  (cost=0.00..287.36 rows=14368 width=36) (actual time=0.001..1106.151 rows=539554 loops=1)
+ Planning time: 1.922 ms
+ Execution time: 1851.700 ms
+(32 rows)
+

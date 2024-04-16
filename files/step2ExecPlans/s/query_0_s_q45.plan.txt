@@ -1,0 +1,10 @@
+                                                                QUERY PLAN                                                                 
+-------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=25099.56..25102.31 rows=100 width=52) (actual time=129.140..129.184 rows=14 loops=1)
+   ->  GroupAggregate  (cost=25099.56..25112.57 rows=473 width=52) (actual time=129.139..129.180 rows=14 loops=1)
+         Group Key: customer_address.ca_zip, customer_address.ca_city
+         ->  Remote Subquery Scan on all (dn1)  (cost=25099.56..25103.11 rows=473 width=26) (actual time=129.098..129.105 rows=14 loops=1)
+ Planning time: 0.657 ms
+ Execution time: 130.215 ms
+(6 rows)
+

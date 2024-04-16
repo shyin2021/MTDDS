@@ -5,15 +5,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+//This is an instantiation of the RCB pricing model. It can be modified or extended according to the provider's exact strategy.
 public class PricingModelQLSA {
 	public static void generateBills() throws SQLException {
-		//
+		// Empty the Price_per_query relation
 		String deleteBills = "DELETE FROM Price_per_query";
-		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, scaleFactor*(SELECT price FROM RSPrices WHERE resourceType='VM')*expectedExecTime*1.0/3600*(SELECT MAX(TRT) FROM PriorityTRT)/TRT*2 "
+		// compute the expected price for each query
+		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, nbNodes*(SELECT price FROM RSPrices WHERE resourceType='VM')*expectedExecTime*1.0/3600*(SELECT MAX(TRT) FROM PriorityTRT)/TRT*2 "
 				+ " FROM FormatedTraces FT, PerfSLOs_per_Tenant PPT, Tenants TN, PriorityTRT PTRT, DBSizesSF DS WHERE FT.tenantName=PPT.tenantId AND FT.queryName=PPT.queryId AND PPT.tenantId=TN.TenantID AND TN.Priority=PTRT.Priority AND TN.DBSize=DS.DBSize";
+		// update the prices of the queries that are delayed but terminated before the threshold
 		String updateBills1 = "UPDATE Price_per_query SET price_millicents = price_millicents * expectedExecTime/ realQCT WHERE (SUTNumber, clusterSize, arrivalRateFactor, tenantId, queryId, timerId)"
 				+ " IN (SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName FROM FormatedTraces FT, PerfSLOs_per_Tenant PPT WHERE FT.tenantName=PPT.tenantId AND FT.queryName=PPT.queryId AND "
 				+ "(FinishTime-LaunchTime)>expectedQCT AND (FinishTime-LaunchTime) <= perfSLO)";
+		// consider the penalties in case of performance SLO violation
 		String updateBills2 = "UPDATE Price_per_query SET price_millicents = 0 - price_millicents WHERE (SUTNumber, clusterSize, arrivalRateFactor, tenantId, queryId, timerId)"
 				+ " IN (SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName FROM FormatedTraces FT, PerfSLOs_per_Tenant PPT WHERE FT.tenantName=PPT.tenantId AND FT.queryName=PPT.queryId AND "
 				+ "(FinishTime-LaunchTime)>perfSLO)";

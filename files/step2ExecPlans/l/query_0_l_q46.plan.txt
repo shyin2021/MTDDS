@@ -1,0 +1,27 @@
+                                                                                                    QUERY PLAN                                                                                                    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=6900473.42..6900473.67 rows=100 width=138) (actual time=12759.480..12759.490 rows=100 loops=1)
+   ->  Sort  (cost=6900473.42..6900699.86 rows=90576 width=138) (actual time=12759.479..12759.482 rows=100 loops=1)
+         Sort Key: c_last_name, c_first_name, ca_city, dn.bought_city, dn.ss_ticket_number
+         Sort Method: top-N heapsort  Memory: 48kB
+         ->  Hash Join  (cost=6799043.04..6897011.68 rows=90576 width=138) (actual time=10323.853..12653.335 rows=271455 loops=1)
+               Hash Cond: (c_current_addr_sk = ca_address_sk)
+               Join Filter: ((ca_city)::text <> (dn.bought_city)::text)
+               Rows Removed by Join Filter: 19369
+               ->  Merge Join  (cost=6754809.04..6852539.53 rows=90723 width=133) (actual time=9659.490..11847.518 rows=290824 loops=1)
+                     Merge Cond: (c_customer_sk = dn.ss_customer_sk)
+                     ->  Remote Subquery Scan on all (dn8)  (cost=100.18..221465.94 rows=1999938 width=60) (actual time=0.829..950.202 rows=2000000 loops=1)
+                     ->  Sort  (cost=6754808.87..6755035.67 rows=90723 width=81) (actual time=9658.620..9704.627 rows=290825 loops=1)
+                           Sort Key: dn.ss_customer_sk
+                           Sort Method: quicksort  Memory: 35667kB
+                           ->  Subquery Scan on dn  (cost=6733225.20..6747338.20 rows=90723 width=81) (actual time=5123.072..9548.673 rows=300379 loops=1)
+                                 ->  Finalize GroupAggregate  (cost=6733225.20..6746430.97 rows=90723 width=85) (actual time=5123.069..9523.940 rows=300379 loops=1)
+                                       Group Key: ss_ticket_number, ss_customer_sk, ss_addr_sk, ca_city
+                                       ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=6733225.20..6743558.08 rows=75602 width=85) (actual time=5122.999..7900.477 rows=1766310 loops=1)
+               ->  Hash  (cost=49834.00..49834.00 rows=1000000 width=13) (actual time=663.729..663.729 rows=1000000 loops=1)
+                     Buckets: 1048576  Batches: 1  Memory Usage: 54091kB
+                     ->  Remote Subquery Scan on all (dn4)  (cost=100.00..49834.00 rows=1000000 width=13) (actual time=0.325..338.362 rows=1000000 loops=1)
+ Planning time: 1.944 ms
+ Execution time: 12774.171 ms
+(23 rows)
+

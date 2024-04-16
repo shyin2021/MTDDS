@@ -1,0 +1,17 @@
+                                                                             QUERY PLAN                                                                             
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=592307.58..592307.83 rows=100 width=272) (actual time=1448.678..1448.686 rows=100 loops=1)
+   ->  Sort  (cost=592307.58..592313.34 rows=2301 width=272) (actual time=1448.677..1448.680 rows=100 loops=1)
+         Sort Key: customer_address.ca_country, customer_address.ca_state, customer_address.ca_county, item.i_item_id
+         Sort Method: top-N heapsort  Memory: 47kB
+         ->  GroupAggregate  (cost=592127.61..592219.64 rows=2301 width=272) (actual time=1176.617..1424.670 rows=79877 loops=1)
+               Group Key: item.i_item_id, customer_address.ca_country, customer_address.ca_state, customer_address.ca_county
+               Group Key: item.i_item_id, customer_address.ca_country, customer_address.ca_state
+               Group Key: item.i_item_id, customer_address.ca_country
+               Group Key: item.i_item_id
+               Group Key: ()
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=592127.61..592131.93 rows=575 width=81) (actual time=1176.572..1224.016 rows=22269 loops=1)
+ Planning time: 3.179 ms
+ Execution time: 1452.927 ms
+(13 rows)
+

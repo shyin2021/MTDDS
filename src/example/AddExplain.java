@@ -19,20 +19,32 @@ public class AddExplain{
 			e1.printStackTrace();
 		}
 		
+		int queryNb = 0;
+		int nbBlank = 0;
 		try{
 			queriesReader = new BufferedReader(new FileReader(input_file));
 			while((row = queriesReader.readLine()) != null){
-				// copy the line into the output file
-				queriesWriter.append(row);
-				queriesWriter.append("\n");
 				// analyze the row to see if a query starts just after
 				String[] data = row.split(" ");
-				if(data.length > 1 && data[1].equals("start")){
-					queriesWriter.append("\\o "+ path_for_plans + "/" + output_file + "_q" + data[3] + ".plan.txt");
+				if(data.length < 2 && data[0].isBlank()) {
+					nbBlank ++;
+				}
+				else if (nbBlank > 0 && !data[0].isBlank()){ // TO CHECK
+					nbBlank = 0;
+					queryNb++;
+					if(queryNb>1) {
+						queriesWriter.append("-- end query " + (queryNb -1) + "\n");
+					}
+					queriesWriter.append("-- start query " + queryNb + "\n");
+					queriesWriter.append("\\o "+ path_for_plans + "/" + output_file + "_q" + queryNb + ".plan.txt");
 					queriesWriter.append("\n");
 					queriesWriter.append("explain analyze ");
 				}
+				// copy the line into the output file
+				queriesWriter.append(row);
+				queriesWriter.append("\n");
 			}
+			queriesWriter.append("-- end query " + queryNb + "\n");
 			queriesWriter.flush();
 			queriesWriter.close();
 			queriesReader.close();			

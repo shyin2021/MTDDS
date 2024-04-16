@@ -1,0 +1,32 @@
+                                                                                                                 QUERY PLAN                                                                                                                 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=150614.96..150622.21 rows=100 width=259) (actual time=1345.574..1346.145 rows=100 loops=1)
+   ->  GroupAggregate  (cost=150614.96..150865.23 rows=3452 width=259) (actual time=1345.573..1346.136 rows=100 loops=1)
+         Group Key: ca.ca_state, customer_demographics.cd_gender, customer_demographics.cd_marital_status, customer_demographics.cd_dep_count, customer_demographics.cd_dep_employed_count, customer_demographics.cd_dep_college_count
+         ->  Sort  (cost=150614.96..150623.59 rows=3452 width=19) (actual time=1345.558..1345.600 rows=1263 loops=1)
+               Sort Key: ca.ca_state, customer_demographics.cd_gender, customer_demographics.cd_marital_status, customer_demographics.cd_dep_count, customer_demographics.cd_dep_employed_count, customer_demographics.cd_dep_college_count
+               Sort Method: quicksort  Memory: 6273kB
+               ->  Hash Join  (cost=82429.33..150412.10 rows=3452 width=19) (actual time=767.900..1252.836 rows=61430 loops=1)
+                     Hash Cond: (c.c_current_addr_sk = ca.ca_address_sk)
+                     ->  Hash Join  (cost=81877.08..149850.79 rows=3452 width=20) (actual time=735.768..1200.172 rows=61430 loops=1)
+                           Hash Cond: (store_sales.ss_customer_sk = c.c_customer_sk)
+                           ->  Remote Subquery Scan on all (dn1)  (cost=206.03..68222.92 rows=10725 width=4) (actual time=0.979..348.272 rows=305898 loops=1)
+                           ->  Hash  (cost=81670.46..81670.46 rows=8047 width=28) (actual time=734.768..734.768 rows=21050 loops=1)
+                                 Buckets: 32768 (originally 8192)  Batches: 1 (originally 1)  Memory Usage: 1490kB
+                                 ->  Hash Join  (cost=70545.92..81670.46 rows=8047 width=28) (actual time=402.074..725.716 rows=21050 loops=1)
+                                       Hash Cond: (c.c_customer_sk = web_sales.ws_bill_customer_sk)
+                                       ->  Remote Subquery Scan on all (dn1)  (cost=1454.50..13238.41 rows=25000 width=24) (actual time=20.346..235.759 rows=96562 loops=1)
+                                       ->  Hash  (cost=69090.83..69090.83 rows=8047 width=4) (actual time=381.631..381.631 rows=21818 loops=1)
+                                             Buckets: 32768 (originally 8192)  Batches: 1 (originally 1)  Memory Usage: 1024kB
+                                             ->  HashAggregate  (cost=68929.89..69010.36 rows=8047 width=4) (actual time=371.959..376.980 rows=21819 loops=1)
+                                                   Group Key: web_sales.ws_bill_customer_sk
+                                                   ->  Append  (cost=206.03..68909.77 rows=8047 width=4) (actual time=3.188..301.335 rows=238969 loops=1)
+                                                         ->  Remote Subquery Scan on all (dn1)  (cost=206.03..23049.48 rows=2679 width=4) (actual time=3.187..99.805 rows=79635 loops=1)
+                                                         ->  Remote Subquery Scan on all (dn1)  (cost=206.03..45779.82 rows=5368 width=4) (actual time=29.184..186.143 rows=159334 loops=1)
+                     ->  Hash  (cost=646.00..646.00 rows=12500 width=7) (actual time=32.123..32.123 rows=50000 loops=1)
+                           Buckets: 65536 (originally 16384)  Batches: 1 (originally 1)  Memory Usage: 2460kB
+                           ->  Remote Subquery Scan on all (dn1)  (cost=100.00..646.00 rows=12500 width=7) (actual time=0.442..17.667 rows=50000 loops=1)
+ Planning time: 0.979 ms
+ Execution time: 1347.931 ms
+(28 rows)
+

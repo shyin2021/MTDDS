@@ -1,4 +1,4 @@
-DBSize;scaleFactor
-Small;1
-Medium;2
-Large;3
+DBSize;scaleFactor;nbNodes
+Small;1;1
+Medium;10;4
+Large;100;8

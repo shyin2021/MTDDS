@@ -85,7 +85,7 @@ public class InputFilesLoader {
 	public static void loadDBSizesSF(String DBSizesSFFile) throws SQLException {
 		BufferedReader csvReader;
 		String deleteDBSizesSF = "DELETE FROM DBSizesSF";
-		String insertDBSizesSF = "INSERT INTO DBSizesSF VALUES(?, ?)"; // DBSize, scaleFactor
+		String insertDBSizesSF = "INSERT INTO DBSizesSF VALUES(?, ?, ?)"; // DBSize, scaleFactor, nbNodes
 		
 		Statement stm = null;
 		PreparedStatement pstm = null;
@@ -112,10 +112,12 @@ public class InputFilesLoader {
 			    String[] data = row.split(";");
 			    String DBSize = data[0];
 			    int scaleFactor = Integer.parseInt(data[1]);
+			    int nbNodes = Integer.parseInt(data[2]);
 			    try {
 			    	pstm = conn.prepareStatement(insertDBSizesSF);
 			    	pstm.setString(1, DBSize);
 			    	pstm.setInt(2, scaleFactor);
+			    	pstm.setInt(3, nbNodes);
 			    	pstm.execute();
 			    } catch (SQLException se) {
 			    	System.out.println(se);

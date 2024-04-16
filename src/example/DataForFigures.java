@@ -292,15 +292,15 @@ public class DataForFigures {
 			}
 			
 			String readDataFig7a = "SELECT tenantName, queryName, timerName, launchTime, startTime, finishTime, relativeLaunchTime, waitingTime, executionTime FROM FormatedTraces "
-					+ "WHERE (timerName = 'Timer-89' OR (timerName >= 'Timer-90' AND timerName <= 'Timer-98') OR (timerName >= 'Timer-100' AND timerName <= 'Timer-109')) "
-					+ "AND SUTNumber=2 AND clusterSize=5 AND arrivalRateFactor=2 ORDER BY tenantName, timerName";
+					+ "WHERE ((timerName >= 'Timer-140' AND timerName <= 'Timer-146') OR (timerName >= 'Timer-185' AND timerName <= 'Timer-189') OR (timerName >= 'Timer-190' AND timerName <= 'Timer-194') OR (timerName >= 'Timer-221' AND timerName <= 'Timer-227')) "
+					+ "AND SUTNumber=2 AND clusterSize=11 AND arrivalRateFactor=2 ORDER BY tenantName, timerName";
 			rst = stm.executeQuery(readDataFig7a);
 			// read the tuples one by one and write them into a csv file
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			int rowNb = 0;
 			while(rst.next()) {
 				rowNb++;
-				if(rowNb==1 || rowNb==11) {
+				if(rowNb==1 || rowNb==8  || rowNb==18) {
 					csvWriter.append(rst.getString(1));
 				} else {
 					csvWriter.append("");
@@ -357,15 +357,15 @@ public class DataForFigures {
 			}
 			
 			String readDataFig7b = "SELECT tenantName, queryName, timerName, launchTime, startTime, finishTime, relativeLaunchTime, waitingTime, executionTime FROM FormatedTraces "
-					+ "WHERE (timerName = 'Timer-89' OR (timerName >= 'Timer-90' AND timerName <= 'Timer-98') OR (timerName >= 'Timer-100' AND timerName <= 'Timer-109')) "
-					+ "AND SUTNumber=2 AND clusterSize=5 AND arrivalRateFactor=10 ORDER BY tenantName, timerName";
+					+ "WHERE ((timerName >= 'Timer-140' AND timerName <= 'Timer-146') OR (timerName >= 'Timer-185' AND timerName <= 'Timer-189') OR (timerName >= 'Timer-190' AND timerName <= 'Timer-194') OR (timerName >= 'Timer-221' AND timerName <= 'Timer-227')) "
+					+ "AND SUTNumber=2 AND clusterSize=11 AND arrivalRateFactor=10 ORDER BY tenantName, timerName";
 			rst = stm.executeQuery(readDataFig7b);
 			// read the tuples one by one and write them into a csv file
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			int rowNb = 0;
 			while(rst.next()) {
 				rowNb++;
-				if(rowNb==1 || rowNb==11) {
+				if(rowNb==1 || rowNb==8  || rowNb==18) {
 					csvWriter.append(rst.getString(1));
 				} else {
 					csvWriter.append("");
@@ -421,7 +421,7 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig8 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=1 AND clusterSize=5 AND pricingModel='RCB'";
+			String readDataFig8 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=1 AND clusterSize=11 AND pricingModel='RCB'";
 			rst = stm.executeQuery(readDataFig8);
 			// read the tuples one by one and write them into a csv file
 			while(rst.next()) {
@@ -471,7 +471,7 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig9 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=2 AND clusterSize=5 AND pricingModel='RCB'";
+			String readDataFig9 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='RCB'";
 			rst = stm.executeQuery(readDataFig9);
 			// read the tuples one by one and write them into a csv file
 			while(rst.next()) {
@@ -519,11 +519,11 @@ public class DataForFigures {
 			}
 			
 			// SUT1
-			int HARF = Metrics.getPO_Metric1Bis_HARF(1, "RCB", 5, 0.7);
-			double SSR = Metrics.getTO_Metric1_SSR(1, "RCB", 5, HARF);
-			double FTS = Metrics.getTO_Metric2_FTS(1, "RCB", 5, HARF);
-			double TPAT = Metrics.getTO_Metric3_TPAT(1, "RCB", 5, HARF);
-			double LUBF = Metrics.getLUBF(1, "RCB", 5, HARF);
+			int HARF = Metrics.getPO_Metric1Bis_HARF(1, "RCB", 11, 0.7);
+			double SSR = Metrics.getTO_Metric1_SSR(1, "RCB", 11, HARF);
+			double FTS = Metrics.getTO_Metric2_FTS(1, "RCB", 11, HARF);
+			double TPAT = Metrics.getTO_Metric3_TPAT(1, "RCB", 11, HARF);
+			double LUBF = Metrics.getLUBF(1, "RCB", 11, HARF);
 
 			csvWriter.append("SUT1");
 			csvWriter.append(";");
@@ -539,13 +539,13 @@ public class DataForFigures {
 			csvWriter.append("\n");	
 			
 			// SUT2
-			HARF = Metrics.getPO_Metric1Bis_HARF(2, "RCB", 5, 0.7);
-			SSR = Metrics.getTO_Metric1_SSR(2, "RCB", 5, HARF);
-			FTS = Metrics.getTO_Metric2_FTS(2, "RCB", 5, HARF);
-			TPAT = Metrics.getTO_Metric3_TPAT(2, "RCB", 5, HARF);
-			LUBF = Metrics.getLUBF(2, "RCB", 5, HARF);
+			HARF = Metrics.getPO_Metric1Bis_HARF(2, "RCB", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(2, "RCB", 11, HARF);
+			FTS = Metrics.getTO_Metric2_FTS(2, "RCB", 11, HARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(2, "RCB", 11, HARF);
+			LUBF = Metrics.getLUBF(2, "RCB", 11, HARF);
 
-			csvWriter.append("SUT2");
+			csvWriter.append("SUT2-HARF");
 			csvWriter.append(";");
 			csvWriter.append(Integer.toString(HARF));
 			csvWriter.append(";");
@@ -556,7 +556,27 @@ public class DataForFigures {
 			csvWriter.append(Double.toString(FTS).replace(".", ","));
 			csvWriter.append(";");
 			csvWriter.append(Double.toString(TPAT).replace(".", ","));
-			csvWriter.append("\n");								
+			csvWriter.append("\n");		
+			
+			// SUT2
+			int OARF = Metrics.getPO_Metric2Bis_OARF(2, "RCB", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(2, "RCB", 11, OARF);
+			FTS = Metrics.getTO_Metric2_FTS(2, "RCB", 11, OARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(2, "RCB", 11, OARF);
+			LUBF = Metrics.getLUBF(2, "RCB", 11, OARF);
+
+			csvWriter.append("SUT2-OARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(OARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");	
 		} catch (SQLException se) {
 			System.out.println(se);
 		} finally {
@@ -591,7 +611,7 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig11 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=5 AND pricingModel='RCB'";
+			String readDataFig11 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='RCB'";
 			rst = stm.executeQuery(readDataFig11);
 			// read the tuples one by one and write them into a csv file
 			while(rst.next()) {
@@ -641,7 +661,7 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig12 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=5 AND pricingModel='QLSA'";
+			String readDataFig12 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='QLSA'";
 			rst = stm.executeQuery(readDataFig12);
 			// read the tuples one by one and write them into a csv file
 			while(rst.next()) {
@@ -691,7 +711,7 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig13 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=2 AND clusterSize=5 AND pricingModel='QLSA'";
+			String readDataFig13 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='QLSA'";
 			rst = stm.executeQuery(readDataFig13);
 			// read the tuples one by one and write them into a csv file
 			while(rst.next()) {
@@ -739,11 +759,11 @@ public class DataForFigures {
 			}
 			
 			// SUT1 HARF/OARF
-			int HARF = Metrics.getPO_Metric1Bis_HARF(1, "QLSA", 5, 0.7);
-			double SSR = Metrics.getTO_Metric1_SSR(1, "QLSA", 5, HARF);
-			double FTS = Metrics.getTO_Metric2_FTS(1, "QLSA", 5, HARF);
-			double TPAT = Metrics.getTO_Metric3_TPAT(1, "QLSA", 5, HARF);
-			double LUBF = Metrics.getLUBF(1, "QLSA", 5, HARF);
+			int HARF = Metrics.getPO_Metric1Bis_HARF(1, "QLSA", 11, 0.7);
+			double SSR = Metrics.getTO_Metric1_SSR(1, "QLSA", 11, HARF);
+			double FTS = Metrics.getTO_Metric2_FTS(1, "QLSA", 11, HARF);
+			double TPAT = Metrics.getTO_Metric3_TPAT(1, "QLSA", 11, HARF);
+			double LUBF = Metrics.getLUBF(1, "QLSA", 11, HARF);
 
 			csvWriter.append("SUT1-HARF/OARF");
 			csvWriter.append(";");
@@ -759,11 +779,11 @@ public class DataForFigures {
 			csvWriter.append("\n");	
 			
 			// SUT2 HARF
-			HARF = Metrics.getPO_Metric1Bis_HARF(2, "QLSA", 5, 0.7);
-			SSR = Metrics.getTO_Metric1_SSR(2, "QLSA", 5, HARF);
-			FTS = Metrics.getTO_Metric2_FTS(2, "QLSA", 5, HARF);
-			TPAT = Metrics.getTO_Metric3_TPAT(2, "QLSA", 5, HARF);
-			LUBF = Metrics.getLUBF(2, "QLSA", 5, HARF);
+			HARF = Metrics.getPO_Metric1Bis_HARF(2, "QLSA", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(2, "QLSA", 11, HARF);
+			FTS = Metrics.getTO_Metric2_FTS(2, "QLSA", 11, HARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(2, "QLSA", 11, HARF);
+			LUBF = Metrics.getLUBF(2, "QLSA", 11, HARF);
 
 			csvWriter.append("SUT2-HARF");
 			csvWriter.append(";");
@@ -779,11 +799,11 @@ public class DataForFigures {
 			csvWriter.append("\n");
 			
 			// SUT2 OARF
-			int OARF = Metrics.getPO_Metric2Bis_OARF(2, "QLSA", 5, 0.7);
-			SSR = Metrics.getTO_Metric1_SSR(2, "QLSA", 5, OARF);
-			FTS = Metrics.getTO_Metric2_FTS(2, "QLSA", 5, OARF);
-			TPAT = Metrics.getTO_Metric3_TPAT(2, "QLSA", 5, OARF);
-			LUBF = Metrics.getLUBF(2, "QLSA", 5, OARF);
+			int OARF = Metrics.getPO_Metric2Bis_OARF(2, "QLSA", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(2, "QLSA", 11, OARF);
+			FTS = Metrics.getTO_Metric2_FTS(2, "QLSA", 11, OARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(2, "QLSA", 11, OARF);
+			LUBF = Metrics.getLUBF(2, "QLSA", 11, OARF);
 
 			csvWriter.append("SUT2-OARF");
 			csvWriter.append(";");
@@ -839,6 +859,6 @@ public class DataForFigures {
     }
 	
 	public static void main(String[] args) throws SQLException, IOException {
-		exportDataForFigure9("files");
+		exportDataForFigure10("files");
 	}
 }

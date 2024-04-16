@@ -1,0 +1,19 @@
+                                                                                                      QUERY PLAN                                                                                                       
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=241396.33..241396.58 rows=100 width=210) (actual time=2932.051..2932.059 rows=100 loops=1)
+   ->  Sort  (cost=241396.33..241398.84 rows=1001 width=210) (actual time=2932.050..2932.053 rows=100 loops=1)
+         Sort Key: ((GROUPING(item.i_category) + GROUPING(item.i_class))) DESC, (CASE WHEN (((GROUPING(item.i_category) + GROUPING(item.i_class))) = 0) THEN item.i_category ELSE NULL::bpchar END), (rank() OVER (?))
+         Sort Method: quicksort  Memory: 62kB
+         ->  WindowAgg  (cost=241325.54..241358.08 rows=1001 width=210) (actual time=2931.712..2931.810 rows=173 loops=1)
+               ->  Sort  (cost=241325.54..241328.05 rows=1001 width=178) (actual time=2931.707..2931.712 rows=173 loops=1)
+                     Sort Key: ((GROUPING(item.i_category) + GROUPING(item.i_class))), (CASE WHEN (GROUPING(item.i_class) = 0) THEN item.i_category ELSE NULL::bpchar END), (sum(web_sales.ws_net_paid)) DESC
+                     Sort Method: quicksort  Memory: 62kB
+                     ->  GroupAggregate  (cost=240773.37..241275.66 rows=1001 width=178) (actual time=706.888..2931.471 rows=173 loops=1)
+                           Group Key: item.i_category, item.i_class
+                           Group Key: item.i_category
+                           Group Key: ()
+                           ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=240773.37..241015.75 rows=32318 width=108) (actual time=688.297..2367.299 rows=1433835 loops=1)
+ Planning time: 0.852 ms
+ Execution time: 2942.344 ms
+(15 rows)
+

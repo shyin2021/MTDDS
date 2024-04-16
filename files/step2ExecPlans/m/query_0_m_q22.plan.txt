@@ -1,0 +1,17 @@
+                                                                                  QUERY PLAN                                                                                   
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1575088.18..1575088.43 rows=100 width=236) (actual time=103318.070..103318.078 rows=100 loops=1)
+   ->  Sort  (cost=1575088.18..1576105.60 rows=406969 width=236) (actual time=103318.069..103318.072 rows=100 loops=1)
+         Sort Key: (avg(inventory.inv_quantity_on_hand)), item.i_product_name, item.i_brand, item.i_class, item.i_category
+         Sort Method: top-N heapsort  Memory: 65kB
+         ->  GroupAggregate  (cost=1542894.20..1559534.12 rows=406969 width=236) (actual time=41384.749..103248.413 rows=271614 loops=1)
+               Group Key: item.i_product_name, item.i_brand, item.i_class, item.i_category
+               Group Key: item.i_product_name, item.i_brand, item.i_class
+               Group Key: item.i_product_name, item.i_brand
+               Group Key: item.i_product_name
+               Group Key: ()
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=1542894.20..1547226.50 rows=577640 width=208) (actual time=41382.804..90470.055 rows=26520000 loops=1)
+ Planning time: 0.345 ms
+ Execution time: 103374.063 ms
+(13 rows)
+

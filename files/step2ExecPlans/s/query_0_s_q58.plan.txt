@@ -1,0 +1,43 @@
+                                                                                                                                                                                                                                                    QUERY PLAN                                                                                                                                                                                                                                                    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=184054.96..184054.96 rows=1 width=292) (actual time=585.331..585.331 rows=0 loops=1)
+   CTE ss_items
+     ->  GroupAggregate  (cost=93584.55..93600.32 rows=631 width=49) (actual time=290.262..295.049 rows=4342 loops=1)
+           Group Key: i_item_id
+           InitPlan 1 (returns $0)
+             ->  Remote Subquery Scan on all (dn1)  (cost=0.00..579.27 rows=1 width=4) (actual time=15.439..15.440 rows=1 loops=1)
+           ->  Remote Subquery Scan on all (dn1)  (cost=93005.27..93010.01 rows=631 width=23) (actual time=290.233..291.847 rows=5993 loops=1)
+   CTE cs_items
+     ->  GroupAggregate  (cost=59492.32..59500.22 rows=316 width=49) (actual time=177.363..180.190 rows=2593 loops=1)
+           Group Key: i_item_id
+           InitPlan 3 (returns $2)
+             ->  Remote Subquery Scan on all (dn1)  (cost=0.00..579.27 rows=1 width=4) (actual time=9.364..9.365 rows=1 loops=1)
+           ->  Remote Subquery Scan on all (dn1)  (cost=58913.04..58915.41 rows=316 width=23) (actual time=177.334..178.309 rows=3123 loops=1)
+   CTE ws_items
+     ->  GroupAggregate  (cost=30914.80..30918.75 rows=158 width=49) (actual time=102.229..106.537 rows=1343 loops=1)
+           Group Key: i_item_id
+           InitPlan 5 (returns $4)
+             ->  Remote Subquery Scan on all (dn1)  (cost=0.00..579.27 rows=1 width=4) (actual time=8.821..8.823 rows=1 loops=1)
+           ->  Remote Subquery Scan on all (dn1)  (cost=30335.52..30336.71 rows=158 width=23) (actual time=102.198..103.199 rows=1459 loops=1)
+   ->  Sort  (cost=35.67..35.67 rows=1 width=292) (actual time=585.331..585.331 rows=0 loops=1)
+         Sort Key: ss_items.item_id, ss_items.ss_item_rev
+         Sort Method: quicksort  Memory: 25kB
+         ->  Hash Join  (cost=20.18..35.66 rows=1 width=292) (actual time=585.326..585.326 rows=0 loops=1)
+               Hash Cond: (ss_items.item_id = cs_items.item_id)
+               Join Filter: ((ss_items.ss_item_rev >= (0.9 * cs_items.cs_item_rev)) AND (ss_items.ss_item_rev <= (1.1 * cs_items.cs_item_rev)) AND (cs_items.cs_item_rev >= (0.9 * ss_items.ss_item_rev)) AND (cs_items.cs_item_rev <= (1.1 * ss_items.ss_item_rev)) AND (ss_items.ss_item_rev >= (0.9 * ws_items.ws_item_rev)) AND (ss_items.ss_item_rev <= (1.1 * ws_items.ws_item_rev)) AND (ws_items.ws_item_rev >= (0.9 * ss_items.ss_item_rev)) AND (ws_items.ws_item_rev <= (1.1 * ss_items.ss_item_rev)))
+               Rows Removed by Join Filter: 6
+               ->  CTE Scan on ss_items  (cost=0.00..12.62 rows=631 width=100) (actual time=290.265..295.765 rows=4342 loops=1)
+               ->  Hash  (cost=20.14..20.14 rows=3 width=200) (actual time=289.216..289.216 rows=14 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                     ->  Hash Join  (cost=5.13..20.14 rows=3 width=200) (actual time=285.851..289.213 rows=14 loops=1)
+                           Hash Cond: (cs_items.item_id = ws_items.item_id)
+                           Join Filter: ((cs_items.cs_item_rev >= (0.9 * ws_items.ws_item_rev)) AND (cs_items.cs_item_rev <= (1.1 * ws_items.ws_item_rev)) AND (ws_items.ws_item_rev >= (0.9 * cs_items.cs_item_rev)) AND (ws_items.ws_item_rev <= (1.1 * cs_items.cs_item_rev)))
+                           Rows Removed by Join Filter: 378
+                           ->  CTE Scan on cs_items  (cost=0.00..6.32 rows=316 width=100) (actual time=177.367..180.652 rows=2593 loops=1)
+                           ->  Hash  (cost=3.16..3.16 rows=158 width=100) (actual time=108.160..108.160 rows=1343 loops=1)
+                                 Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 90kB
+                                 ->  CTE Scan on ws_items  (cost=0.00..3.16 rows=158 width=100) (actual time=102.233..107.563 rows=1343 loops=1)
+ Planning time: 0.955 ms
+ Execution time: 590.834 ms
+(39 rows)
+

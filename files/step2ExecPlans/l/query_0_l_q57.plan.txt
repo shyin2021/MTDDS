@@ -1,0 +1,36 @@
+                                                                                                           QUERY PLAN                                                                                                           
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=5042010.99..5042011.00 rows=1 width=368) (actual time=27460.161..27460.170 rows=100 loops=1)
+   CTE v1
+     ->  WindowAgg  (cost=4547325.04..4705098.55 rows=841740 width=196) (actual time=19712.189..26713.451 rows=196810 loops=1)
+           ->  WindowAgg  (cost=4547325.04..4684055.05 rows=841740 width=188) (actual time=19712.183..26557.215 rows=196810 loops=1)
+                 ->  Finalize GroupAggregate  (cost=4547325.04..4665115.90 rows=841740 width=156) (actual time=19712.097..26368.363 rows=196810 loops=1)
+                       Group Key: i_category, i_brand, cc_name, d_year, d_moy
+                       ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=4547325.04..4642318.77 rows=701450 width=156) (actual time=19711.992..25316.808 rows=1441748 loops=1)
+   CTE v2
+     ->  Merge Join  (cost=299024.12..336912.40 rows=1 width=336) (actual time=27084.824..27269.399 rows=154050 loops=1)
+           Merge Cond: ((v1.i_category = v1_lead.i_category) AND (v1.i_brand = v1_lead.i_brand) AND ((v1.cc_name)::text = (v1_lead.cc_name)::text) AND (v1.rn = ((v1_lead.rn - 1))))
+           ->  Merge Join  (cost=199349.41..224606.04 rows=443 width=1168) (actual time=26988.987..27091.808 rows=166890 loops=1)
+                 Merge Cond: ((v1.i_category = v1_lag.i_category) AND (v1.i_brand = v1_lag.i_brand) AND ((v1.cc_name)::text = (v1_lag.cc_name)::text) AND (v1.rn = ((v1_lag.rn + 1))))
+                 ->  Sort  (cost=99674.71..101779.06 rows=841740 width=602) (actual time=26893.298..26900.708 rows=182100 loops=1)
+                       Sort Key: v1.i_category, v1.i_brand, v1.cc_name, v1.rn
+                       Sort Method: quicksort  Memory: 56337kB
+                       ->  CTE Scan on v1  (cost=0.00..16834.80 rows=841740 width=602) (actual time=19712.194..26802.415 rows=196810 loops=1)
+                 ->  Sort  (cost=99674.71..101779.06 rows=841740 width=566) (actual time=95.681..102.342 rows=182099 loops=1)
+                       Sort Key: v1_lag.i_category, v1_lag.i_brand, v1_lag.cc_name, ((v1_lag.rn + 1))
+                       Sort Method: quicksort  Memory: 56334kB
+                       ->  CTE Scan on v1 v1_lag  (cost=0.00..16834.80 rows=841740 width=566) (actual time=0.001..23.266 rows=196810 loops=1)
+           ->  Sort  (cost=99674.71..101779.06 rows=841740 width=566) (actual time=95.829..102.306 rows=182311 loops=1)
+                 Sort Key: v1_lead.i_category, v1_lead.i_brand, v1_lead.cc_name, ((v1_lead.rn - 1))
+                 Sort Method: quicksort  Memory: 56334kB
+                 ->  CTE Scan on v1 v1_lead  (cost=0.00..16834.80 rows=841740 width=566) (actual time=0.001..23.062 rows=196810 loops=1)
+   ->  Sort  (cost=0.05..0.06 rows=1 width=368) (actual time=27460.159..27460.163 rows=100 loops=1)
+         Sort Key: ((v2.sum_sales - v2.avg_monthly_sales)), v2.nsum
+         Sort Method: top-N heapsort  Memory: 48kB
+         ->  CTE Scan on v2  (cost=0.00..0.04 rows=1 width=368) (actual time=27084.832..27425.408 rows=150422 loops=1)
+               Filter: ((avg_monthly_sales > '0'::numeric) AND (d_year = 1999) AND (CASE WHEN (avg_monthly_sales > '0'::numeric) THEN (abs((sum_sales - avg_monthly_sales)) / avg_monthly_sales) ELSE NULL::numeric END > 0.1))
+               Rows Removed by Filter: 3628
+ Planning time: 0.727 ms
+ Execution time: 27528.606 ms
+(32 rows)
+

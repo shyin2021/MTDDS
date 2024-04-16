@@ -1,0 +1,13 @@
+                                                                                           QUERY PLAN                                                                                           
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=11481444.25..11481444.50 rows=100 width=147) (actual time=1561216.767..1561216.775 rows=100 loops=1)
+   ->  Sort  (cost=11481444.25..11481445.86 rows=643 width=147) (actual time=1561216.766..1561216.769 rows=100 loops=1)
+         Sort Key: (count(*)) DESC, item.i_item_desc, warehouse.w_warehouse_name, d1.d_week_seq
+         Sort Method: top-N heapsort  Memory: 35kB
+         ->  Finalize GroupAggregate  (cost=11481333.29..11481419.67 rows=643 width=147) (actual time=1559884.971..1561098.742 rows=603583 loops=1)
+               Group Key: item.i_item_desc, warehouse.w_warehouse_name, d1.d_week_seq
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=11481333.29..11481405.20 rows=536 width=147) (actual time=1559884.950..1560893.055 rows=604780 loops=1)
+ Planning time: 17.347 ms
+ Execution time: 1562361.973 ms
+(9 rows)
+

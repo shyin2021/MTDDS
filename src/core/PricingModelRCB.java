@@ -5,11 +5,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+// This is an instantiation of the RCB pricing model. It can be modified or extended according to the provider's exact strategy.
 public class PricingModelRCB {
 	public static void generateBills() throws SQLException {
-		//
+		// Empty the Price_per_query relation
 		String deleteBills = "DELETE FROM Price_per_query";
-		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, scaleFactor*(SELECT price FROM RSPrices WHERE resourceType='VM')*executionTime*1.0/3600"
+		// compute the price for each query
+		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, nbNodes*(SELECT price FROM RSPrices WHERE resourceType='VM')*executionTime*1.0/3600"
 				+ " FROM FormatedTraces FT, tenants TN, DBSizesSF DS, PerfSLOs_per_Tenant PPT WHERE FT.tenantName=TN.tenantId AND TN.DBSize=DS.DBSize AND FT.queryName=PPT.queryId AND PPT.tenantId=TN.TenantID";
 		Statement stm = null;
 		Connection conn = null;

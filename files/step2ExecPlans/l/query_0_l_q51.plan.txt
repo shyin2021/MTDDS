@@ -1,0 +1,30 @@
+                                                                                        QUERY PLAN                                                                                        
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=10884213.79..10884224.29 rows=100 width=136) (actual time=143480.113..143487.460 rows=100 loops=1)
+   CTE web_v1
+     ->  WindowAgg  (cost=2268770.41..2317496.47 rows=327250 width=40) (actual time=2098.518..33119.766 rows=11416114 loops=1)
+           ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=2268770.41..2311769.60 rows=327250 width=40) (actual time=2098.496..26286.163 rows=11416114 loops=1)
+   CTE store_v1
+     ->  WindowAgg  (cost=6736014.10..6930898.29 rows=1308864 width=40) (actual time=7549.270..86712.203 rows=26285493 loops=1)
+           ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=6736014.10..6907993.17 rows=1308864 width=40) (actual time=7549.237..70377.287 rows=26285493 loops=1)
+   ->  Subquery Scan on y  (cost=1635819.03..2010604.07 rows=3569381 width=136) (actual time=143480.112..143487.452 rows=100 loops=1)
+         Filter: (y.web_cumulative > y.store_cumulative)
+         Rows Removed by Filter: 13767
+         ->  WindowAgg  (cost=1635819.03..1876752.27 rows=10708144 width=136) (actual time=143480.105..143486.673 rows=13867 loops=1)
+               ->  Sort  (cost=1635819.03..1662589.39 rows=10708144 width=72) (actual time=143480.094..143480.544 rows=13868 loops=1)
+                     Sort Key: (CASE WHEN (web.item_sk IS NOT NULL) THEN web.item_sk ELSE store.item_sk END), (CASE WHEN (web.d_date IS NOT NULL) THEN web.d_date ELSE store.d_date END)
+                     Sort Method: quicksort  Memory: 2608047kB
+                     ->  Merge Full Join  (cost=195678.26..385525.15 rows=10708144 width=72) (actual time=133774.510..139881.171 rows=28840055 loops=1)
+                           Merge Cond: ((web.item_sk = store.item_sk) AND (web.d_date = store.d_date))
+                           ->  Sort  (cost=36521.16..37339.28 rows=327250 width=40) (actual time=37161.513..37511.365 rows=11416114 loops=1)
+                                 Sort Key: web.item_sk, web.d_date
+                                 Sort Method: quicksort  Memory: 928352kB
+                                 ->  CTE Scan on web_v1 web  (cost=0.00..6545.00 rows=327250 width=40) (actual time=2098.521..35819.914 rows=11416114 loops=1)
+                           ->  Sort  (cost=159157.10..162429.26 rows=1308864 width=40) (actual time=96612.992..97401.373 rows=26285493 loops=1)
+                                 Sort Key: store.item_sk, store.d_date
+                                 Sort Method: quicksort  Memory: 2330917kB
+                                 ->  CTE Scan on store_v1 store  (cost=0.00..26177.28 rows=1308864 width=40) (actual time=7549.272..93205.000 rows=26285493 loops=1)
+ Planning time: 1.134 ms
+ Execution time: 143953.031 ms
+(26 rows)
+

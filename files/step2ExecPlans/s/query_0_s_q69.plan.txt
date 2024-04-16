@@ -1,0 +1,25 @@
+                                                                                                           QUERY PLAN                                                                                                            
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=93523.78..93527.03 rows=100 width=64) (actual time=1785.476..1785.512 rows=100 loops=1)
+   ->  GroupAggregate  (cost=93523.78..93535.51 rows=361 width=64) (actual time=1785.476..1785.506 rows=100 loops=1)
+         Group Key: customer_demographics.cd_gender, customer_demographics.cd_marital_status, customer_demographics.cd_education_status, customer_demographics.cd_purchase_estimate, customer_demographics.cd_credit_rating
+         ->  Sort  (cost=93523.78..93524.68 rows=361 width=40) (actual time=1785.473..1785.476 rows=109 loops=1)
+               Sort Key: customer_demographics.cd_gender, customer_demographics.cd_marital_status, customer_demographics.cd_education_status, customer_demographics.cd_purchase_estimate, customer_demographics.cd_credit_rating
+               Sort Method: quicksort  Memory: 81kB
+               ->  Hash Anti Join  (cost=91375.62..93508.45 rows=361 width=40) (actual time=442.426..1784.343 rows=719 loops=1)
+                     Hash Cond: (c.c_customer_sk = catalog_sales.cs_ship_customer_sk)
+                     ->  Nested Loop  (cost=90291.31..92419.01 rows=388 width=44) (actual time=411.610..1753.282 rows=760 loops=1)
+                           ->  Nested Loop  (cost=90291.14..92225.77 rows=388 width=8) (actual time=411.518..1719.890 rows=789 loops=1)
+                                 ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=90390.98..91696.92 rows=3350 width=12) (actual time=368.989..522.359 rows=6901 loops=1)
+                                 ->  Materialize  (cost=100.16..100.21 rows=1 width=4) (actual time=0.173..0.173 rows=0 loops=6901)
+                                       ->  Remote Subquery Scan on all (dn1)  (cost=100.16..100.20 rows=1 width=4) (actual time=0.173..0.173 rows=0 loops=6901)
+                           ->  Materialize  (cost=100.17..100.54 rows=1 width=44) (actual time=0.041..0.041 rows=1 loops=789)
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=100.17..100.54 rows=1 width=44) (actual time=0.041..0.041 rows=1 loops=789)
+                     ->  Hash  (cost=1178.23..1178.23 rows=1737 width=4) (actual time=30.805..30.805 rows=40490 loops=1)
+                           Buckets: 65536 (originally 2048)  Batches: 1 (originally 1)  Memory Usage: 1936kB
+                           ->  Remote Subquery Scan on all (dn1)  (cost=100.34..1178.23 rows=1737 width=4) (actual time=0.424..19.040 rows=40592 loops=1)
+ Planning time: 0.982 ms
+ Execution time: 1790.359 ms
+(20 rows)
+
+SET

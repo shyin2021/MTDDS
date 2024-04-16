@@ -1,0 +1,22 @@
+                                                                          QUERY PLAN                                                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1169939.12..1169939.13 rows=1 width=24) (actual time=15408.618..15408.618 rows=1 loops=1)
+   CTE ssci
+     ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=672745.95..686087.29 rows=128927 width=8) (actual time=1162.067..7575.812 rows=5394984 loops=1)
+   CTE csci
+     ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=451541.02..458212.18 rows=64469 width=8) (actual time=627.582..3914.907 rows=2851885 loops=1)
+   ->  Aggregate  (cost=25639.65..25639.66 rows=1 width=24) (actual time=15408.616..15408.616 rows=1 loops=1)
+         ->  Merge Full Join  (cost=19961.26..24081.19 rows=207795 width=8) (actual time=13627.029..14704.602 rows=8246305 loops=1)
+               Merge Cond: ((csci.customer_sk = ssci.customer_sk) AND (csci.item_sk = ssci.item_sk))
+               ->  Sort  (cost=6439.27..6600.44 rows=64469 width=8) (actual time=4638.316..4725.080 rows=2851885 loops=1)
+                     Sort Key: csci.customer_sk, csci.item_sk
+                     Sort Method: quicksort  Memory: 231987kB
+                     ->  CTE Scan on csci  (cost=0.00..1289.38 rows=64469 width=8) (actual time=627.585..4319.664 rows=2851885 loops=1)
+               ->  Sort  (cost=13521.99..13844.31 rows=128927 width=8) (actual time=8988.708..9151.653 rows=5394984 loops=1)
+                     Sort Key: ssci.customer_sk, ssci.item_sk
+                     Sort Method: quicksort  Memory: 449498kB
+                     ->  CTE Scan on ssci  (cost=0.00..2578.54 rows=128927 width=8) (actual time=1162.069..8352.713 rows=5394984 loops=1)
+ Planning time: 1.168 ms
+ Execution time: 15495.761 ms
+(18 rows)
+

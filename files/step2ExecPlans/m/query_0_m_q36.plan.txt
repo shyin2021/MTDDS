@@ -1,0 +1,19 @@
+                                                                                                                     QUERY PLAN                                                                                                                      
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=706407.80..706408.05 rows=100 width=210) (actual time=11917.481..11917.489 rows=100 loops=1)
+   ->  Sort  (cost=706407.80..706410.30 rows=1001 width=210) (actual time=11917.479..11917.482 rows=100 loops=1)
+         Sort Key: ((GROUPING(item.i_category) + GROUPING(item.i_class))) DESC, (CASE WHEN (((GROUPING(item.i_category) + GROUPING(item.i_class))) = 0) THEN item.i_category ELSE NULL::bpchar END), (rank() OVER (?))
+         Sort Method: quicksort  Memory: 62kB
+         ->  WindowAgg  (cost=706334.50..706369.54 rows=1001 width=210) (actual time=11917.144..11917.237 rows=167 loops=1)
+               ->  Sort  (cost=706334.50..706337.01 rows=1001 width=178) (actual time=11917.138..11917.144 rows=167 loops=1)
+                     Sort Key: ((GROUPING(item.i_category) + GROUPING(item.i_class))), (CASE WHEN (GROUPING(item.i_class) = 0) THEN item.i_category ELSE NULL::bpchar END), ((sum(store_sales.ss_net_profit) / sum(store_sales.ss_ext_sales_price)))
+                     Sort Method: quicksort  Memory: 62kB
+                     ->  GroupAggregate  (cost=703842.44..706284.62 rows=1001 width=178) (actual time=2937.445..11916.857 rows=167 loops=1)
+                           Group Key: item.i_category, item.i_class
+                           Group Key: item.i_category
+                           Group Key: ()
+                           ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=703842.44..704879.44 rows=138266 width=114) (actual time=2875.685..9318.748 rows=5314372 loops=1)
+ Planning time: 0.442 ms
+ Execution time: 11934.428 ms
+(15 rows)
+

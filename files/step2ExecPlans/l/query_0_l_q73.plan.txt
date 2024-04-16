@@ -1,0 +1,21 @@
+                                                                                             QUERY PLAN                                                                                             
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=6783441.36..6783460.79 rows=7769 width=77) (actual time=5471.602..5471.605 rows=129 loops=1)
+   Sort Key: dj.cnt DESC, c_last_name
+   Sort Method: quicksort  Memory: 42kB
+   ->  Merge Join  (cost=6686453.18..6782939.35 rows=7769 width=77) (actual time=3652.698..5471.378 rows=129 loops=1)
+         Merge Cond: (c_customer_sk = dj.ss_customer_sk)
+         ->  Remote Subquery Scan on all (dn4)  (cost=100.18..239465.38 rows=1999938 width=69) (actual time=0.751..704.936 rows=1997408 loops=1)
+         ->  Sort  (cost=6686453.00..6686472.42 rows=7769 width=16) (actual time=3650.367..3650.384 rows=130 loops=1)
+               Sort Key: dj.ss_customer_sk
+               Sort Method: quicksort  Memory: 226kB
+               ->  Subquery Scan on dj  (cost=6684870.31..6685950.99 rows=7769 width=16) (actual time=3325.127..3649.932 rows=2667 loops=1)
+                     ->  Finalize GroupAggregate  (cost=6684870.31..6685873.30 rows=7769 width=16) (actual time=3325.126..3649.652 rows=2667 loops=1)
+                           Group Key: ss_ticket_number, ss_customer_sk
+                           Filter: ((count(*) >= 1) AND (count(*) <= 5))
+                           Rows Removed by Filter: 39516
+                           ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=6684870.31..6685714.68 rows=6474 width=16) (actual time=3325.010..3612.204 rows=242617 loops=1)
+ Planning time: 1.822 ms
+ Execution time: 5479.428 ms
+(17 rows)
+

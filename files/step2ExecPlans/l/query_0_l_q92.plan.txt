@@ -1,0 +1,12 @@
+                                                                                   QUERY PLAN                                                                                   
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2283940.31..2283940.31 rows=1 width=32) (actual time=6351.286..6351.287 rows=1 loops=1)
+   ->  Sort  (cost=2283940.31..2283940.31 rows=1 width=32) (actual time=6351.285..6351.285 rows=1 loops=1)
+         Sort Key: (sum(web_sales.ws_ext_discount_amt))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Aggregate  (cost=2283940.29..2283940.30 rows=1 width=32) (actual time=6351.275..6351.276 rows=1 loops=1)
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=17812.40..2283940.22 rows=26 width=6) (actual time=4667.324..6350.431 rows=974 loops=1)
+ Planning time: 0.430 ms
+ Execution time: 6358.491 ms
+(8 rows)
+

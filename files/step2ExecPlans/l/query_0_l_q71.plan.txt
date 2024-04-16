@@ -1,0 +1,12 @@
+                                                                                     QUERY PLAN                                                                                     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=13476939.61..13476942.17 rows=1025 width=95) (actual time=6667.617..6673.172 rows=61996 loops=1)
+   Sort Key: (sum(tmp.ext_price)) DESC, item.i_brand_id
+   Sort Method: quicksort  Memory: 10246kB
+   ->  GroupAggregate  (cost=13476855.04..13476888.35 rows=1025 width=95) (actual time=6407.108..6643.397 rows=61996 loops=1)
+         Group Key: item.i_brand, item.i_brand_id, time_dim.t_hour, time_dim.t_minute
+         ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=13476855.04..13476862.72 rows=1025 width=69) (actual time=6407.086..6597.099 rows=114534 loops=1)
+ Planning time: 1.392 ms
+ Execution time: 6681.404 ms
+(8 rows)
+

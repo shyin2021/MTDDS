@@ -1,0 +1,31 @@
+                                                                                   QUERY PLAN                                                                                   
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=8108810.06..8108810.09 rows=1 width=358) (actual time=7372.927..7372.929 rows=2 loops=1)
+   Group Key: ssales.c_last_name, ssales.c_first_name, ssales.s_store_name
+   Filter: (sum(ssales.netpaid) > $2)
+   Rows Removed by Filter: 2
+   CTE ssales
+     ->  GroupAggregate  (cost=8108809.94..8108809.99 rows=1 width=157) (actual time=7363.476..7371.119 rows=2135 loops=1)
+           Group Key: c_last_name, c_first_name, s_store_name, ca_state, s_state, i_color, i_current_price, i_manager_id, i_units, i_size
+           ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=8108809.94..8108809.95 rows=1 width=131) (actual time=7363.451..7369.375 rows=2135 loops=1)
+   InitPlan 2 (returns $2)
+     ->  Aggregate  (cost=0.02..0.04 rows=1 width=32) (actual time=0.384..0.384 rows=1 loops=1)
+           ->  CTE Scan on ssales ssales_1  (cost=0.00..0.02 rows=1 width=32) (actual time=0.000..0.123 rows=2135 loops=1)
+   ->  Sort  (cost=0.03..0.04 rows=1 width=358) (actual time=7372.537..7372.538 rows=4 loops=1)
+         Sort Key: ssales.c_last_name, ssales.c_first_name, ssales.s_store_name
+         Sort Method: quicksort  Memory: 25kB
+         ->  CTE Scan on ssales  (cost=0.00..0.02 rows=1 width=358) (actual time=7366.333..7372.525 rows=4 loops=1)
+               Filter: (i_color = 'beige'::bpchar)
+               Rows Removed by Filter: 2131
+ Planning time: 2.099 ms
+ Execution time: 7412.351 ms
+(19 rows)
+
+          c_last_name           |     c_first_name     | s_store_name |  paid  
+--------------------------------+----------------------+--------------+--------
+ Collins                        | Mabel                | cally        | -40.54
+ Hatch                          | Samuel               | cally        |  54.36
+ Hoover                         | Sharon               | cally        | 141.48
+ Smith                          | Laura                | ese          | 903.70
+(4 rows)
+

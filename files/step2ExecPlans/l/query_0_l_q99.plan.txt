@@ -1,0 +1,10 @@
+                                                                                        QUERY PLAN                                                                                        
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=4520466.87..4521784.90 rows=100 width=117) (actual time=7688.549..7754.665 rows=100 loops=1)
+   ->  Finalize GroupAggregate  (cost=4520466.87..4537074.05 rows=1260 width=117) (actual time=7688.547..7754.642 rows=100 loops=1)
+         Group Key: substr((warehouse.w_warehouse_name)::text, 1, 20), ship_mode.sm_type, call_center.cc_name
+         ->  Remote Subquery Scan on all (dn1,dn10,dn2,dn3,dn4,dn5,dn6,dn7,dn8,dn9)  (cost=4520466.87..4537007.90 rows=2520 width=117) (actual time=7688.482..7753.713 rows=1001 loops=1)
+ Planning time: 0.735 ms
+ Execution time: 8512.391 ms
+(6 rows)
+

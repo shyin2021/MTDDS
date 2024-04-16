@@ -1,0 +1,13 @@
+                                                                       QUERY PLAN                                                                        
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=29330.91..29330.91 rows=1 width=72) (actual time=221.527..221.528 rows=1 loops=1)
+   ->  Sort  (cost=29330.91..29330.91 rows=1 width=72) (actual time=221.526..221.527 rows=1 loops=1)
+         Sort Key: (count(DISTINCT ws1.ws_order_number))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Aggregate  (cost=29330.89..29330.90 rows=1 width=72) (actual time=221.519..221.519 rows=1 loops=1)
+               ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=838.66..29330.88 rows=1 width=16) (actual time=191.212..221.446 rows=11 loops=1)
+ Planning time: 1.917 ms
+ Execution time: 226.241 ms
+(8 rows)
+
+SET

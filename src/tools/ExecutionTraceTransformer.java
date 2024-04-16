@@ -261,7 +261,7 @@ public class ExecutionTraceTransformer {
 	
 	public static void transformAllTraces(int SUTNumber, String inputDir, int NbTraces, String outputDir) throws SQLException {
 		for(int i=1; i<=NbTraces; i++) {
-			transformTraces(inputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+".csv", outputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+"_formated.csv", SUTNumber, 5, i);
+			transformTraces(inputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+".csv", outputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+"_formated.csv", SUTNumber, 11, i);
 		}
 	}
 	

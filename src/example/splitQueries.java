@@ -24,9 +24,12 @@ public class splitQueries{
 						queryWriter.close();
 					}
 					queryWriter = new FileWriter(output_path+"\\"+data[3]+".sql");
+					queriesReader.readLine(); //skip the next line
 				}// copy the line into the output file
-				queryWriter.append(row);
-				queryWriter.append("\n");
+				if(queryWriter != null){	
+					queryWriter.append(row);
+					queryWriter.append("\n");
+				}	
 			}
 			queryWriter.flush();
 			queryWriter.close();

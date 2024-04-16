@@ -1,0 +1,12 @@
+                                                                                       QUERY PLAN                                                                                        
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=6694042.10..6694042.10 rows=1 width=8) (actual time=2917.378..2917.379 rows=1 loops=1)
+   ->  Sort  (cost=6694042.10..6694042.10 rows=1 width=8) (actual time=2917.376..2917.377 rows=1 loops=1)
+         Sort Key: (count(*))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Finalize Aggregate  (cost=6694042.08..6694042.09 rows=1 width=8) (actual time=2917.352..2917.352 rows=1 loops=1)
+               ->  Remote Subquery Scan on all (dn1,dn10,dn2,dn3,dn4,dn5,dn6,dn7,dn8,dn9)  (cost=6694041.85..6694042.07 rows=2 width=8) (actual time=2869.050..2917.319 rows=10 loops=1)
+ Planning time: 0.293 ms
+ Execution time: 2924.894 ms
+(8 rows)
+

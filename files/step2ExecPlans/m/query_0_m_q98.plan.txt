@@ -1,0 +1,16 @@
+                                                                                           QUERY PLAN                                                                                            
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=680820.79..680828.74 rows=3178 width=290) (actual time=889.635..890.263 rows=15078 loops=1)
+   Sort Key: item.i_category, item.i_class, item.i_item_id, item.i_item_desc, ((((sum(store_sales.ss_ext_sales_price)) * '100'::numeric) / sum((sum(store_sales.ss_ext_sales_price))) OVER (?)))
+   Sort Method: quicksort  Memory: 6412kB
+   ->  WindowAgg  (cost=680564.42..680635.93 rows=3178 width=290) (actual time=823.539..837.701 rows=15078 loops=1)
+         ->  Sort  (cost=680564.42..680572.37 rows=3178 width=258) (actual time=823.403..824.397 rows=15078 loops=1)
+               Sort Key: item.i_class
+               Sort Method: quicksort  Memory: 6163kB
+               ->  Finalize GroupAggregate  (cost=679934.89..680379.56 rows=3178 width=258) (actual time=765.754..815.029 rows=15078 loops=1)
+                     Group Key: item.i_item_id, item.i_item_desc, item.i_category, item.i_class, item.i_current_price
+                     ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4)  (cost=679934.89..680293.50 rows=2648 width=258) (actual time=765.729..802.904 rows=15078 loops=1)
+ Planning time: 0.354 ms
+ Execution time: 894.508 ms
+(12 rows)
+

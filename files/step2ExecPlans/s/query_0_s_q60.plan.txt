@@ -1,0 +1,28 @@
+                                                                  QUERY PLAN                                                                  
+----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=138812.99..138813.24 rows=100 width=100) (actual time=587.595..587.602 rows=100 loops=1)
+   CTE ss
+     ->  GroupAggregate  (cost=68339.99..68341.94 rows=78 width=49) (actual time=291.102..297.428 rows=1494 loops=1)
+           Group Key: i_item_id
+           ->  Remote Subquery Scan on all (dn1)  (cost=68339.99..68340.57 rows=78 width=23) (actual time=291.067..292.920 rows=3941 loops=1)
+   CTE cs
+     ->  GroupAggregate  (cost=46454.94..46455.92 rows=39 width=49) (actual time=175.129..180.440 rows=1135 loops=1)
+           Group Key: i_item_id
+           ->  Remote Subquery Scan on all (dn1)  (cost=46454.94..46455.23 rows=39 width=23) (actual time=175.100..176.626 rows=2032 loops=1)
+   CTE ws
+     ->  GroupAggregate  (cost=24004.74..24005.21 rows=19 width=49) (actual time=97.064..100.045 rows=782 loops=1)
+           Group Key: i_item_id
+           ->  Remote Subquery Scan on all (dn1)  (cost=24004.74..24004.88 rows=19 width=23) (actual time=97.031..97.775 rows=1104 loops=1)
+   ->  Sort  (cost=9.92..10.26 rows=136 width=100) (actual time=587.593..587.596 rows=100 loops=1)
+         Sort Key: ss.i_item_id, (sum(ss.total_sales))
+         Sort Method: top-N heapsort  Memory: 38kB
+         ->  HashAggregate  (cost=3.40..5.10 rows=136 width=100) (actual time=583.140..584.099 rows=1610 loops=1)
+               Group Key: ss.i_item_id
+               ->  Append  (cost=0.00..2.72 rows=136 width=100) (actual time=291.106..580.213 rows=3411 loops=1)
+                     ->  CTE Scan on ss  (cost=0.00..1.56 rows=78 width=100) (actual time=291.106..298.079 rows=1494 loops=1)
+                     ->  CTE Scan on cs  (cost=0.00..0.78 rows=39 width=100) (actual time=175.131..181.162 rows=1135 loops=1)
+                     ->  CTE Scan on ws  (cost=0.00..0.38 rows=19 width=100) (actual time=97.067..100.527 rows=782 loops=1)
+ Planning time: 1.799 ms
+ Execution time: 591.422 ms
+(24 rows)
+

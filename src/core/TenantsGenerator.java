@@ -1,5 +1,7 @@
 package core;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -8,8 +10,9 @@ import java.util.Random;
 public class TenantsGenerator {
 
 	private static final DecimalFormat df = new DecimalFormat("0.00");
+	private static int TnInterArv;
 	
-	public static void generateTenants(int NbTenants, String outputfile)
+	public static void generateTenants(int NbTenants, String TnInterArvFile, String outputfile)
 	{
 		FileWriter csvWriter;
 		// generate the arrival time of each tenant
@@ -21,6 +24,22 @@ public class TenantsGenerator {
 		int lambda_t = 1; // the parameter lambda for tenant arrivals
 		double z_pre = 0;
 		double z = 0;
+		
+		BufferedReader TnInterArvReader;
+		
+		try {
+			TnInterArvReader = new BufferedReader(new FileReader(TnInterArvFile)); // TnInterArv
+						
+			//skip the file header
+			String row = TnInterArvReader.readLine();
+			if ((row = TnInterArvReader.readLine()) != null) {
+				String[] data = row.split(";");
+				TnInterArv = Integer.parseInt(data[0]);
+			}
+			TnInterArvReader.close();
+		} catch (IOException ie) {
+			System.out.println(ie);
+		}
 		
 		try {
 			csvWriter = new FileWriter(outputfile);
@@ -49,7 +68,7 @@ public class TenantsGenerator {
 			//generate the tenants
 			Random randGen = new Random(8069); // put a seed for the reproducibility
 			for(int i=1; i<=NbTenants;i++) {		
-				double at = z*3; // 1 tenant per 3 time units in average
+				double at = z*TnInterArv; // 1 tenant per TnInterArv time units in average
 				int nq = (int)(randGen.nextDouble(1)*91) + 10; // number of queries between 10 and 100
 				int lambda = (int)(randGen.nextDouble(1)*10)+1; // lambda between 1 and 10		
 				int ir = (int)(randGen.nextDouble(1)*50)+1; // idle ratio<=50			
@@ -166,7 +185,7 @@ public class TenantsGenerator {
 	{
 		// args[0]: number of tenants
 		// args[1]: outputfile (directory + file name)
-		TenantsGenerator.generateTenants(Integer.parseInt(args[0]), args[1]);
+		TenantsGenerator.generateTenants(Integer.parseInt(args[0]), args[1], args[2]);
 		System.out.println(args[0] + " tenants generated.");
 	}
 }
