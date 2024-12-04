@@ -59,7 +59,7 @@ public class Reproduce {
 		example.RewriteQueries_1_6_10_30_35_81.rewrite("files\\step1QueriesWithExplain\\m", "query_0_m_nl_enabled.sql", "query_0_m_pgxl.sql");
 		example.RewriteQueries_1_6_10_30_35_81.rewrite("files\\step1QueriesWithExplain\\s", "query_0_s_nl_enabled.sql", "query_0_s_pgxl.sql");
 		
-		/*** Step2 - Databases Load ***/
+		/*** Step2 - Performance SLO generation ***/
 		System.out.println("\n====== Step 2 - Performance SLO generation ======");
 		
 		/* We loaded the three databases by using the scripts in the folder step2Scripts_PostgresXL. */
@@ -70,18 +70,24 @@ public class Reproduce {
 		// These files (in the folder step2ExecPlans) are then read by the ExecTimeExtractor to extract the execution times.
 		// Input: a folder with files containing the execution plan and execution time of each query
 		// Output: a single csv file with execution time of each query 
-		example.ExecTimeExtractor.extractExecTime("files\\step2ExecPlans\\l", "files\\step2ExecTimes\\ExecTime_100.csv");
-		example.ExecTimeExtractor.extractExecTime("files\\step2ExecPlans\\m", "files\\step2ExecTimes\\ExecTime_10.csv");
-		example.ExecTimeExtractor.extractExecTime("files\\step2ExecPlans\\s", "files\\step2ExecTimes\\ExecTime_1.csv");
+		//example.ExecTimeExtractor.extractExecTime("files\\step2ExecPlans\\l", "files\\step2ExecTimes\\SUT1\\ExecTime_100.csv");
+		//example.ExecTimeExtractor.extractExecTime("files\\step2ExecPlans\\m", "files\\step2ExecTimes\\SUT1\\ExecTime_10.csv");
+		//example.ExecTimeExtractor.extractExecTime("files\\step2ExecPlans\\s", "files\\step2ExecTimes\\SUT1\\ExecTime_1.csv");
+		example.ExecTimeExtractor2.extractExecTime("files\\step2ExecPlans\\l", "files\\step2ExecTimes\\SUT1_2\\ExecTime_100.csv");
+		example.ExecTimeExtractor2.extractExecTime("files\\step2ExecPlans\\m", "files\\step2ExecTimes\\SUT1_2\\ExecTime_10.csv");
+		example.ExecTimeExtractor2.extractExecTime("files\\step2ExecPlans\\s", "files\\step2ExecTimes\\SUT1_2\\ExecTime_1.csv");
 		System.out.println("[REPRODUCE] Execution times extracted.");
 		
 		// Input 1: directory(execTimeDir) with execTime_*.csv (queryId, execTime) for the three scale factors, for example, execTime_10.csv for scale factor 10 
 		// Input 2: query_types.csv (queryId, type)
 		// Output: perfSLOs.csv (queryId, scaleFactor, expectedQCT, perfSLO_premium, perfSLO_standard, perfSLO_basic)
-		core.PerfSLOGenerator.generatePerfSLO("files\\step2ExecTimes", "files\\benchmarkInputFiles\\query_types.csv", "files\\benchmarkInputFiles\\PriorityTRT.csv", "files\\step2PerfSLOs\\perfSLOs.csv");
+		core.PerfSLOGenerator.generatePerfSLO("files\\step2ExecTimes\\SUT1_2", "files\\benchmarkInputFiles\\query_types.csv", "files\\benchmarkInputFiles\\PriorityTRT.csv", "files\\step2PerfSLOs\\perfSLOs_SUT1.csv");
+		core.PerfSLOGenerator.generatePerfSLO("files\\step2ExecTimes\\SUT1_2", "files\\benchmarkInputFiles\\query_types.csv", "files\\benchmarkInputFiles\\PriorityTRT.csv", "files\\step2PerfSLOs\\perfSLOs_SUT2.csv");
+		core.PerfSLOGenerator.generatePerfSLO("files\\step2ExecTimes\\SUT3_4", "files\\benchmarkInputFiles\\query_types.csv", "files\\benchmarkInputFiles\\PriorityTRT.csv", "files\\step2PerfSLOs\\perfSLOs_SUT3.csv");
+		core.PerfSLOGenerator.generatePerfSLO("files\\step2ExecTimes\\SUT3_4", "files\\benchmarkInputFiles\\query_types.csv", "files\\benchmarkInputFiles\\PriorityTRT.csv", "files\\step2PerfSLOs\\perfSLOs_SUT4.csv");
 		System.out.println("[REPRODUCE] Performance SLOs generated.");
 		
-		/*** Step 5 - Multi-tenant query workload generation ***/
+		/*** Step 3 - Multi-tenant query workload generation ***/
 		System.out.println("\n====== Step 3 - Multi-tenant query workload generation ======");
 		
 		// Generate 6 tenants
@@ -104,7 +110,7 @@ public class Reproduce {
 		example.splitQueries.splitQ("files\\step1QueriesWithExplain\\s\\query_0_s_pgxl.sql", "files\\step3IndividualQueries\\s");
 		System.out.println("[REPRODUCE] Individual queries are extracted into separate files.");
 		
-		/*** Step 6 - Multi-tenant query workload tests ***/
+		/*** Step 4 - Multi-tenant query workload tests ***/
 		System.out.println("\n====== Step 4 - Multi-tenant query workload tests ======");
 		
 		// Use templates to generate scripts for creating the 6 tenants, their databases and loading the data
@@ -117,11 +123,11 @@ public class Reproduce {
 		// In our experiments, during theMulti-tenant query workload Tests, we run the driver programs which send queries to the SUTs.
 		System.out.println("### We ran the driver program (in the folder step4Drivers_PostgresXL) on each SUT.");
 		
-		/*** Step 7 - PO_Metric 1 and PO_Metric 2 measurement ***/
+		/*** Step 5 - PO_Metric 1 and PO_Metric 2 measurement ***/
 		System.out.println("\n====== Step 5 - PO_Metric 1 and PO_Metric 2 measurement ======");
 		System.out.println("### In the benchmark we can choose to run Step 5 or Step 6, or both. In our experiment, we ran only Step 6.");
 		
-		/*** Step 8 - PO_Metric 1 Bis and PO_Metric 2 Bis measurement ***/
+		/*** Step 6 - PO_Metric 1 Bis and PO_Metric 2 Bis measurement ***/
 		System.out.println("\n====== Step 6 - PO_Metric 1 Bis and PO_Metric 2 Bis measurement ======");
 		System.out.println("### We ran the driver program for each Arrival Rate Factor (ARF) and copied the execution traces into the folder step6ExecTraces.");
 		
@@ -136,11 +142,12 @@ public class Reproduce {
 		// Input: Execution traces with Format1 (TenantName, QueryNumber, ThreadName, Event, TimeStamp)
 		// Output: Execution traces with Format2 (SUTNumber, clusterSize, arrivalRateFactor, TenantName, QueryNumber, ThreadName, LaunchTime, StartTime, FinishTime);
 		System.out.println("[REPRODUCE] Transform the execution traces from Format1 to Format2...");
-		tools.ExecutionTraceTransformer.transformAllTraces(1, "files\\step6ExecTraces\\SUT1", 15, "files\\step6FormatedTraces\\SUT1");
-		tools.ExecutionTraceTransformer.transformAllTraces(2, "files\\step6ExecTraces\\SUT2", 15, "files\\step6FormatedTraces\\SUT2");
+		tools.ExecutionTraceTransformer.transformAllTraces(1, "files\\step6ExecTraces\\SUT1", 20, "files\\step6FormatedTraces\\SUT1", 11, 1);
+		tools.ExecutionTraceTransformer.transformAllTraces(2, "files\\step6ExecTraces\\SUT2", 20, "files\\step6FormatedTraces\\SUT2", 11, 1);
+		tools.ExecutionTraceTransformer.transformAllTraces(3, "files\\step6ExecTraces\\SUT3", 20, "files\\step6FormatedTraces\\SUT3", 11, 10);
 		System.out.println("[REPRODUCE] Execution Traces transformed.");
 		
-		/*** Step 9 - Final scores computation ***/
+		/*** Step 7 - Final scores computation ***/
 		System.out.println("\n====== Step 7 - Final scores computation ======");
 		
 		// Load the benchmark input files with the prices of the resources, scales factors of various DBSizes and tolerance rate thresholds of tenants with different priorities
@@ -155,20 +162,23 @@ public class Reproduce {
 		tools.TenantsLoader.loadTenants("files\\6tenants.csv");
 		System.out.println("[REPRODUCE] Generated tenants loaded into mtdds.db.");
 		
+		// ****** compare SUT1 and SUT2
 		// Load the generic performance SLOs generated in Step 2 and compute the performance SLOs for each tenant 
-		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs.csv");
+		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs_SUT1.csv", "SUT1");
+		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs_SUT2.csv", "SUT2");
+		tools.PerfSLOsPerTenant.ComputePerfSLOs("SUT1", "SUT2", "files\\benchmarkInputFiles\\PriorityTRT.csv");
 		tools.PerfSLOsPerTenant.computePerfSLOs_per_tenant("files\\6tenants.csv");
 		System.out.println("[REPRODUCE] Performance SLOs are computed for all tenants.");
 		
 		// Compute intermediate metrics for SUT1 and SUT2 using the pricing model RCB
-		core.PricingModelRCB.computeIntermediateMetrics(1, 11, 15);
-		core.PricingModelRCB.computeIntermediateMetrics(2, 11, 15);
+		core.PricingModelRCB.computeIntermediateMetrics(1, 11, 18, 1, 10, false);
+		core.PricingModelRCB.computeIntermediateMetrics(2, 11, 18, 1, 10, false);
 		System.out.println("[REPRODUCE] Intermediate metrics computed for the pricing model RCB.");
 		
 		
 		// Compute intermediate metrics for SUT1 and SUT2 using the pricing model QLSA
-		core.PricingModelQLSA.computeIntermediateMetrics(1, 11, 15);
-		core.PricingModelQLSA.computeIntermediateMetrics(2, 11, 15);
+		core.PricingModelQLSA.computeIntermediateMetrics(1, 11, 18, 1, 20, false);
+		core.PricingModelQLSA.computeIntermediateMetrics(2, 11, 18, 1, 20, false);
 		System.out.println("[REPRODUCE] Intermediate metrics computed for the pricing model QLSA.");
 		
 		// Compute the final scores of SUT1 and SUT2 using the pricing model RCB under the clusterSize 11 with SSR_MIN = 0.7
@@ -195,9 +205,93 @@ public class Reproduce {
 		core.Metrics.showAllforOARF(2, "QLSA", 11, 0.7);
 		System.out.println("[REPRODUCE] Final scores computed for the pricing model QLSA.");
 		
+		/*** Export of data files for reproducing the Figures up to Fig. 13 in the paper ***/
+		System.out.println("\n====== Exporting data files for reproducing the Figures in the paper ======");
+		example.DataForFigures.exportDataForAllFigure_to_12("files");
+		
+		// ****** Compare SUT2b and SUT3b
+		
+		// Load the generic performance SLOs generated in Step 2 and compute the performance SLOs for each tenant 
+		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs_SUT2.csv", "SUT2");
+		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs_SUT3.csv", "SUT3");
+		tools.PerfSLOsPerTenant.ComputePerfSLOs("SUT2", "SUT3", "files\\benchmarkInputFiles\\PriorityTRT.csv");
+		tools.PerfSLOsPerTenant.computePerfSLOs_per_tenant("files\\6tenants.csv");
+		System.out.println("[REPRODUCE] Performance SLOs are computed for all tenants.");
+		
+		// Compute intermediate metrics for SUT2b and SUT3 using the pricing model QLSA
+		core.PricingModelQLSA.computeIntermediateMetrics(2, 11, 18, 1, 20, false);
+		core.PricingModelQLSA.computeIntermediateMetrics(3, 11, 18, 10, 20, false);
+		System.out.println("[REPRODUCE] Intermediate metrics computed for the pricing model QLSA.");
+		
+		// Compute the final scores of SUT2b and SUT3 using the pricing model QLSA under the clusterSize 11 with SSR_MIN = 0.7
+		System.out.println("[REPRODUCE] Computing final scores for the pricing model QLSA...");
+		System.out.println("== SUT2b: HARF related resqults ==");
+		core.Metrics.showAllforHARF(2, "QLSA", 11, 0.7);
+		System.out.println("== SUT2b: OARF related results ==");
+		core.Metrics.showAllforOARF(2, "QLSA", 11, 0.7);
+		System.out.println("== SUT3: HARF related results ==");
+		core.Metrics.showAllforHARF(3, "QLSA", 11, 0.7);
+		System.out.println("== SUT3: OARF related results ==");
+		core.Metrics.showAllforOARF(3, "QLSA", 11, 0.7);
+		System.out.println("[REPRODUCE] Final scores computed for the pricing model QLSA.");
+		
 		/*** Export of data files for reproducing the Figures in the paper ***/
 		System.out.println("\n====== Exporting data files for reproducing the Figures in the paper ======");
-		example.DataForFigures.exportDataForAllFigure("files");
+		example.DataForFigures.exportDataForFigure13("files");
+		
+		
+		// Compute intermediate metrics for SUT2b+ and SUT3 using the pricing model QLSA
+		core.PricingModelQLSA.computeIntermediateMetrics(2, 11, 18, 1, 60, false);
+		core.PricingModelQLSA.computeIntermediateMetrics(3, 11, 18, 10, 20, false);
+		System.out.println("[REPRODUCE] Intermediate metrics computed for the pricing model QLSA.");
+		
+		// Compute the final scores of SUT2b+ and SUT3 using the pricing model QLSA under the clusterSize 11 with SSR_MIN = 0.7
+		System.out.println("[REPRODUCE] Computing final scores for the pricing model QLSA...");
+		System.out.println("== SUT2b+: HARF related resqults ==");
+		core.Metrics.showAllforHARF(2, "QLSA", 11, 0.7);
+		System.out.println("== SUT2b+: OARF related results ==");
+		core.Metrics.showAllforOARF(2, "QLSA", 11, 0.7);
+		System.out.println("== SUT3: HARF related results ==");
+		core.Metrics.showAllforHARF(3, "QLSA", 11, 0.7);
+		System.out.println("== SUT3: OARF related results ==");
+		core.Metrics.showAllforOARF(3, "QLSA", 11, 0.7);
+		System.out.println("[REPRODUCE] Final scores computed for the pricing model QLSA.");
+		
+		/*** Export of data files for reproducing the Figures in the paper ***/
+		System.out.println("\n====== Exporting data files for reproducing the Figures in the paper ======");
+		example.DataForFigures.exportDataForFigure14("files");
+		
+		// ****** compare SUT3a and SUT4a
+		tools.ExecutionTraceTransformer.transformAllTracesSUT4(4, "files\\step6ExecTraces\\SUT4", 20, "files\\step6FormatedTraces\\SUT4", 11, 10);
+
+		// Load the generic performance SLOs generated in Step 2 and compute the performance SLOs for each tenant 
+		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs_SUT3.csv", "SUT3");
+		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs_SUT4.csv", "SUT4");
+		tools.PerfSLOsPerTenant.ComputePerfSLOs("SUT3", "SUT4", "files\\benchmarkInputFiles\\PriorityTRT.csv");
+		tools.PerfSLOsPerTenant.computePerfSLOs_per_tenant("files\\6tenants.csv");
+		System.out.println("[REPRODUCE] Performance SLOs are computed for all tenants.");
+		
+		// Compute intermediate metrics for SUT3a and SUT4a using the pricing model RCB
+		core.PricingModelRCB.computeIntermediateMetrics(3, 11, 20, 10, 20, false);
+		core.PricingModelRCB.computeIntermediateMetrics(4, 11, 20, 10, 20, true);
+		System.out.println("[REPRODUCE] Intermediate metrics computed for the pricing model RCB.");
+		
+		// Compute the final scores of SUT3a and SUT4a using the pricing model RCB under the clusterSize 11 with SSR_MIN = 0.7
+		System.out.println("[REPRODUCE] Computing final scores for the pricing model RCB...");
+		System.out.println("== SUT3a: HARF related resqults ==");
+		core.Metrics.showAllforHARF(3, "RCB", 11, 0.7);
+		System.out.println("== SUT3a: OARF related results ==");
+		core.Metrics.showAllforOARF(3, "RCB", 11, 0.7);
+		System.out.println("== SUT4a: HARF related results ==");
+		core.Metrics.showAllforHARF(4, "RCB", 11, 0.7);
+		System.out.println("== SUT4a: OARF related results ==");
+		core.Metrics.showAllforOARF(4, "RCB", 11, 0.7);
+		System.out.println("[REPRODUCE] Final scores computed for the pricing model RCB.");
+		
+		/*** Export of data files for reproducing the Figures in the paper ***/
+		System.out.println("\n====== Exporting data files for reproducing the Figures in the paper ======");
+		example.DataForFigures.exportDataForFigure15("files");
+
 		System.out.println("[REPRODUCE] Finished.");
 	}
 }

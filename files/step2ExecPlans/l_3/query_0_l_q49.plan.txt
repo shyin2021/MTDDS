@@ -1,0 +1,40 @@
+                                                                                       QUERY PLAN                                                                                        
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=9498413.75..9498413.75 rows=3 width=84) (actual time=186924.360..186924.372 rows=100 loops=1)
+   ->  Sort  (cost=9498413.75..9498413.75 rows=3 width=84) (actual time=186924.359..186924.362 rows=100 loops=1)
+         Sort Key: ('web'::text), web.return_rank, web.currency_rank, web.item
+         Sort Method: quicksort  Memory: 34kB
+         ->  HashAggregate  (cost=9498413.66..9498413.69 rows=3 width=84) (actual time=186924.253..186924.270 rows=123 loops=1)
+               Group Key: ('web'::text), web.item, web.return_ratio, web.return_rank, web.currency_rank
+               ->  Append  (cost=1567960.56..9498413.62 rows=3 width=84) (actual time=37789.030..186924.203 rows=123 loops=1)
+                     ->  Subquery Scan on web  (cost=1567960.56..1567960.60 rows=1 width=84) (actual time=37789.029..37790.015 rows=48 loops=1)
+                           Filter: ((web.return_rank <= 10) OR (web.currency_rank <= 10))
+                           Rows Removed by Filter: 1821
+                           ->  WindowAgg  (cost=1567960.56..1567960.58 rows=1 width=84) (actual time=37789.027..37789.919 rows=1869 loops=1)
+                                 ->  Sort  (cost=1567960.56..1567960.57 rows=1 width=76) (actual time=37789.024..37789.093 rows=1869 loops=1)
+                                       Sort Key: currency_ratio
+                                       Sort Method: quicksort  Memory: 195kB
+                                       ->  WindowAgg  (cost=1567960.53..1567960.55 rows=1 width=76) (actual time=37783.687..37787.992 rows=1869 loops=1)
+                                             ->  Remote Subquery Scan on all (dn2)  (cost=1567960.53..1567960.54 rows=1 width=68) (actual time=37783.661..37784.530 rows=1869 loops=1)
+                     ->  Subquery Scan on catalog  (cost=3136418.29..3136418.32 rows=1 width=84) (actual time=47505.162..47506.795 rows=45 loops=1)
+                           Filter: ((catalog.return_rank <= 10) OR (catalog.currency_rank <= 10))
+                           Rows Removed by Filter: 3746
+                           ->  WindowAgg  (cost=3136418.29..3136418.31 rows=1 width=84) (actual time=47505.160..47506.641 rows=3791 loops=1)
+                                 ->  Sort  (cost=3136418.29..3136418.29 rows=1 width=76) (actual time=47505.157..47505.273 rows=3791 loops=1)
+                                       Sort Key: currency_ratio
+                                       Sort Method: quicksort  Memory: 393kB
+                                       ->  WindowAgg  (cost=3136418.25..3136418.28 rows=1 width=76) (actual time=47495.779..47503.379 rows=3791 loops=1)
+                                             ->  Remote Subquery Scan on all (dn4)  (cost=3136418.25..3136418.26 rows=1 width=68) (actual time=47495.753..47497.637 rows=3791 loops=1)
+                     ->  Subquery Scan on store  (cost=4794034.63..4794034.67 rows=1 width=84) (actual time=101626.807..101627.386 rows=30 loops=1)
+                           Filter: ((store.return_rank <= 10) OR (store.currency_rank <= 10))
+                           Rows Removed by Filter: 1269
+                           ->  WindowAgg  (cost=4794034.63..4794034.65 rows=1 width=84) (actual time=101626.805..101627.329 rows=1299 loops=1)
+                                 ->  Sort  (cost=4794034.63..4794034.64 rows=1 width=76) (actual time=101626.803..101626.841 rows=1299 loops=1)
+                                       Sort Key: currency_ratio
+                                       Sort Method: quicksort  Memory: 150kB
+                                       ->  WindowAgg  (cost=4794034.60..4794034.62 rows=1 width=76) (actual time=101621.621..101625.905 rows=1299 loops=1)
+                                             ->  Remote Subquery Scan on all (dn1)  (cost=4794034.60..4794034.61 rows=1 width=68) (actual time=101621.592..101622.432 rows=1299 loops=1)
+ Planning time: 6.241 ms
+ Execution time: 186929.645 ms
+(36 rows)
+

@@ -1,0 +1,38 @@
+                                                                                        QUERY PLAN                                                                                         
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=986689.76..986689.77 rows=1 width=72) (actual time=17916.836..17916.837 rows=1 loops=1)
+   CTE ws_wh
+     ->  Remote Subquery Scan on all (dn1)  (cost=34953.14..311609.21 rows=7642711 width=12) (actual time=359.592..7456.256 rows=6644004 loops=1)
+   ->  Sort  (cost=675080.55..675080.56 rows=1 width=72) (actual time=17916.835..17916.835 rows=1 loops=1)
+         Sort Key: (count(DISTINCT ws_order_number))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Aggregate  (cost=675080.53..675080.54 rows=1 width=72) (actual time=17916.829..17916.829 rows=1 loops=1)
+               ->  Hash Join  (cost=652525.74..675080.51 rows=2 width=16) (actual time=17916.364..17916.805 rows=73 loops=1)
+                     Hash Cond: (ws_order_number = ws_wh.ws_order_number)
+                     ->  Hash Join  (cost=480560.24..503114.99 rows=3 width=24) (actual time=2420.127..2420.545 rows=73 loops=1)
+                           Hash Cond: (ws_web_site_sk = web_site_sk)
+                           ->  Hash Join  (cost=480557.80..503112.50 rows=16 width=28) (actual time=2419.030..2419.421 rows=531 loops=1)
+                                 Hash Cond: (ws_order_number = wr_order_number)
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=4440.09..26995.16 rows=25 width=20) (actual time=58.590..58.646 rows=715 loops=1)
+                                 ->  Hash  (cost=475756.59..475756.59 rows=36890 width=8) (actual time=2360.365..2360.365 rows=42249 loops=1)
+                                       Buckets: 65536  Batches: 1  Memory Usage: 2163kB
+                                       ->  HashAggregate  (cost=475387.69..475756.59 rows=36890 width=8) (actual time=2351.082..2355.766 rows=42249 loops=1)
+                                             Group Key: wr_order_number
+                                             ->  Hash Join  (cost=2941.67..438218.82 rows=14867549 width=8) (actual time=176.819..1519.181 rows=8677946 loops=1)
+                                                   Hash Cond: (ws_wh_1.ws_order_number = wr_order_number)
+                                                   ->  CTE Scan on ws_wh ws_wh_1  (cost=0.00..152854.22 rows=7642711 width=4) (actual time=0.002..331.761 rows=6644004 loops=1)
+                                                   ->  Hash  (cost=2790.50..2790.50 rows=71763 width=4) (actual time=175.797..175.797 rows=71763 loops=1)
+                                                         Buckets: 131072  Batches: 1  Memory Usage: 3547kB
+                                                         ->  Remote Subquery Scan on all (dn1)  (cost=100.00..2790.50 rows=71763 width=4) (actual time=58.957..129.428 rows=71763 loops=1)
+                           ->  Hash  (cost=102.42..102.42 rows=5 width=4) (actual time=1.076..1.076 rows=5 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=100.00..102.42 rows=5 width=4) (actual time=1.057..1.060 rows=5 loops=1)
+                     ->  Hash  (cost=171963.00..171963.00 rows=200 width=4) (actual time=15496.229..15496.229 rows=60000 loops=1)
+                           Buckets: 65536 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 2622kB
+                           ->  HashAggregate  (cost=171961.00..171963.00 rows=200 width=4) (actual time=15476.193..15488.884 rows=60000 loops=1)
+                                 Group Key: ws_wh.ws_order_number
+                                 ->  CTE Scan on ws_wh  (cost=0.00..152854.22 rows=7642711 width=4) (actual time=359.610..13364.434 rows=6644004 loops=1)
+ Planning time: 3.121 ms
+ Execution time: 17962.930 ms
+(34 rows)
+

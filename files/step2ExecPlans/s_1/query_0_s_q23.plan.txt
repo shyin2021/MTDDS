@@ -1,0 +1,62 @@
+                                                                                   QUERY PLAN                                                                                   
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=430212.59..430212.60 rows=1 width=32) (actual time=12608.948..12608.949 rows=1 loops=1)
+   CTE frequent_ss_items
+     ->  Finalize HashAggregate  (cost=75071.84..75792.03 rows=57615 width=48) (actual time=4253.148..4510.966 rows=43 loops=1)
+           Group Key: substr((i_item_desc)::text, 1, 30), i_item_sk, d_date
+           Filter: (count(*) > 4)
+           Rows Removed by Filter: 1491101
+           ->  Remote Subquery Scan on all (dn1)  (cost=69130.36..74471.69 rows=48012 width=48) (actual time=1662.766..2507.012 rows=1491144 loops=1)
+   CTE max_store_sales
+     ->  Aggregate  (cost=79595.13..79595.14 rows=1 width=32) (actual time=1286.461..1286.461 rows=1 loops=1)
+           ->  Finalize HashAggregate  (cost=78154.75..78874.94 rows=57615 width=36) (actual time=1255.389..1281.990 rows=76412 loops=1)
+                 Group Key: c_customer_sk
+                 ->  Remote Subquery Scan on all (dn1)  (cost=72453.33..77794.66 rows=48012 width=36) (actual time=1100.478..1146.568 rows=76412 loops=1)
+   CTE best_ss_customer
+     ->  HashAggregate  (cost=198328.72..199828.72 rows=100000 width=36) (actual time=7766.477..7810.285 rows=17 loops=1)
+           Group Key: c_customer_sk
+           Filter: (sum(((ss_quantity)::numeric * ss_sales_price)) > (0.95000000000000000000 * $4))
+           Rows Removed by Filter: 90841
+           InitPlan 3 (returns $4)
+             ->  CTE Scan on max_store_sales  (cost=0.00..0.02 rows=1 width=32) (actual time=1286.464..1286.465 rows=1 loops=1)
+           ->  Remote Subquery Scan on all (dn1)  (cost=5118.00..147916.45 rows=2880700 width=14) (actual time=20.589..2749.509 rows=2750652 loops=1)
+   ->  Aggregate  (cost=74996.70..74996.71 rows=1 width=32) (actual time=12608.946..12608.946 rows=1 loops=1)
+         ->  Append  (cost=3673.51..74996.11 rows=236 width=32) (actual time=12608.942..12608.942 rows=0 loops=1)
+               ->  Hash Join  (cost=3673.51..48733.19 rows=157 width=32) (actual time=12525.073..12525.073 rows=0 loops=1)
+                     Hash Cond: (cs_item_sk = frequent_ss_items.item_sk)
+                     ->  Hash Join  (cost=2372.67..47429.00 rows=314 width=14) (actual time=8014.029..8014.029 rows=0 loops=1)
+                           Hash Cond: (cs_bill_customer_sk = best_ss_customer.c_customer_sk)
+                           ->  Remote Subquery Scan on all (dn1)  (cost=218.17..45283.86 rows=631 width=18) (actual time=89.256..189.853 rows=14018 loops=1)
+                           ->  Hash  (cost=2252.00..2252.00 rows=200 width=4) (actual time=7810.314..7810.315 rows=17 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                 ->  HashAggregate  (cost=2250.00..2252.00 rows=200 width=4) (actual time=7810.306..7810.309 rows=17 loops=1)
+                                       Group Key: best_ss_customer.c_customer_sk
+                                       ->  CTE Scan on best_ss_customer  (cost=0.00..2000.00 rows=100000 width=4) (actual time=7766.480..7810.296 rows=17 loops=1)
+                     ->  Hash  (cost=1298.34..1298.34 rows=200 width=4) (actual time=4511.037..4511.037 rows=43 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                           ->  HashAggregate  (cost=1296.34..1298.34 rows=200 width=4) (actual time=4511.022..4511.028 rows=43 loops=1)
+                                 Group Key: frequent_ss_items.item_sk
+                                 ->  CTE Scan on frequent_ss_items  (cost=0.00..1152.30 rows=57615 width=4) (actual time=4253.152..4510.998 rows=43 loops=1)
+               ->  Hash Join  (cost=3673.51..26260.56 rows=79 width=32) (actual time=83.867..83.867 rows=0 loops=1)
+                     Hash Cond: (ws_item_sk = frequent_ss_items_1.item_sk)
+                     ->  Hash Join  (cost=2372.67..24958.04 rows=157 width=14) (actual time=83.780..83.780 rows=0 loops=1)
+                           Hash Cond: (ws_bill_customer_sk = best_ss_customer_1.c_customer_sk)
+                           ->  Remote Subquery Scan on all (dn1)  (cost=218.17..22808.22 rows=315 width=18) (actual time=5.266..75.575 rows=6668 loops=1)
+                           ->  Hash  (cost=2252.00..2252.00 rows=200 width=4) (actual time=0.040..0.040 rows=17 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                 ->  HashAggregate  (cost=2250.00..2252.00 rows=200 width=4) (actual time=0.023..0.031 rows=17 loops=1)
+                                       Group Key: best_ss_customer_1.c_customer_sk
+                                       ->  CTE Scan on best_ss_customer best_ss_customer_1  (cost=0.00..2000.00 rows=100000 width=4) (actual time=0.003..0.008 rows=17 loops=1)
+                     ->  Hash  (cost=1298.34..1298.34 rows=200 width=4) (actual time=0.072..0.072 rows=43 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                           ->  HashAggregate  (cost=1296.34..1298.34 rows=200 width=4) (actual time=0.041..0.058 rows=43 loops=1)
+                                 Group Key: frequent_ss_items_1.item_sk
+                                 ->  CTE Scan on frequent_ss_items frequent_ss_items_1  (cost=0.00..1152.30 rows=57615 width=4) (actual time=0.003..0.016 rows=43 loops=1)
+ Planning time: 3.404 ms
+ Execution time: 12654.449 ms
+(54 rows)
+
+ c_last_name | c_first_name | sales 
+-------------+--------------+-------
+(0 rows)
+

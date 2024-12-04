@@ -1,0 +1,20 @@
+                                                                                          QUERY PLAN                                                                                           
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=584707.71..584707.72 rows=1 width=8) (actual time=18696.685..18696.685 rows=1 loops=1)
+   ->  Aggregate  (cost=584707.71..584707.72 rows=1 width=8) (actual time=18696.684..18696.684 rows=1 loops=1)
+         ->  Subquery Scan on hot_cust  (cost=102777.95..584673.97 rows=13499 width=0) (actual time=18692.237..18696.654 rows=502 loops=1)
+               ->  HashSetOp Intersect  (cost=102777.95..584538.98 rows=13499 width=216) (actual time=18692.235..18696.605 rows=502 loops=1)
+                     ->  Append  (cost=102777.95..584235.17 rows=40508 width=216) (actual time=3775.759..18639.970 rows=122616 loops=1)
+                           ->  Subquery Scan on "*SELECT* 3"  (cost=102777.95..103115.43 rows=13499 width=60) (actual time=3775.758..4036.148 rows=117954 loops=1)
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=102777.95..102980.44 rows=13499 width=56) (actual time=3775.736..3923.890 rows=117954 loops=1)
+                           ->  Result  (cost=194738.66..481119.74 rows=27009 width=216) (actual time=14583.900..14595.004 rows=4662 loops=1)
+                                 ->  HashSetOp Intersect  (cost=194738.66..480849.65 rows=27009 width=216) (actual time=14583.899..14594.472 rows=4662 loops=1)
+                                       ->  Append  (cost=194738.66..480241.96 rows=81025 width=216) (actual time=8033.744..14351.592 rows=780779 loops=1)
+                                             ->  Subquery Scan on "*SELECT* 2"  (cost=194738.66..195413.88 rows=27009 width=60) (actual time=8033.743..8617.303 rows=311507 loops=1)
+                                                   ->  Remote Subquery Scan on all (dn1)  (cost=194738.66..195143.79 rows=27009 width=56) (actual time=8033.712..8333.653 rows=311507 loops=1)
+                                             ->  Subquery Scan on "*SELECT* 1"  (cost=283477.68..284828.08 rows=54016 width=60) (actual time=5205.836..5687.879 rows=469272 loops=1)
+                                                   ->  Remote Subquery Scan on all (dn1)  (cost=283477.68..284287.92 rows=54016 width=56) (actual time=5205.803..5390.707 rows=469272 loops=1)
+ Planning time: 1.601 ms
+ Execution time: 18726.842 ms
+(16 rows)
+

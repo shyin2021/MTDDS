@@ -71,7 +71,7 @@ public class DBInitialization {
 				+ "		PRIMARY KEY(tenantId, queryId))";
 		String createPricePerQuery = "CREATE TABLE IF NOT EXISTS Price_per_query(SUTNumber number(3), clusterSize number(10), arrivalRateFactor number(10), tenantId varchar(20), queryId varchar(20), timerId varchar(20), expectedExecTime number(20), realQCT number (20), price_millicents number(10,3), PRIMARY KEY(SUTNumber, clusterSize, arrivalRateFactor, tenantId, timerId))";
 		String createTotalPerTenant = "CREATE TABLE IF NOT EXISTS TotalPerTenant(SUTNumber number(3), clusterSize number(10), arrivalRateFactor number(10), tenantId varchar(20), total_cents number(10, 3))";		
-		String createBenefits = "CREATE TABLE IF NOT EXISTS Benefits(SUTNumber number(3),clusterSize number(5), arrivalRateFactor number(5), pricingModel varchar(20), depense number(10,3), income number(10, 3), "
+		String createBenefits = "CREATE TABLE IF NOT EXISTS Benefits(SUTNumber number(3),clusterSize number(5), arrivalRateFactor number(10), pricingModel varchar(20), depense number(10,3), income number(10, 3), "
 				+ "benefit number(10,3), totalHours number(10,3), UBF_centsPerHour number(10,3), satisfactionRate number(10,3), fairness number(10,3), tpat number(10,3))";
 		// specific for the IDS pricing model
 		String createIDSTraces = "CREATE TABLE IF NOT EXISTS IDSTraces(\r\n"

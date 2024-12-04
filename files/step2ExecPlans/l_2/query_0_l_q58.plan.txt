@@ -1,0 +1,36 @@
+                                                                                                                                                                                                                                                    QUERY PLAN                                                                                                                                                                                                                                                    
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=10744596.03..10744596.28 rows=100 width=292) (actual time=183175.088..183175.096 rows=100 loops=1)
+   CTE ss_items
+     ->  Remote Subquery Scan on all (dn3)  (cost=5495007.25..5495559.21 rows=27598 width=49) (actual time=98742.841..98857.623 rows=101705 loops=1)
+   CTE cs_items
+     ->  Remote Subquery Scan on all (dn6)  (cost=3446195.37..3446471.35 rows=13799 width=49) (actual time=71719.030..71786.754 rows=97530 loops=1)
+   CTE ws_items
+     ->  Remote Subquery Scan on all (dn4)  (cost=1736712.49..1736850.49 rows=6900 width=49) (actual time=12063.309..12113.283 rows=80574 loops=1)
+   ->  Sort  (cost=65714.98..65715.29 rows=124 width=292) (actual time=183175.086..183175.089 rows=100 loops=1)
+         Sort Key: ss_items.item_id, ss_items.ss_item_rev
+         Sort Method: quicksort  Memory: 51kB
+         ->  Merge Join  (cost=4390.40..65710.67 rows=124 width=292) (actual time=183060.569..183174.995 rows=188 loops=1)
+               Merge Cond: (cs_items.item_id = ss_items.item_id)
+               Join Filter: ((ss_items.ss_item_rev >= (0.9 * cs_items.cs_item_rev)) AND (ss_items.ss_item_rev <= (1.1 * cs_items.cs_item_rev)) AND (cs_items.cs_item_rev >= (0.9 * ss_items.ss_item_rev)) AND (cs_items.cs_item_rev <= (1.1 * ss_items.ss_item_rev)) AND (ss_items.ss_item_rev >= (0.9 * ws_items.ws_item_rev)) AND (ss_items.ss_item_rev <= (1.1 * ws_items.ws_item_rev)) AND (ws_items.ws_item_rev >= (0.9 * ss_items.ss_item_rev)) AND (ws_items.ws_item_rev <= (1.1 * ss_items.ss_item_rev)))
+               Rows Removed by Join Filter: 3259
+               ->  Merge Join  (cost=1802.78..18499.59 rows=5877 width=200) (actual time=84083.322..84166.016 rows=3456 loops=1)
+                     Merge Cond: (ws_items.item_id = cs_items.item_id)
+                     Join Filter: ((cs_items.cs_item_rev >= (0.9 * ws_items.ws_item_rev)) AND (cs_items.cs_item_rev <= (1.1 * ws_items.ws_item_rev)) AND (ws_items.ws_item_rev >= (0.9 * cs_items.cs_item_rev)) AND (ws_items.ws_item_rev <= (1.1 * cs_items.cs_item_rev)))
+                     Rows Removed by Join Filter: 73544
+                     ->  Sort  (cost=577.96..595.21 rows=6900 width=100) (actual time=12186.188..12188.685 rows=80574 loops=1)
+                           Sort Key: ws_items.item_id
+                           Sort Method: quicksort  Memory: 9367kB
+                           ->  CTE Scan on ws_items  (cost=0.00..138.00 rows=6900 width=100) (actual time=12063.332..12157.198 rows=80574 loops=1)
+                     ->  Sort  (cost=1224.82..1259.32 rows=13799 width=100) (actual time=71897.063..71899.973 rows=97530 loops=1)
+                           Sort Key: cs_items.item_id
+                           Sort Method: quicksort  Memory: 10692kB
+                           ->  CTE Scan on cs_items  (cost=0.00..275.98 rows=13799 width=100) (actual time=71719.054..71857.457 rows=97530 loops=1)
+               ->  Sort  (cost=2587.63..2656.62 rows=27598 width=100) (actual time=98977.211..98980.403 rows=101656 loops=1)
+                     Sort Key: ss_items.item_id
+                     Sort Method: quicksort  Memory: 11018kB
+                     ->  CTE Scan on ss_items  (cost=0.00..551.96 rows=27598 width=100) (actual time=98742.868..98940.450 rows=101705 loops=1)
+ Planning time: 0.999 ms
+ Execution time: 183191.208 ms
+(32 rows)
+

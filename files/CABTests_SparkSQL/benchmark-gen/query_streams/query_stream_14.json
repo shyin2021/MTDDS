@@ -1,0 +1,129 @@
+{
+  "database_id": 14,
+  "scale_factor": 5,
+  "database_byte_count": 5000000000,
+  "size_bucket": 10,
+  "pattern_id": 3,
+  "cpu_time": 41264462,
+  "cpu_time_h":"0.0114624h",
+  "query_count": 29,
+  "queries": [
+    {
+      "query_id": 13,
+      "start": 935882,
+      "arguments": ["special","packages"]
+    },{
+      "query_id": 1,
+      "start": 946189,
+      "arguments": [84]
+    },{
+      "query_id": 22,
+      "start": 948630,
+      "arguments": [16,15,12,13,14,10,34]
+    },{
+      "query_id": 17,
+      "start": 981326,
+      "arguments": ["Brand#51","SM DRUM"]
+    },{
+      "query_id": 9,
+      "start": 982016,
+      "arguments": ["pale"]
+    },{
+      "query_id": 2,
+      "start": 1013365,
+      "arguments": [25,"BRASS","MIDDLE EAST"]
+    },{
+      "query_id": 2,
+      "start": 1032426,
+      "arguments": [8,"COPPER","ASIA"]
+    },{
+      "query_id": 2,
+      "start": 1070832,
+      "arguments": [13,"STEEL","EUROPE"]
+    },{
+      "query_id": 19,
+      "start": 1078341,
+      "arguments": ["Brand#13","Brand#24","Brand#42",9,17,27]
+    },{
+      "query_id": 18,
+      "start": 1106043,
+      "arguments": [315]
+    },{
+      "query_id": 9,
+      "start": 1120135,
+      "arguments": ["lemon"]
+    },{
+      "query_id": 20,
+      "start": 1146708,
+      "arguments": ["chiffon","1997-01-01","IRAQ"]
+    },{
+      "query_id": 6,
+      "start": 1148897,
+      "arguments": ["1993-01-01",5,24]
+    },{
+      "query_id": 2,
+      "start": 1164742,
+      "arguments": [45,"NICKEL","MIDDLE EAST"]
+    },{
+      "query_id": 23,
+      "start": 1166118,
+      "arguments": [29970016,30000032,0,7]
+    },{
+      "query_id": 23,
+      "start": 2731922,
+      "arguments": [29940000,29970016,0,7]
+    },{
+      "query_id": 20,
+      "start": 2741586,
+      "arguments": ["blue","1995-01-01","FRANCE"]
+    },{
+      "query_id": 17,
+      "start": 2754801,
+      "arguments": ["Brand#31","SM PACK"]
+    },{
+      "query_id": 8,
+      "start": 2775931,
+      "arguments": ["EGYPT","MIDDLE EAST","MEDIUM BURNISHED COPPER"]
+    },{
+      "query_id": 16,
+      "start": 2795927,
+      "arguments": ["Brand#35","ECONOMY BRUSHED",35,4,39,29,49,23,26,2]
+    },{
+      "query_id": 7,
+      "start": 2829913,
+      "arguments": ["KENYA","BRAZIL"]
+    },{
+      "query_id": 7,
+      "start": 2867995,
+      "arguments": ["UNITED STATES","ETHIOPIA"]
+    },{
+      "query_id": 8,
+      "start": 2876977,
+      "arguments": ["CANADA","AMERICA","STANDARD BRUSHED NICKEL"]
+    },{
+      "query_id": 22,
+      "start": 2900304,
+      "arguments": [12,34,21,31,26,18,29]
+    },{
+      "query_id": 19,
+      "start": 2902632,
+      "arguments": ["Brand#35","Brand#41","Brand#25",3,19,24]
+    },{
+      "query_id": 3,
+      "start": 2942270,
+      "arguments": ["HOUSEHOLD","1995-03-15"]
+    },{
+      "query_id": 17,
+      "start": 2944780,
+      "arguments": ["Brand#21","SM CASE"]
+    },{
+      "query_id": 8,
+      "start": 2985584,
+      "arguments": ["SAUDI ARABIA","MIDDLE EAST","PROMO BURNISHED TIN"]
+    },{
+      "query_id": 16,
+      "start": 3177251,
+      "arguments": ["Brand#34","ECONOMY PLATED",33,25,44,2,31,22,49,14]
+    }
+  ]
+}

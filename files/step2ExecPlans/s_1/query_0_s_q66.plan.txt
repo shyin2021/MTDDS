@@ -1,0 +1,19 @@
+                                                                                                  QUERY PLAN                                                                                                   
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=71197.45..71238.85 rows=100 width=1254) (actual time=382.643..382.882 rows=5 loops=1)
+   ->  GroupAggregate  (cost=71197.45..71280.24 rows=200 width=1254) (actual time=382.642..382.879 rows=5 loops=1)
+         Group Key: warehouse.w_warehouse_name, warehouse.w_warehouse_sq_ft, warehouse.w_city, warehouse.w_county, warehouse.w_state, warehouse.w_country, ('ORIENTAL,BOXBUNDLES'::text), date_dim.d_year
+         ->  Sort  (cost=71197.45..71198.36 rows=364 width=870) (actual time=382.557..382.559 rows=10 loops=1)
+               Sort Key: warehouse.w_warehouse_name, warehouse.w_warehouse_sq_ft, warehouse.w_city, warehouse.w_county, warehouse.w_state, warehouse.w_country, ('ORIENTAL,BOXBUNDLES'::text), date_dim.d_year
+               Sort Method: quicksort  Memory: 30kB
+               ->  Append  (cost=24290.49..71181.97 rows=364 width=870) (actual time=144.201..382.487 rows=10 loops=1)
+                     ->  Finalize GroupAggregate  (cost=24290.49..24341.26 rows=121 width=870) (actual time=144.200..146.174 rows=5 loops=1)
+                           Group Key: warehouse.w_warehouse_name, warehouse.w_warehouse_sq_ft, warehouse.w_city, warehouse.w_county, warehouse.w_state, warehouse.w_country, date_dim.d_year
+                           ->  Remote Subquery Scan on all (dn1)  (cost=24290.49..24319.04 rows=100 width=838) (actual time=144.068..145.790 rows=5 loops=1)
+                     ->  Finalize GroupAggregate  (cost=46734.63..46837.07 rows=243 width=870) (actual time=232.467..236.307 rows=5 loops=1)
+                           Group Key: warehouse_1.w_warehouse_name, warehouse_1.w_warehouse_sq_ft, warehouse_1.w_city, warehouse_1.w_county, warehouse_1.w_state, warehouse_1.w_country, date_dim_1.d_year
+                           ->  Remote Subquery Scan on all (dn1)  (cost=46734.63..46792.29 rows=202 width=838) (actual time=232.349..235.951 rows=5 loops=1)
+ Planning time: 6.239 ms
+ Execution time: 388.553 ms
+(15 rows)
+

@@ -265,8 +265,8 @@ public class DataForFigures {
 		}							
 	}
 	
-	public static void exportDataForFigure7a(String directory) throws IOException, SQLException {
-		// export data for Figure 7a
+/*	public static void exportDataForFigure6a(String directory) throws IOException, SQLException {
+		// export data for Figure 6a
 		FileWriter csvWriter = null;
 		Statement stm = null;
 		Connection conn = null;
@@ -275,7 +275,7 @@ public class DataForFigures {
 			conn = DBConnect();			
 			stm = conn.createStatement();
 			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure7a.csv"); 
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure6a.csv"); 
 				//write the file header
 				for(int i=0;i<6;i++) {
 					csvWriter.append("");
@@ -291,10 +291,10 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig7a = "SELECT tenantName, queryName, timerName, launchTime, startTime, finishTime, relativeLaunchTime, waitingTime, executionTime FROM FormatedTraces "
+			String readDataFig6a = "SELECT tenantName, queryName, timerName, launchTime, startTime, finishTime, relativeLaunchTime, waitingTime, executionTime FROM FormatedTraces "
 					+ "WHERE ((timerName >= 'Timer-140' AND timerName <= 'Timer-146') OR (timerName >= 'Timer-185' AND timerName <= 'Timer-189') OR (timerName >= 'Timer-190' AND timerName <= 'Timer-194') OR (timerName >= 'Timer-221' AND timerName <= 'Timer-227')) "
 					+ "AND SUTNumber=2 AND clusterSize=11 AND arrivalRateFactor=2 ORDER BY tenantName, timerName";
-			rst = stm.executeQuery(readDataFig7a);
+			rst = stm.executeQuery(readDataFig6a);
 			// read the tuples one by one and write them into a csv file
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			int rowNb = 0;
@@ -326,12 +326,12 @@ public class DataForFigures {
 			rst.close();
 			csvWriter.close();
 			conn.close();
-			System.out.println("File dataFigure7a.csv exported.");
+			System.out.println("File dataFigure6a.csv exported.");
 		}							
 	}
 
-	public static void exportDataForFigure7b(String directory) throws IOException, SQLException {
-		// export data for Figure 7b
+	public static void exportDataForFigure6b(String directory) throws IOException, SQLException {
+		// export data for Figure 6b
 		FileWriter csvWriter = null;
 		Statement stm = null;
 		Connection conn = null;
@@ -340,7 +340,7 @@ public class DataForFigures {
 			conn = DBConnect();			
 			stm = conn.createStatement();
 			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure7b.csv"); 
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure6b.csv"); 
 				//write the file header
 				for(int i=0;i<6;i++) {
 					csvWriter.append("");
@@ -356,10 +356,10 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig7b = "SELECT tenantName, queryName, timerName, launchTime, startTime, finishTime, relativeLaunchTime, waitingTime, executionTime FROM FormatedTraces "
+			String readDataFig6b = "SELECT tenantName, queryName, timerName, launchTime, startTime, finishTime, relativeLaunchTime, waitingTime, executionTime FROM FormatedTraces "
 					+ "WHERE ((timerName >= 'Timer-140' AND timerName <= 'Timer-146') OR (timerName >= 'Timer-185' AND timerName <= 'Timer-189') OR (timerName >= 'Timer-190' AND timerName <= 'Timer-194') OR (timerName >= 'Timer-221' AND timerName <= 'Timer-227')) "
 					+ "AND SUTNumber=2 AND clusterSize=11 AND arrivalRateFactor=10 ORDER BY tenantName, timerName";
-			rst = stm.executeQuery(readDataFig7b);
+			rst = stm.executeQuery(readDataFig6b);
 			// read the tuples one by one and write them into a csv file
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			int rowNb = 0;
@@ -391,12 +391,12 @@ public class DataForFigures {
 			rst.close();
 			csvWriter.close();
 			conn.close();
-			System.out.println("File dataFigure7b.csv exported.");
+			System.out.println("File dataFigure6b.csv exported.");
 		}							
-	}
+	}*/
 	
-	public static void exportDataForFigure8(String directory) throws IOException, SQLException {
-		// export data for Figure 8
+	public static void exportDataForFigure6(String directory) throws IOException, SQLException {
+		// export data for Figure 6
 		FileWriter csvWriter = null;
 		Statement stm = null;
 		Connection conn = null;
@@ -405,7 +405,7 @@ public class DataForFigures {
 			conn = DBConnect();			
 			stm = conn.createStatement();
 			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure8.csv"); 
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure6.csv"); 
 				//write the file header
 				csvWriter.append("ARF");
 				csvWriter.append("\n");
@@ -421,8 +421,58 @@ public class DataForFigures {
 				System.out.println(ie);
 			}
 			
-			String readDataFig8 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=1 AND clusterSize=11 AND pricingModel='RCB'";
-			rst = stm.executeQuery(readDataFig8);
+			String readDataFig6 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=1 AND clusterSize=11 AND pricingModel='RCB'";
+			rst = stm.executeQuery(readDataFig6);
+			// read the tuples one by one and write them into a csv file
+			while(rst.next()) {
+				csvWriter.append(Integer.toString(rst.getInt(1)));
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(2)));
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(3))+"%");
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(4))+"%");
+				csvWriter.append("\n");					
+			}				
+		} catch (SQLException se) {
+			System.out.println(se);
+		} finally {
+			stm.close();
+			rst.close();
+			csvWriter.close();
+			conn.close();
+			System.out.println("File dataFigure6.csv exported.");
+		}									
+	}
+	
+	public static void exportDataForFigure7(String directory) throws IOException, SQLException {
+		// export data for Figure 7
+		FileWriter csvWriter = null;
+		Statement stm = null;
+		Connection conn = null;
+		ResultSet rst = null;
+		try {
+			conn = DBConnect();			
+			stm = conn.createStatement();
+			try {
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure7.csv"); 
+				//write the file header
+				csvWriter.append("ARF");
+				csvWriter.append("\n");
+				csvWriter.append("");
+				csvWriter.append(";");
+				csvWriter.append("LUBF");
+				csvWriter.append(";");
+				csvWriter.append("SSR");
+				csvWriter.append(";");
+				csvWriter.append("FTS");
+				csvWriter.append("\n");	
+			} catch (IOException ie) {
+				System.out.println(ie);
+			}
+			
+			String readDataFig7 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='RCB'";
+			rst = stm.executeQuery(readDataFig7);
 			// read the tuples one by one and write them into a csv file
 			while(rst.next()) {
 				csvWriter.append(Integer.toString(rst.getInt(1)));
@@ -442,65 +492,15 @@ public class DataForFigures {
 			csvWriter.close();
 			conn.close();
 			System.out.println("File dataFigure8.csv exported.");
-		}									
-	}
-	
-	public static void exportDataForFigure9(String directory) throws IOException, SQLException {
-		// export data for Figure 9
-		FileWriter csvWriter = null;
-		Statement stm = null;
-		Connection conn = null;
-		ResultSet rst = null;
-		try {
-			conn = DBConnect();			
-			stm = conn.createStatement();
-			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure9.csv"); 
-				//write the file header
-				csvWriter.append("ARF");
-				csvWriter.append("\n");
-				csvWriter.append("");
-				csvWriter.append(";");
-				csvWriter.append("LUBF");
-				csvWriter.append(";");
-				csvWriter.append("SSR");
-				csvWriter.append(";");
-				csvWriter.append("FTS");
-				csvWriter.append("\n");	
-			} catch (IOException ie) {
-				System.out.println(ie);
-			}
-			
-			String readDataFig9 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='RCB'";
-			rst = stm.executeQuery(readDataFig9);
-			// read the tuples one by one and write them into a csv file
-			while(rst.next()) {
-				csvWriter.append(Integer.toString(rst.getInt(1)));
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(2)));
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(3))+"%");
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(4))+"%");
-				csvWriter.append("\n");					
-			}				
-		} catch (SQLException se) {
-			System.out.println(se);
-		} finally {
-			stm.close();
-			rst.close();
-			csvWriter.close();
-			conn.close();
-			System.out.println("File dataFigure9.csv exported.");
 		}										
 	}
 	
-	public static void exportDataForFigure10(String directory) throws IOException {
-		// export data for Figure 10
+	public static void exportDataForFigure8(String directory) throws IOException {
+		// export data for Figure 8
 		FileWriter csvWriter = null;
 		try {
 			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure10.csv"); 
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure8.csv"); 
 				//write the file header
 				csvWriter.append("");
 				csvWriter.append(";");
@@ -581,9 +581,109 @@ public class DataForFigures {
 			System.out.println(se);
 		} finally {
 			csvWriter.close();
-			System.out.println("File dataFigure10.csv exported.");
+			System.out.println("File dataFigure8.csv exported.");
 		}												
 	}	
+	
+	public static void exportDataForFigure9(String directory) throws IOException, SQLException {
+		// export data for Figure 9
+		FileWriter csvWriter = null;
+		Statement stm = null;
+		Connection conn = null;
+		ResultSet rst = null;
+		try {
+			conn = DBConnect();			
+			stm = conn.createStatement();
+			try {
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure9.csv"); 
+				//write the file header
+				csvWriter.append("ARF");
+				csvWriter.append("\n");
+				csvWriter.append("");
+				csvWriter.append(";");
+				csvWriter.append("LUBF");
+				csvWriter.append(";");
+				csvWriter.append("SSR");
+				csvWriter.append(";");
+				csvWriter.append("TPAT");
+				csvWriter.append("\n");	
+			} catch (IOException ie) {
+				System.out.println(ie);
+			}
+			
+			String readDataFig9 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='RCB'";
+			rst = stm.executeQuery(readDataFig9);
+			// read the tuples one by one and write them into a csv file
+			while(rst.next()) {
+				csvWriter.append(Integer.toString(rst.getInt(1)));
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(2)));
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(3))+"%");
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(4)));
+				csvWriter.append("\n");					
+			}				
+		} catch (SQLException se) {
+			System.out.println(se);
+		} finally {
+			stm.close();
+			rst.close();
+			csvWriter.close();
+			conn.close();
+			System.out.println("File dataFigure9.csv exported.");
+		}												
+	}
+	
+	public static void exportDataForFigure10(String directory) throws IOException, SQLException {
+		// export data for Figure 10
+		FileWriter csvWriter = null;
+		Statement stm = null;
+		Connection conn = null;
+		ResultSet rst = null;
+		try {
+			conn = DBConnect();			
+			stm = conn.createStatement();
+			try {
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure10.csv"); 
+				//write the file header
+				csvWriter.append("ARF");
+				csvWriter.append("\n");
+				csvWriter.append("");
+				csvWriter.append(";");
+				csvWriter.append("LUBF");
+				csvWriter.append(";");
+				csvWriter.append("SSR");
+				csvWriter.append(";");
+				csvWriter.append("TPAT");
+				csvWriter.append("\n");	
+			} catch (IOException ie) {
+				System.out.println(ie);
+			}
+			
+			String readDataFig10 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='QLSA'";
+			rst = stm.executeQuery(readDataFig10);
+			// read the tuples one by one and write them into a csv file
+			while(rst.next()) {
+				csvWriter.append(Integer.toString(rst.getInt(1)));
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(2)));
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(3))+"%");
+				csvWriter.append(";");
+				csvWriter.append(Integer.toString(rst.getInt(4)));
+				csvWriter.append("\n");					
+			}				
+		} catch (SQLException se) {
+			System.out.println(se);
+		} finally {
+			stm.close();
+			rst.close();
+			csvWriter.close();
+			conn.close();
+			System.out.println("File dataFigure10.csv exported.");
+		}														
+	}
 	
 	public static void exportDataForFigure11(String directory) throws IOException, SQLException {
 		// export data for Figure 11
@@ -605,114 +705,14 @@ public class DataForFigures {
 				csvWriter.append(";");
 				csvWriter.append("SSR");
 				csvWriter.append(";");
-				csvWriter.append("TPAT");
-				csvWriter.append("\n");	
-			} catch (IOException ie) {
-				System.out.println(ie);
-			}
-			
-			String readDataFig11 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='RCB'";
-			rst = stm.executeQuery(readDataFig11);
-			// read the tuples one by one and write them into a csv file
-			while(rst.next()) {
-				csvWriter.append(Integer.toString(rst.getInt(1)));
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(2)));
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(3))+"%");
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(4)));
-				csvWriter.append("\n");					
-			}				
-		} catch (SQLException se) {
-			System.out.println(se);
-		} finally {
-			stm.close();
-			rst.close();
-			csvWriter.close();
-			conn.close();
-			System.out.println("File dataFigure11.csv exported.");
-		}												
-	}
-	
-	public static void exportDataForFigure12(String directory) throws IOException, SQLException {
-		// export data for Figure 12
-		FileWriter csvWriter = null;
-		Statement stm = null;
-		Connection conn = null;
-		ResultSet rst = null;
-		try {
-			conn = DBConnect();			
-			stm = conn.createStatement();
-			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure12.csv"); 
-				//write the file header
-				csvWriter.append("ARF");
-				csvWriter.append("\n");
-				csvWriter.append("");
-				csvWriter.append(";");
-				csvWriter.append("LUBF");
-				csvWriter.append(";");
-				csvWriter.append("SSR");
-				csvWriter.append(";");
-				csvWriter.append("TPAT");
-				csvWriter.append("\n");	
-			} catch (IOException ie) {
-				System.out.println(ie);
-			}
-			
-			String readDataFig12 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(tpat) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='QLSA'";
-			rst = stm.executeQuery(readDataFig12);
-			// read the tuples one by one and write them into a csv file
-			while(rst.next()) {
-				csvWriter.append(Integer.toString(rst.getInt(1)));
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(2)));
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(3))+"%");
-				csvWriter.append(";");
-				csvWriter.append(Integer.toString(rst.getInt(4)));
-				csvWriter.append("\n");					
-			}				
-		} catch (SQLException se) {
-			System.out.println(se);
-		} finally {
-			stm.close();
-			rst.close();
-			csvWriter.close();
-			conn.close();
-			System.out.println("File dataFigure12.csv exported.");
-		}														
-	}
-	
-	public static void exportDataForFigure13(String directory) throws IOException, SQLException {
-		// export data for Figure 13
-		FileWriter csvWriter = null;
-		Statement stm = null;
-		Connection conn = null;
-		ResultSet rst = null;
-		try {
-			conn = DBConnect();			
-			stm = conn.createStatement();
-			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure13.csv"); 
-				//write the file header
-				csvWriter.append("ARF");
-				csvWriter.append("\n");
-				csvWriter.append("");
-				csvWriter.append(";");
-				csvWriter.append("LUBF");
-				csvWriter.append(";");
-				csvWriter.append("SSR");
-				csvWriter.append(";");
 				csvWriter.append("FTS");
 				csvWriter.append("\n");	
 			} catch (IOException ie) {
 				System.out.println(ie);
 			}
 			
-			String readDataFig13 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='QLSA'";
-			rst = stm.executeQuery(readDataFig13);
+			String readDataFig11 = "SELECT arrivalRateFactor, ROUND(UBF_centsPerHour), ROUND(satisfactionRate*100), ROUND(fairness*100) FROM Benefits WHERE SUTNumber=2 AND clusterSize=11 AND pricingModel='QLSA'";
+			rst = stm.executeQuery(readDataFig11);
 			// read the tuples one by one and write them into a csv file
 			while(rst.next()) {
 				csvWriter.append(Integer.toString(rst.getInt(1)));
@@ -731,16 +731,16 @@ public class DataForFigures {
 			rst.close();
 			csvWriter.close();
 			conn.close();
-			System.out.println("File dataFigure13.csv exported.");
+			System.out.println("File dataFigure11.csv exported.");
 		}								
 	}
 	
-	public static void exportDataForFigure14(String directory) throws IOException {
-		// export data for Figure 14
+	public static void exportDataForFigure12(String directory) throws IOException {
+		// export data for Figure 12
 		FileWriter csvWriter = null;
 		try {
 			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure14.csv"); 
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure12.csv"); 
 				//write the file header
 				csvWriter.append("");
 				csvWriter.append(";");
@@ -821,23 +821,290 @@ public class DataForFigures {
 			System.out.println(se);
 		} finally {
 			csvWriter.close();
+			System.out.println("File dataFigure13.csv exported.");
+		}													
+	}
+
+	public static void exportDataForFigure13(String directory) throws IOException {
+		// export data for Figure 13
+		FileWriter csvWriter = null;
+		try {
+			try {
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure13.csv"); 
+				//write the file header
+				csvWriter.append("");
+				csvWriter.append(";");
+				csvWriter.append("ARF");
+				csvWriter.append(";");
+				csvWriter.append("UBF");
+				csvWriter.append(";");
+				csvWriter.append("SSR");
+				csvWriter.append(";");
+				csvWriter.append("FTS");
+				csvWriter.append(";");
+				csvWriter.append("TPAT");
+				csvWriter.append("\n");	
+			} catch (IOException ie) {
+				System.out.println(ie);
+			}
+			
+			// SUT2 OARF
+			int HARF = Metrics.getPO_Metric2Bis_OARF(2, "QLSA", 11, 0.7);
+			double SSR = Metrics.getTO_Metric1_SSR(2, "QLSA", 11, HARF);
+			double FTS = Metrics.getTO_Metric2_FTS(2, "QLSA", 11, HARF);
+			double TPAT = Metrics.getTO_Metric3_TPAT(2, "QLSA", 11, HARF);
+			double LUBF = Metrics.getLUBF(2, "QLSA", 11, HARF);
+
+			csvWriter.append("SUT2b-OARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(HARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");	
+			
+			// SUT3 HARF
+			HARF = Metrics.getPO_Metric1Bis_HARF(3, "QLSA", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(3, "QLSA", 11, HARF);
+			FTS = Metrics.getTO_Metric2_FTS(3, "QLSA", 11, HARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(3, "QLSA", 11, HARF);
+			LUBF = Metrics.getLUBF(3, "QLSA", 11, HARF);
+
+			csvWriter.append("SUT3-HARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(HARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");
+			
+			// SUT3 OARF
+			int OARF = Metrics.getPO_Metric2Bis_OARF(3, "QLSA", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(3, "QLSA", 11, OARF);
+			FTS = Metrics.getTO_Metric2_FTS(3, "QLSA", 11, OARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(3, "QLSA", 11, OARF);
+			LUBF = Metrics.getLUBF(3, "QLSA", 11, OARF);
+
+			csvWriter.append("SUT3-OARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(OARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");		
+		} catch (SQLException se) {
+			System.out.println(se);
+		} finally {
+			csvWriter.close();
+			System.out.println("File dataFigure13.csv exported.");
+		}													
+	}
+	
+	public static void exportDataForFigure14(String directory) throws IOException {
+		// export data for Figure 14
+		FileWriter csvWriter = null;
+		try {
+			try {
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure14.csv"); 
+				//write the file header
+				csvWriter.append("");
+				csvWriter.append(";");
+				csvWriter.append("ARF");
+				csvWriter.append(";");
+				csvWriter.append("UBF");
+				csvWriter.append(";");
+				csvWriter.append("SSR");
+				csvWriter.append(";");
+				csvWriter.append("FTS");
+				csvWriter.append(";");
+				csvWriter.append("TPAT");
+				csvWriter.append("\n");	
+			} catch (IOException ie) {
+				System.out.println(ie);
+			}
+			
+			// SUT2 OARF
+			int HARF = Metrics.getPO_Metric2Bis_OARF(2, "QLSA", 11, 0.7);
+			double SSR = Metrics.getTO_Metric1_SSR(2, "QLSA", 11, HARF);
+			double FTS = Metrics.getTO_Metric2_FTS(2, "QLSA", 11, HARF);
+			double TPAT = Metrics.getTO_Metric3_TPAT(2, "QLSA", 11, HARF);
+			double LUBF = Metrics.getLUBF(2, "QLSA", 11, HARF);
+
+			csvWriter.append("SUT2b+-OARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(HARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");	
+			
+			// SUT3 HARF
+			HARF = Metrics.getPO_Metric1Bis_HARF(3, "QLSA", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(3, "QLSA", 11, HARF);
+			FTS = Metrics.getTO_Metric2_FTS(3, "QLSA", 11, HARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(3, "QLSA", 11, HARF);
+			LUBF = Metrics.getLUBF(3, "QLSA", 11, HARF);
+
+			csvWriter.append("SUT3-HARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(HARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");
+			
+			// SUT3 OARF
+			int OARF = Metrics.getPO_Metric2Bis_OARF(3, "QLSA", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(3, "QLSA", 11, OARF);
+			FTS = Metrics.getTO_Metric2_FTS(3, "QLSA", 11, OARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(3, "QLSA", 11, OARF);
+			LUBF = Metrics.getLUBF(3, "QLSA", 11, OARF);
+
+			csvWriter.append("SUT3-OARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(OARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");		
+		} catch (SQLException se) {
+			System.out.println(se);
+		} finally {
+			csvWriter.close();
 			System.out.println("File dataFigure14.csv exported.");
 		}													
 	}
 	
-	public static void exportDataForAllFigure(String directory) throws SQLException, IOException {
+	public static void exportDataForFigure15(String directory) throws IOException {
+		// export data for Figure 15
+		FileWriter csvWriter = null;
+		try {
+			try {
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure15.csv"); 
+				//write the file header
+				csvWriter.append("");
+				csvWriter.append(";");
+				csvWriter.append("ARF");
+				csvWriter.append(";");
+				csvWriter.append("UBF");
+				csvWriter.append(";");
+				csvWriter.append("SSR");
+				csvWriter.append(";");
+				csvWriter.append("FTS");
+				csvWriter.append(";");
+				csvWriter.append("TPAT");
+				csvWriter.append("\n");	
+			} catch (IOException ie) {
+				System.out.println(ie);
+			}
+			
+			// SUT3a OARF
+			int HARF = Metrics.getPO_Metric2Bis_OARF(3, "RCB", 11, 0.7);
+			double SSR = Metrics.getTO_Metric1_SSR(3, "RCB", 11, HARF);
+			double FTS = Metrics.getTO_Metric2_FTS(3, "RCB", 11, HARF);
+			double TPAT = Metrics.getTO_Metric3_TPAT(3, "RCB", 11, HARF);
+			double LUBF = Metrics.getLUBF(3, "RCB", 11, HARF);
+
+			csvWriter.append("SUT3a-OARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(HARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");	
+			
+			// SUT3a HARF
+			HARF = Metrics.getPO_Metric1Bis_HARF(3, "RCB", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(3, "RCB", 11, HARF);
+			FTS = Metrics.getTO_Metric2_FTS(3, "RCB", 11, HARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(3, "RCB", 11, HARF);
+			LUBF = Metrics.getLUBF(3, "RCB", 11, HARF);
+
+			csvWriter.append("SUT3a-HARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(HARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");
+			
+			// SUT4a OARF
+			int OARF = Metrics.getPO_Metric2Bis_OARF(4, "RCB", 11, 0.7);
+			SSR = Metrics.getTO_Metric1_SSR(4, "RCB", 11, OARF);
+			FTS = Metrics.getTO_Metric2_FTS(4, "RCB", 11, OARF);
+			TPAT = Metrics.getTO_Metric3_TPAT(4, "RCB", 11, OARF);
+			LUBF = Metrics.getLUBF(4, "RCB", 11, OARF);
+
+			csvWriter.append("SUT4a-OARF");
+			csvWriter.append(";");
+			csvWriter.append(Integer.toString(OARF));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(LUBF).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(SSR).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(FTS).replace(".", ","));
+			csvWriter.append(";");
+			csvWriter.append(Double.toString(TPAT).replace(".", ","));
+			csvWriter.append("\n");		
+		} catch (SQLException se) {
+			System.out.println(se);
+		} finally {
+			csvWriter.close();
+			System.out.println("File dataFigure15.csv exported.");
+		}													
+	}
+	
+	public static void exportDataForAllFigure_to_12(String directory) throws SQLException, IOException {
 		exportDataForFigure1("files");
 		exportDataForFigure2("files");
 		exportDataForFigure3("files");
-		exportDataForFigure7a("files");
-		exportDataForFigure7b("files");
+		exportDataForFigure7("files");
 		exportDataForFigure8("files");
 		exportDataForFigure9("files");
 		exportDataForFigure10("files");
 		exportDataForFigure11("files");
 		exportDataForFigure12("files");
-		exportDataForFigure13("files");
-		exportDataForFigure14("files");
 	}
 	
 	// connection to a DBMS

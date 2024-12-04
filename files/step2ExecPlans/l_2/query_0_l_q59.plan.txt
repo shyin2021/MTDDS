@@ -1,0 +1,42 @@
+                                                                           QUERY PLAN                                                                            
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=7411757.41..7411757.66 rows=100 width=249) (actual time=175767.142..175767.153 rows=100 loops=1)
+   CTE wss
+     ->  Remote Subquery Scan on all (dn2)  (cost=7279960.20..7314628.68 rows=1260672 width=232) (actual time=174129.905..174162.271 rows=52924 loops=1)
+   ->  Sort  (cost=97128.74..97135.09 rows=2539 width=249) (actual time=175767.140..175767.143 rows=100 loops=1)
+         Sort Key: s_store_name, s_store_id, wss.d_week_seq
+         Sort Method: top-N heapsort  Memory: 66kB
+         ->  Merge Join  (cost=96093.56..97031.70 rows=2539 width=249) (actual time=174575.484..175663.548 rows=509535 loops=1)
+               Merge Cond: ((d_week_seq = ((wss_1.d_week_seq - 52))) AND (s_store_id = s_store_id))
+               ->  Sort  (cost=48046.78..48155.32 rows=43416 width=253) (actual time=174409.100..174412.941 rows=73566 loops=1)
+                     Sort Key: wss.d_week_seq, s_store_id
+                     Sort Method: quicksort  Memory: 13418kB
+                     ->  Hash Join  (cost=28.81..44702.46 rows=43416 width=253) (actual time=174136.097..174262.516 rows=73566 loops=1)
+                           Hash Cond: (wss.ss_store_sk = s_store_sk)
+                           ->  Hash Join  (cost=13.38..44571.07 rows=43416 width=236) (actual time=174132.648..174246.263 rows=73932 loops=1)
+                                 Hash Cond: (wss.d_week_seq = d_week_seq)
+                                 ->  CTE Scan on wss  (cost=0.00..25213.44 rows=1260672 width=232) (actual time=174129.934..174230.456 rows=52924 loops=1)
+                                 ->  Hash  (cost=112.63..112.63 rows=216 width=4) (actual time=2.695..2.695 rows=366 loops=1)
+                                       Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                       ->  Remote Subquery Scan on all (dn2)  (cost=100.17..112.63 rows=216 width=4) (actual time=2.341..2.469 rows=366 loops=1)
+                           ->  Hash  (cost=119.64..119.64 rows=241 width=25) (actual time=3.438..3.438 rows=402 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 32kB
+                                 ->  Remote Subquery Scan on all (dn6)  (cost=100.00..119.64 rows=241 width=25) (actual time=2.811..2.977 rows=402 loops=1)
+               ->  Sort  (cost=48046.78..48155.32 rows=43416 width=245) (actual time=166.374..181.628 rows=509533 loops=1)
+                     Sort Key: ((wss_1.d_week_seq - 52)), s_store_id
+                     Sort Method: quicksort  Memory: 13389kB
+                     ->  Hash Join  (cost=28.81..44702.46 rows=43416 width=245) (actual time=6.609..28.577 rows=73365 loops=1)
+                           Hash Cond: (wss_1.ss_store_sk = s_store_sk)
+                           ->  Hash Join  (cost=13.38..44571.07 rows=43416 width=232) (actual time=3.395..15.466 rows=73730 loops=1)
+                                 Hash Cond: (wss_1.d_week_seq = d_week_seq)
+                                 ->  CTE Scan on wss wss_1  (cost=0.00..25213.44 rows=1260672 width=232) (actual time=0.001..2.850 rows=52924 loops=1)
+                                 ->  Hash  (cost=112.63..112.63 rows=216 width=4) (actual time=3.387..3.387 rows=365 loops=1)
+                                       Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                       ->  Remote Subquery Scan on all (dn3)  (cost=100.17..112.63 rows=216 width=4) (actual time=3.057..3.179 rows=365 loops=1)
+                           ->  Hash  (cost=118.68..118.68 rows=241 width=21) (actual time=3.209..3.209 rows=402 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 29kB
+                                 ->  Remote Subquery Scan on all (dn5)  (cost=100.00..118.68 rows=241 width=21) (actual time=2.847..2.944 rows=402 loops=1)
+ Planning time: 1.150 ms
+ Execution time: 175789.798 ms
+(38 rows)
+

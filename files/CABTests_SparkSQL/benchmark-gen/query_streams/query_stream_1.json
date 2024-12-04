@@ -1,0 +1,97 @@
+{
+  "database_id": 1,
+  "scale_factor": 1,
+  "database_byte_count": 1000000000,
+  "size_bucket": 9,
+  "pattern_id": 4,
+  "cpu_time": 2556055,
+  "cpu_time_h":"0.000710015h",
+  "query_count": 21,
+  "queries": [
+    {
+      "query_id": 20,
+      "start": 2179009,
+      "arguments": ["misty","1996-01-01","ETHIOPIA"]
+    },{
+      "query_id": 20,
+      "start": 2209686,
+      "arguments": ["sienna","1995-01-01","ETHIOPIA"]
+    },{
+      "query_id": 11,
+      "start": 2242968,
+      "arguments": ["JORDAN",1]
+    },{
+      "query_id": 7,
+      "start": 2246410,
+      "arguments": ["UNITED STATES","SAUDI ARABIA"]
+    },{
+      "query_id": 2,
+      "start": 2274836,
+      "arguments": [25,"NICKEL","MIDDLE EAST"]
+    },{
+      "query_id": 21,
+      "start": 2334485,
+      "arguments": ["ARGENTINA"]
+    },{
+      "query_id": 23,
+      "start": 2342746,
+      "arguments": [5994016,6000032,0,7]
+    },{
+      "query_id": 3,
+      "start": 2382395,
+      "arguments": ["AUTOMOBILE","1995-03-14"]
+    },{
+      "query_id": 3,
+      "start": 2419104,
+      "arguments": ["MACHINERY","1995-03-28"]
+    },{
+      "query_id": 21,
+      "start": 2460862,
+      "arguments": ["ROMANIA"]
+    },{
+      "query_id": 5,
+      "start": 2517424,
+      "arguments": ["EUROPE","1993-01-01"]
+    },{
+      "query_id": 16,
+      "start": 2533900,
+      "arguments": ["Brand#33","MEDIUM PLATED",16,1,37,34,10,41,20,31]
+    },{
+      "query_id": 11,
+      "start": 2576373,
+      "arguments": ["CHINA",1]
+    },{
+      "query_id": 20,
+      "start": 2610262,
+      "arguments": ["pink","1995-01-01","INDIA"]
+    },{
+      "query_id": 2,
+      "start": 2633551,
+      "arguments": [49,"COPPER","AMERICA"]
+    },{
+      "query_id": 5,
+      "start": 2688576,
+      "arguments": ["MIDDLE EAST","1993-01-01"]
+    },{
+      "query_id": 12,
+      "start": 2732968,
+      "arguments": ["REG AIR","FOB","1994-01-01"]
+    },{
+      "query_id": 21,
+      "start": 2739511,
+      "arguments": ["RUSSIA"]
+    },{
+      "query_id": 11,
+      "start": 2776611,
+      "arguments": ["EGYPT",1]
+    },{
+      "query_id": 21,
+      "start": 2819216,
+      "arguments": ["CANADA"]
+    },{
+      "query_id": 8,
+      "start": 2867315,
+      "arguments": ["ETHIOPIA","AFRICA","MEDIUM ANODIZED NICKEL"]
+    }
+  ]
+}

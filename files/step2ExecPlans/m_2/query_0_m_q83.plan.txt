@@ -1,0 +1,27 @@
+                                                                   QUERY PLAN                                                                   
+------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=67481.81..67482.06 rows=100 width=220) (actual time=778.825..778.833 rows=100 loops=1)
+   CTE sr_items
+     ->  Remote Subquery Scan on all (dn1)  (cost=32398.88..32491.49 rows=787 width=25) (actual time=384.028..399.525 rows=19201 loops=1)
+   CTE cr_items
+     ->  Remote Subquery Scan on all (dn3)  (cost=21437.15..21483.46 rows=394 width=25) (actual time=218.715..227.018 rows=8873 loops=1)
+   CTE wr_items
+     ->  Remote Subquery Scan on all (dn2)  (cost=13265.23..13268.68 rows=197 width=25) (actual time=120.684..123.560 rows=3595 loops=1)
+   ->  Sort  (cost=238.18..242.00 rows=1527 width=220) (actual time=778.824..778.827 rows=100 loops=1)
+         Sort Key: sr_items.item_id, sr_items.sr_item_qty
+         Sort Method: top-N heapsort  Memory: 38kB
+         ->  Hash Join  (cost=24.49..179.82 rows=1527 width=220) (actual time=749.228..778.131 rows=242 loops=1)
+               Hash Cond: (sr_items.item_id = cr_items.item_id)
+               ->  CTE Scan on sr_items  (cost=0.00..15.74 rows=787 width=76) (actual time=384.045..409.620 rows=19201 loops=1)
+               ->  Hash  (cost=19.64..19.64 rows=388 width=152) (actual time=365.137..365.137 rows=594 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 60kB
+                     ->  Hash Join  (cost=6.40..19.64 rows=388 width=152) (actual time=348.355..364.924 rows=594 loops=1)
+                           Hash Cond: (cr_items.item_id = wr_items.item_id)
+                           ->  CTE Scan on cr_items  (cost=0.00..7.88 rows=394 width=76) (actual time=218.732..233.190 rows=8873 loops=1)
+                           ->  Hash  (cost=3.94..3.94 rows=197 width=76) (actual time=129.548..129.548 rows=3595 loops=1)
+                                 Buckets: 4096 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 232kB
+                                 ->  CTE Scan on wr_items  (cost=0.00..3.94 rows=197 width=76) (actual time=120.703..127.964 rows=3595 loops=1)
+ Planning time: 3.564 ms
+ Execution time: 789.307 ms
+(23 rows)
+

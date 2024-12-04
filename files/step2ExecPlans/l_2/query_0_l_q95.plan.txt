@@ -1,0 +1,31 @@
+                                                                                     QUERY PLAN                                                                                      
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=5962595933.45..5962595933.45 rows=1 width=72) (actual time=1327752.927..1327752.928 rows=1 loops=1)
+   CTE ws_wh
+     ->  Remote Subquery Scan on all (dn4)  (cost=14075556.97..335751551.42 rows=17144789372 width=12) (actual time=46847.454..402757.295 rows=776157676 loops=1)
+   ->  Sort  (cost=5626844382.02..5626844382.03 rows=1 width=72) (actual time=1327752.926..1327752.926 rows=1 loops=1)
+         Sort Key: (count(DISTINCT ws_order_number))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Aggregate  (cost=5626844382.00..5626844382.01 rows=1 width=72) (actual time=1327752.917..1327752.917 rows=1 loops=1)
+               ->  Hash Join  (cost=3782280595.64..5626844381.70 rows=40 width=16) (actual time=1084886.738..1327749.504 rows=5770 loops=1)
+                     Hash Cond: (ws_order_number = ws_wh.ws_order_number)
+                     ->  Merge Semi Join  (cost=3396522830.27..5241086615.67 rows=80 width=24) (actual time=146629.090..389486.648 rows=5770 loops=1)
+                           Merge Cond: (ws_order_number = wr_order_number)
+                           ->  Remote Subquery Scan on all (dn5)  (cost=1374550.51..1374552.19 rows=80 width=16) (actual time=9403.480..9408.695 rows=7923 loops=1)
+                           ->  Merge Join  (cost=3395148377.24..4982231133.18 rows=102946612592 width=8) (actual time=137208.860..346495.727 rows=1016674375 loops=1)
+                                 Merge Cond: (wr_order_number = ws_wh_1.ws_order_number)
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=599025.69..648691.03 rows=4318725 width=4) (actual time=1864.971..6578.426 rows=7196079 loops=1)
+                                 ->  Materialize  (cost=3394549451.55..3480273398.41 rows=17144789372 width=4) (actual time=135343.870..243564.620 rows=1218387741 loops=1)
+                                       ->  Sort  (cost=3394549451.55..3437411424.98 rows=17144789372 width=4) (actual time=135343.863..187806.059 rows=775984407 loops=1)
+                                             Sort Key: ws_wh_1.ws_order_number
+                                             Sort Method: external merge  Disk: 10632352kB
+                                             ->  CTE Scan on ws_wh ws_wh_1  (cost=0.00..342895787.44 rows=17144789372 width=4) (actual time=0.058..62611.900 rows=776157676 loops=1)
+                     ->  Hash  (cost=385757762.87..385757762.87 rows=200 width=4) (actual time=938257.635..938257.635 rows=6000000 loops=1)
+                           Buckets: 8388608 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 276474kB
+                           ->  HashAggregate  (cost=385757760.87..385757762.87 rows=200 width=4) (actual time=936538.655..937639.049 rows=6000000 loops=1)
+                                 Group Key: ws_wh.ws_order_number
+                                 ->  CTE Scan on ws_wh  (cost=0.00..342895787.44 rows=17144789372 width=4) (actual time=46847.472..807197.283 rows=776157676 loops=1)
+ Planning time: 2.212 ms
+ Execution time: 1330220.803 ms
+(27 rows)
+

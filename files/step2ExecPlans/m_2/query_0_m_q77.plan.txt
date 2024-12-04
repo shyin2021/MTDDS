@@ -1,0 +1,42 @@
+                                                                   QUERY PLAN                                                                    
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=10000590980.89..10000590981.14 rows=100 width=132) (actual time=5530.091..5530.122 rows=100 loops=1)
+   CTE ss
+     ->  Remote Subquery Scan on all (dn3)  (cost=268580.91..268632.16 rows=41 width=68) (actual time=2685.331..2685.346 rows=51 loops=1)
+   CTE sr
+     ->  Remote Subquery Scan on all (dn3)  (cost=26324.04..26339.92 rows=41 width=68) (actual time=262.425..262.446 rows=51 loops=1)
+   CTE cs
+     ->  Remote Subquery Scan on all (dn4)  (cost=180926.89..180943.61 rows=24 width=68) (actual time=1507.728..1507.734 rows=13 loops=1)
+   CTE cr
+     ->  Remote Subquery Scan on all (dn4)  (cost=15633.32..15641.17 rows=24 width=68) (actual time=144.529..144.536 rows=13 loops=1)
+   CTE ws
+     ->  Remote Subquery Scan on all (dn1)  (cost=91372.20..91403.59 rows=80 width=68) (actual time=843.090..843.131 rows=101 loops=1)
+   CTE wr
+     ->  Remote Subquery Scan on all (dn4)  (cost=7945.83..7948.21 rows=80 width=68) (actual time=83.958..83.998 rows=101 loops=1)
+   ->  Sort  (cost=10000000072.22..10000000073.22 rows=401 width=132) (actual time=5530.090..5530.100 rows=100 loops=1)
+         Sort Key: ('store channel'::text), ss.s_store_sk
+         Sort Method: quicksort  Memory: 39kB
+         ->  MixedAggregate  (cost=1.33..10000000056.90 rows=401 width=132) (actual time=5529.456..5529.719 rows=169 loops=1)
+               Hash Key: ('store channel'::text), ss.s_store_sk
+               Hash Key: ('store channel'::text)
+               Group Key: ()
+               ->  Append  (cost=1.33..10000000028.97 rows=697 width=132) (actual time=2947.959..5528.501 rows=321 loops=1)
+                     ->  Hash Left Join  (cost=1.33..2.82 rows=41 width=132) (actual time=2947.958..2948.129 rows=51 loops=1)
+                           Hash Cond: (ss.s_store_sk = sr.s_store_sk)
+                           ->  CTE Scan on ss  (cost=0.00..0.82 rows=41 width=68) (actual time=2685.352..2685.456 rows=51 loops=1)
+                           ->  Hash  (cost=0.82..0.82 rows=41 width=68) (actual time=262.590..262.590 rows=51 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 11kB
+                                 ->  CTE Scan on sr  (cost=0.00..0.82 rows=41 width=68) (actual time=262.448..262.560 rows=51 loops=1)
+                     ->  Nested Loop  (cost=10000000000.00..10000000013.68 rows=576 width=132) (actual time=1652.321..1652.558 rows=169 loops=1)
+                           ->  CTE Scan on cs  (cost=0.00..0.48 rows=24 width=68) (actual time=1507.748..1507.775 rows=13 loops=1)
+                           ->  CTE Scan on cr  (cost=0.00..0.48 rows=24 width=64) (actual time=11.119..11.124 rows=13 loops=13)
+                     ->  Hash Left Join  (cost=2.60..5.50 rows=80 width=132) (actual time=927.416..927.759 rows=101 loops=1)
+                           Hash Cond: (ws.wp_web_page_sk = wr.wp_web_page_sk)
+                           ->  CTE Scan on ws  (cost=0.00..1.60 rows=80 width=68) (actual time=843.119..843.329 rows=101 loops=1)
+                           ->  Hash  (cost=1.60..1.60 rows=80 width=68) (actual time=84.267..84.267 rows=101 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 14kB
+                                 ->  CTE Scan on wr  (cost=0.00..1.60 rows=80 width=68) (actual time=83.989..84.206 rows=101 loops=1)
+ Planning time: 3.361 ms
+ Execution time: 5550.878 ms
+(38 rows)
+

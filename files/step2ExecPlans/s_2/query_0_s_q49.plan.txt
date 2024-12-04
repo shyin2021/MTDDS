@@ -1,0 +1,40 @@
+                                                                                 QUERY PLAN                                                                                  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=159766.38..159766.38 rows=3 width=84) (actual time=1249.115..1249.125 rows=34 loops=1)
+   ->  Sort  (cost=159766.38..159766.38 rows=3 width=84) (actual time=1249.114..1249.118 rows=34 loops=1)
+         Sort Key: ('web'::text), web.return_rank, web.currency_rank, web.item
+         Sort Method: quicksort  Memory: 27kB
+         ->  HashAggregate  (cost=159766.29..159766.32 rows=3 width=84) (actual time=1249.031..1249.046 rows=34 loops=1)
+               Group Key: ('web'::text), web.item, web.return_ratio, web.return_rank, web.currency_rank
+               ->  Append  (cost=26580.25..159766.26 rows=3 width=84) (actual time=219.235..1248.969 rows=34 loops=1)
+                     ->  Subquery Scan on web  (cost=26580.25..26580.28 rows=1 width=84) (actual time=219.235..219.273 rows=11 loops=1)
+                           Filter: ((web.return_rank <= 10) OR (web.currency_rank <= 10))
+                           Rows Removed by Filter: 8
+                           ->  WindowAgg  (cost=26580.25..26580.27 rows=1 width=84) (actual time=219.232..219.263 rows=19 loops=1)
+                                 ->  Sort  (cost=26580.25..26580.25 rows=1 width=76) (actual time=219.228..219.231 rows=19 loops=1)
+                                       Sort Key: currency_ratio
+                                       Sort Method: quicksort  Memory: 26kB
+                                       ->  WindowAgg  (cost=26580.21..26580.24 rows=1 width=76) (actual time=219.131..219.202 rows=19 loops=1)
+                                             ->  Remote Subquery Scan on all (dn1)  (cost=26580.21..26580.22 rows=1 width=68) (actual time=219.105..219.115 rows=19 loops=1)
+                     ->  Subquery Scan on catalog  (cost=52940.02..52940.05 rows=1 width=84) (actual time=411.413..411.501 rows=10 loops=1)
+                           Filter: ((catalog.return_rank <= 10) OR (catalog.currency_rank <= 10))
+                           Rows Removed by Filter: 40
+                           ->  WindowAgg  (cost=52940.02..52940.04 rows=1 width=84) (actual time=411.411..411.488 rows=50 loops=1)
+                                 ->  Sort  (cost=52940.02..52940.02 rows=1 width=76) (actual time=411.407..411.414 rows=50 loops=1)
+                                       Sort Key: currency_ratio
+                                       Sort Method: quicksort  Memory: 28kB
+                                       ->  WindowAgg  (cost=52939.98..52940.01 rows=1 width=76) (actual time=411.180..411.352 rows=50 loops=1)
+                                             ->  Remote Subquery Scan on all (dn1)  (cost=52939.98..52939.99 rows=1 width=68) (actual time=411.154..411.176 rows=50 loops=1)
+                     ->  Subquery Scan on store  (cost=80245.86..80245.89 rows=1 width=84) (actual time=618.147..618.188 rows=13 loops=1)
+                           Filter: ((store.return_rank <= 10) OR (store.currency_rank <= 10))
+                           Rows Removed by Filter: 6
+                           ->  WindowAgg  (cost=80245.86..80245.88 rows=1 width=84) (actual time=618.144..618.178 rows=19 loops=1)
+                                 ->  Sort  (cost=80245.86..80245.86 rows=1 width=76) (actual time=618.137..618.141 rows=19 loops=1)
+                                       Sort Key: currency_ratio
+                                       Sort Method: quicksort  Memory: 26kB
+                                       ->  WindowAgg  (cost=80245.82..80245.85 rows=1 width=76) (actual time=618.030..618.105 rows=19 loops=1)
+                                             ->  Remote Subquery Scan on all (dn1)  (cost=80245.82..80245.83 rows=1 width=68) (actual time=617.991..618.000 rows=19 loops=1)
+ Planning time: 6.261 ms
+ Execution time: 1253.529 ms
+(36 rows)
+

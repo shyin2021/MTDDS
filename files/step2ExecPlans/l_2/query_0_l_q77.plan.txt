@@ -1,0 +1,46 @@
+                                                                    QUERY PLAN                                                                     
+---------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=10008776369.53..10008776369.78 rows=100 width=132) (actual time=181021.287..181021.297 rows=100 loops=1)
+   CTE ss
+     ->  Remote Subquery Scan on all (dn3)  (cost=4014173.16..4014888.74 rows=241 width=68) (actual time=98939.590..98939.679 rows=201 loops=1)
+   CTE sr
+     ->  Remote Subquery Scan on all (dn2)  (cost=380505.39..380640.44 rows=241 width=68) (actual time=2487.300..2487.381 rows=201 loops=1)
+   CTE cs
+     ->  Remote Subquery Scan on all (dn5)  (cost=2698912.47..2699068.90 rows=30 width=68) (actual time=68542.816..68542.823 rows=16 loops=1)
+   CTE cr
+     ->  Remote Subquery Scan on all (dn6)  (cost=219719.67..219743.04 rows=30 width=68) (actual time=1412.175..1412.183 rows=16 loops=1)
+   CTE ws
+     ->  Remote Subquery Scan on all (dn1)  (cost=1356318.06..1356810.81 rows=1224 width=68) (actual time=8595.432..8960.954 rows=1020 loops=1)
+   CTE wr
+     ->  Remote Subquery Scan on all (dn2)  (cost=104417.73..104453.83 rows=1224 width=68) (actual time=660.454..666.759 rows=1020 loops=1)
+   ->  Sort  (cost=10000000763.79..10000000766.46 rows=1069 width=132) (actual time=181021.286..181021.289 rows=100 loops=1)
+         Sort Key: ('store channel'::text), ss.s_store_sk
+         Sort Method: top-N heapsort  Memory: 39kB
+         ->  MixedAggregate  (cost=7.83..10000000722.93 rows=1069 width=132) (actual time=181020.278..181020.925 rows=1241 loops=1)
+               Hash Key: ('store channel'::text), ss.s_store_sk
+               Hash Key: ('store channel'::text)
+               Group Key: ()
+               ->  Append  (cost=7.83..10000000443.79 rows=8681 width=132) (actual time=101427.505..181016.968 rows=1477 loops=1)
+                     ->  Hash Left Join  (cost=7.83..24.11 rows=290 width=132) (actual time=101427.504..101428.193 rows=201 loops=1)
+                           Hash Cond: (ss.s_store_sk = sr.s_store_sk)
+                           ->  CTE Scan on ss  (cost=0.00..4.82 rows=241 width=68) (actual time=98939.617..98940.051 rows=201 loops=1)
+                           ->  Hash  (cost=4.82..4.82 rows=241 width=68) (actual time=2487.867..2487.867 rows=201 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 19kB
+                                 ->  CTE Scan on sr  (cost=0.00..4.82 rows=241 width=68) (actual time=2487.324..2487.751 rows=201 loops=1)
+                     ->  Nested Loop  (cost=10000000000.00..10000000021.15 rows=900 width=132) (actual time=69955.044..69955.387 rows=256 loops=1)
+                           ->  CTE Scan on cs  (cost=0.00..0.60 rows=30 width=68) (actual time=68542.838..68542.873 rows=16 loops=1)
+                           ->  CTE Scan on cr  (cost=0.00..0.60 rows=30 width=64) (actual time=88.262..88.268 rows=16 loops=16)
+                     ->  Merge Left Join  (cost=174.51..311.72 rows=7491 width=132) (actual time=9631.996..9633.209 rows=1020 loops=1)
+                           Merge Cond: (ws.wp_web_page_sk = wr.wp_web_page_sk)
+                           ->  Sort  (cost=87.26..90.32 rows=1224 width=68) (actual time=8962.860..8962.971 rows=1020 loops=1)
+                                 Sort Key: ws.wp_web_page_sk
+                                 Sort Method: quicksort  Memory: 104kB
+                                 ->  CTE Scan on ws  (cost=0.00..24.48 rows=1224 width=68) (actual time=8595.453..8962.639 rows=1020 loops=1)
+                           ->  Sort  (cost=87.26..90.32 rows=1224 width=68) (actual time=669.125..669.217 rows=1020 loops=1)
+                                 Sort Key: wr.wp_web_page_sk
+                                 Sort Method: quicksort  Memory: 104kB
+                                 ->  CTE Scan on wr  (cost=0.00..24.48 rows=1224 width=68) (actual time=660.476..668.617 rows=1020 loops=1)
+ Planning time: 3.417 ms
+ Execution time: 181066.877 ms
+(42 rows)
+

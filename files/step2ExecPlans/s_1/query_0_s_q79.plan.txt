@@ -1,0 +1,20 @@
+                                                                              QUERY PLAN                                                                               
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=73757.98..73758.23 rows=100 width=152) (actual time=606.907..606.924 rows=100 loops=1)
+   ->  Sort  (cost=73757.98..73771.30 rows=5330 width=152) (actual time=606.905..606.912 rows=100 loops=1)
+         Sort Key: c_last_name, c_first_name, (substr((ms.s_city)::text, 1, 30)), ms.profit
+         Sort Method: top-N heapsort  Memory: 49kB
+         ->  Merge Join  (cost=68639.22..73554.27 rows=5330 width=152) (actual time=468.540..597.997 rows=15188 loops=1)
+               Merge Cond: (c_customer_sk = ms.ss_customer_sk)
+               ->  Remote Subquery Scan on all (dn1)  (cost=100.17..10771.94 rows=100000 width=56) (actual time=1.063..52.989 rows=99992 loops=1)
+               ->  Sort  (cost=68639.05..68652.38 rows=5330 width=79) (actual time=467.457..469.375 rows=15189 loops=1)
+                     Sort Key: ms.ss_customer_sk
+                     Sort Method: quicksort  Memory: 1633kB
+                     ->  Subquery Scan on ms  (cost=67479.93..68309.13 rows=5330 width=79) (actual time=372.139..461.278 rows=16169 loops=1)
+                           ->  Finalize GroupAggregate  (cost=67479.93..68255.83 rows=5330 width=83) (actual time=372.137..459.090 rows=16169 loops=1)
+                                 Group Key: ss_ticket_number, ss_customer_sk, ss_addr_sk, s_city
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=67479.93..68087.04 rows=4442 width=83) (actual time=372.091..399.276 rows=16169 loops=1)
+ Planning time: 0.647 ms
+ Execution time: 608.379 ms
+(16 rows)
+

@@ -259,15 +259,89 @@ public class ExecutionTraceTransformer {
 		
 	}
 	
-	public static void transformAllTraces(int SUTNumber, String inputDir, int NbTraces, String outputDir) throws SQLException {
+	public static void transformAllTraces(int SUTNumber, String inputDir, int NbTraces, String outputDir, int clusterSize, int accelerationFactor) throws SQLException {
+		// accelerationFactor : to multiply the ARF by a certain factor for some SUTs which are much more powerful
 		for(int i=1; i<=NbTraces; i++) {
-			transformTraces(inputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+".csv", outputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+"_formated.csv", SUTNumber, 11, i);
+			transformTraces(inputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+".csv", outputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+"_formated.csv", SUTNumber, clusterSize, i*accelerationFactor);
+		}
+	}
+	
+	public static void transformAllTracesSUT4(int SUTNumber, String inputDir, int NbTraces, String outputDir, int clusterSize, int accelerationFactor) throws SQLException {
+		// accelerationFactor : to multiply the ARF by a certain factor for some SUTs which are much more powerful
+		BufferedReader csvReader;
+		FileWriter csvWriter = null;
+		
+		for(int i=10; i<=NbTraces; i++) {
+			// merge the traces of all tenants
+			// write the header in the file of the merge traces
+			try {
+				csvWriter = new FileWriter(inputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+".csv"); //tenantName, queryName, timerName, event, TimeStamp
+				//write the file header
+				csvWriter.append("tenantName");
+				csvWriter.append(";");
+				csvWriter.append("queryName");
+				csvWriter.append(";");
+				csvWriter.append("timerName");
+				csvWriter.append(";");
+				csvWriter.append("event");
+				csvWriter.append(";");
+				csvWriter.append("TimeStamp");
+				csvWriter.append("\n");
+			} catch (IOException ie) {
+				System.out.println(ie);
+			} finally {
+
+			}
+			// add the traces of each tenant into the merged file
+			for(int j=1; j<=6; j++) { // 6 tenants		
+				try {
+					// load data from the input file into the relation InitialTraces
+					csvReader = new BufferedReader(new FileReader(inputDir+"Seperated\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_tenant"+j+"_ARF"+i+".csv"));
+					
+					//skip the file header
+					String row = csvReader.readLine();
+					while ((row = csvReader.readLine()) != null) {
+						String[] data = row.split(";");
+					    // retrieve one line of the traces
+					    String tenantName = data[0];
+					    String queryName = data[1];
+					    String timerName = data[2];
+					    timerName = timerName +"_" + tenantName; // change the timerName to make it unique
+					    String event = data[3];
+					    String TimeStamp = data[4];
+					    
+					    csvWriter.append(tenantName);
+						csvWriter.append(";");
+						csvWriter.append(queryName);
+						csvWriter.append(";");
+						csvWriter.append(timerName);
+						csvWriter.append(";");
+						csvWriter.append(event);
+						csvWriter.append(";");
+						csvWriter.append(TimeStamp);
+						csvWriter.append("\n");
+					}
+					csvReader.close();
+				}catch (IOException ie) {
+					System.out.println(ie);
+				} 
+			}
+			
+			try {
+				csvWriter.flush();
+				csvWriter.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// transform the merges traces
+			transformTraces(inputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+".csv", outputDir+"\\ExecutionTraces_SUT"+Integer.toString(SUTNumber)+"_ARF"+i+"_formated.csv", SUTNumber, clusterSize, i*accelerationFactor);
 		}
 	}
 	
 	public static void main(String[] args) throws SQLException
 	{
-		transformAllTraces(Integer.parseInt(args[0]), args[1], Integer.parseInt(args[2]), args[3]);
+		transformAllTraces(Integer.parseInt(args[0]), args[1], Integer.parseInt(args[2]), args[3], Integer.parseInt(args[4]), Integer.parseInt(args[5]));
 		System.out.println("Execution traces transformed.");
 	}	
 }

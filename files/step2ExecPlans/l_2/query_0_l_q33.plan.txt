@@ -1,0 +1,22 @@
+                                                                   QUERY PLAN                                                                    
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=8196978.04..8196978.29 rows=100 width=36) (actual time=163627.407..163627.431 rows=100 loops=1)
+   CTE ss
+     ->  Remote Subquery Scan on all (dn5)  (cost=4055690.02..4056208.47 rows=1000 width=36) (actual time=96876.049..96992.005 rows=999 loops=1)
+   CTE cs
+     ->  Remote Subquery Scan on all (dn6)  (cost=2741157.42..2741554.56 rows=1000 width=36) (actual time=30898.354..30945.152 rows=999 loops=1)
+   CTE ws
+     ->  Remote Subquery Scan on all (dn1)  (cost=1398793.36..1399129.86 rows=1000 width=36) (actual time=35652.842..35681.255 rows=999 loops=1)
+   ->  Sort  (cost=85.14..85.64 rows=200 width=36) (actual time=163627.405..163627.414 rows=100 loops=1)
+         Sort Key: (sum(ss.total_sales))
+         Sort Method: top-N heapsort  Memory: 33kB
+         ->  HashAggregate  (cost=75.00..77.50 rows=200 width=36) (actual time=163625.315..163626.029 rows=999 loops=1)
+               Group Key: ss.i_manufact_id
+               ->  Append  (cost=0.00..60.00 rows=3000 width=36) (actual time=96876.070..163622.536 rows=2997 loops=1)
+                     ->  CTE Scan on ss  (cost=0.00..20.00 rows=1000 width=36) (actual time=96876.069..96993.220 rows=999 loops=1)
+                     ->  CTE Scan on cs  (cost=0.00..20.00 rows=1000 width=36) (actual time=30898.373..30946.383 rows=999 loops=1)
+                     ->  CTE Scan on ws  (cost=0.00..20.00 rows=1000 width=36) (actual time=35652.860..35682.477 rows=999 loops=1)
+ Planning time: 2.606 ms
+ Execution time: 163640.470 ms
+(18 rows)
+

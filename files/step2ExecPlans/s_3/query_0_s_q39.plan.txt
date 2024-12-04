@@ -1,0 +1,36 @@
+                                                                                      QUERY PLAN                                                                                      
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=139149.73..139149.73 rows=2 width=152) (actual time=6552.444..6552.450 rows=230 loops=1)
+   Sort Key: inv1.w_warehouse_sk, inv1.i_item_sk, inv1.mean, inv1.cov, inv2.mean, inv2.cov
+   Sort Method: quicksort  Memory: 57kB
+   CTE inv
+     ->  Subquery Scan on foo  (cost=134281.00..136481.73 rows=58686 width=126) (actual time=3545.709..6539.490 rows=34172 loops=1)
+           ->  Finalize HashAggregate  (cost=134281.00..135601.44 rows=58686 width=94) (actual time=3545.706..6527.501 rows=34172 loops=1)
+                 Group Key: w_warehouse_sk, i_item_sk, d_moy
+                 Filter: (CASE avg(inv_quantity_on_hand) WHEN '0'::numeric THEN '0'::numeric ELSE (stddev_samp(inv_quantity_on_hand) / avg(inv_quantity_on_hand)) END > '1'::numeric)
+                 Rows Removed by Filter: 505828
+                 ->  Remote Subquery Scan on all (dn1)  (cost=127617.83..133058.40 rows=48904 width=94) (actual time=1988.045..2374.024 rows=540000 loops=1)
+   ->  Hash Join  (cost=1324.83..2667.99 rows=2 width=152) (actual time=6549.677..6552.362 rows=230 loops=1)
+         Hash Cond: ((inv1.i_item_sk = inv2.i_item_sk) AND (inv1.w_warehouse_sk = inv2.w_warehouse_sk))
+         ->  CTE Scan on inv inv1  (cost=0.00..1320.43 rows=293 width=76) (actual time=3546.155..3548.517 rows=3135 loops=1)
+               Filter: (d_moy = 1)
+               Rows Removed by Filter: 31037
+         ->  Hash  (cost=1320.43..1320.43 rows=293 width=76) (actual time=3003.496..3003.496 rows=3220 loops=1)
+               Buckets: 4096 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 235kB
+               ->  CTE Scan on inv inv2  (cost=0.00..1320.43 rows=293 width=76) (actual time=0.002..3002.867 rows=3220 loops=1)
+                     Filter: (d_moy = 2)
+                     Rows Removed by Filter: 30952
+ Planning time: 1.667 ms
+ Execution time: 6573.163 ms
+(22 rows)
+
+ w_warehouse_sk | i_item_sk | d_moy |         mean         |        cov         | w_warehouse_sk | i_item_sk | d_moy |         mean         |        cov         
+----------------+-----------+-------+----------------------+--------------------+----------------+-----------+-------+----------------------+--------------------
+              1 |     14411 |     1 | 186.2500000000000000 | 1.6853723203686013 |              1 |     14411 |     2 | 429.6666666666666667 | 1.1260057194031071
+              2 |      3638 |     1 | 152.6666666666666667 | 1.6131943546920131 |              2 |      3638 |     2 | 366.3333333333333333 | 1.0911246097178872
+              2 |     17267 |     1 | 172.7500000000000000 | 1.7575796617243184 |              2 |     17267 |     2 | 465.0000000000000000 | 1.0430055795607591
+              3 |      5617 |     1 | 263.0000000000000000 | 1.5303934532624829 |              3 |      5617 |     2 | 349.0000000000000000 | 1.4258030522792407
+              4 |      4658 |     1 | 155.0000000000000000 | 1.5277931552006774 |              4 |      4658 |     2 | 468.7500000000000000 | 1.0543579601578155
+              5 |      2501 |     1 | 202.3333333333333333 | 1.5223715684198995 |              5 |      2501 |     2 | 221.0000000000000000 | 1.1126315611842941
+(6 rows)
+

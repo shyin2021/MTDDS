@@ -1,0 +1,15 @@
+                                                                  QUERY PLAN                                                                  
+----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=10000149009.46..10000149009.47 rows=1 width=96) (actual time=1.579..1.580 rows=1 loops=1)
+   ->  Sort  (cost=10000149009.46..10000149009.47 rows=1 width=96) (actual time=1.578..1.579 rows=1 loops=1)
+         Sort Key: (sum(store_sales.ss_ext_sales_price)), (sum(store_sales_1.ss_ext_sales_price))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Nested Loop  (cost=10000149009.39..10000149009.45 rows=1 width=96) (actual time=1.570..1.571 rows=1 loops=1)
+               ->  Aggregate  (cost=74512.31..74512.32 rows=1 width=32) (actual time=1.358..1.358 rows=1 loops=1)
+                     ->  Remote Subquery Scan on all (dn1)  (cost=7660.79..74512.30 rows=1 width=6) (actual time=1.356..1.356 rows=0 loops=1)
+               ->  Aggregate  (cost=74497.08..74497.09 rows=1 width=32) (actual time=0.211..0.211 rows=1 loops=1)
+                     ->  Remote Subquery Scan on all (dn1)  (cost=7645.56..74497.08 rows=1 width=6) (actual time=0.210..0.210 rows=0 loops=1)
+ Planning time: 5.067 ms
+ Execution time: 4.035 ms
+(11 rows)
+

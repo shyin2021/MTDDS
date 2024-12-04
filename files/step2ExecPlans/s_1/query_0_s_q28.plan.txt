@@ -1,0 +1,24 @@
+                                                                                QUERY PLAN                                                                                
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=50000551951.62..50000551951.79 rows=1 width=288) (actual time=3339.299..3339.302 rows=1 loops=1)
+   ->  Nested Loop  (cost=50000551951.62..50000551951.79 rows=1 width=288) (actual time=3339.297..3339.300 rows=1 loops=1)
+         ->  Nested Loop  (cost=40000460115.86..40000460116.00 rows=1 width=240) (actual time=2728.942..2728.944 rows=1 loops=1)
+               ->  Nested Loop  (cost=30000368192.78..30000368192.89 rows=1 width=192) (actual time=2200.146..2200.148 rows=1 loops=1)
+                     ->  Nested Loop  (cost=20000276204.51..20000276204.59 rows=1 width=144) (actual time=1653.452..1653.453 rows=1 loops=1)
+                           ->  Nested Loop  (cost=10000184344.94..10000184344.99 rows=1 width=96) (actual time=1089.079..1089.079 rows=1 loops=1)
+                                 ->  Aggregate  (cost=91903.30..91903.31 rows=1 width=48) (actual time=526.285..526.286 rows=1 loops=1)
+                                       ->  Remote Subquery Scan on all (dn1)  (cost=200.00..91650.22 rows=33743 width=6) (actual time=17.588..476.540 rows=30760 loops=1)
+                                 ->  Aggregate  (cost=92441.64..92441.65 rows=1 width=48) (actual time=562.789..562.789 rows=1 loops=1)
+                                       ->  Remote Subquery Scan on all (dn1)  (cost=200.00..92154.50 rows=38286 width=6) (actual time=18.419..502.107 rows=37062 loops=1)
+                           ->  Aggregate  (cost=91859.57..91859.58 rows=1 width=48) (actual time=564.370..564.370 rows=1 loops=1)
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=200.00..91609.26 rows=33374 width=6) (actual time=22.509..511.068 rows=32718 loops=1)
+                     ->  Aggregate  (cost=91988.26..91988.27 rows=1 width=48) (actual time=546.690..546.690 rows=1 loops=1)
+                           ->  Remote Subquery Scan on all (dn1)  (cost=200.00..91729.81 rows=34460 width=6) (actual time=21.232..493.776 rows=33270 loops=1)
+               ->  Aggregate  (cost=91923.09..91923.10 rows=1 width=48) (actual time=528.791..528.791 rows=1 loops=1)
+                     ->  Remote Subquery Scan on all (dn1)  (cost=200.00..91668.76 rows=33910 width=6) (actual time=22.289..478.263 rows=30945 loops=1)
+         ->  Aggregate  (cost=91835.75..91835.76 rows=1 width=48) (actual time=610.350..610.350 rows=1 loops=1)
+               ->  Remote Subquery Scan on all (dn1)  (cost=200.00..91586.95 rows=33173 width=6) (actual time=20.136..550.730 rows=36525 loops=1)
+ Planning time: 2.275 ms
+ Execution time: 3342.567 ms
+(20 rows)
+

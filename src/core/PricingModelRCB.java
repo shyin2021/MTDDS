@@ -7,11 +7,11 @@ import java.sql.Statement;
 
 // This is an instantiation of the RCB pricing model. It can be modified or extended according to the provider's exact strategy.
 public class PricingModelRCB {
-	public static void generateBills() throws SQLException {
+	public static void generateBills(int gainFactor) throws SQLException {
 		// Empty the Price_per_query relation
 		String deleteBills = "DELETE FROM Price_per_query";
 		// compute the price for each query
-		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, nbNodes*(SELECT price FROM RSPrices WHERE resourceType='VM')*executionTime*1.0/3600"
+		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, nbNodes * (SELECT price FROM RSPrices WHERE resourceType='VM')*executionTime*" + gainFactor + "*1.0/3600"
 				+ " FROM FormatedTraces FT, tenants TN, DBSizesSF DS, PerfSLOs_per_Tenant PPT WHERE FT.tenantName=TN.tenantId AND TN.DBSize=DS.DBSize AND FT.queryName=PPT.queryId AND PPT.tenantId=TN.TenantID";
 		Statement stm = null;
 		Connection conn = null;
@@ -51,18 +51,18 @@ public class PricingModelRCB {
         return conn;	
     }
 	
-	public static void computeIntermediateMetrics(int SUTNumber, int clusterSize, int NbARF) throws SQLException {
-		generateBills();
+	public static void computeIntermediateMetrics(int SUTNumber, int clusterSize, int NbARF, int accelerationFactor, int gainFactor, boolean isolatedExecution) throws SQLException {
+		generateBills(gainFactor);
 		PricingModelCommon.computeTotalPerTenant();
 		for(int i=1; i<=NbARF; i++) {
-			System.out.println("[COUNTER] SUTNumber = " + SUTNumber + ", clusterSize = " + clusterSize + ", arrivalRateFactor = " + i);
-			PricingModelCommon.computeSuccesses(SUTNumber, clusterSize, i);
-			PricingModelCommon.computeBenefit(SUTNumber, clusterSize, i, "RCB");
+			System.out.println("[COUNTER] SUTNumber = " + SUTNumber + ", clusterSize = " + clusterSize + ", arrivalRateFactor = " + i*accelerationFactor);
+			PricingModelCommon.computeSuccesses(SUTNumber, clusterSize, i*accelerationFactor);
+			PricingModelCommon.computeBenefit(SUTNumber, clusterSize, i*accelerationFactor, "RCB", isolatedExecution);
 		}
 	} 
 	
 	public static void main(String[] args) throws SQLException {
 		//
-		computeIntermediateMetrics(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+		computeIntermediateMetrics(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Boolean.parseBoolean(args[5]));
 	}
 }

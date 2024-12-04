@@ -52,18 +52,18 @@ public class PricingModelIDS {
         return conn;	
     }
 	
-	public static void computeIntermediateMetrics(int SUTNumber, int clusterSize, int NbARF) throws SQLException {
+	public static void computeIntermediateMetrics(int SUTNumber, int clusterSize, int NbARF, int accelerationFactor, boolean isolatedExecution) throws SQLException {
 		generateBills();
 		PricingModelCommon.computeTotalPerTenant();
 		for(int i=1; i<=NbARF; i++) {
-			System.out.println("[COUNTER] SUTNumber = " + SUTNumber + ", clusterSize = " + clusterSize + ", arrivalRateFactor = " + i);
-			PricingModelCommon.computeSuccesses(SUTNumber, clusterSize, i);
-			PricingModelCommon.computeBenefit(SUTNumber, clusterSize, i, "IDS");
+			System.out.println("[COUNTER] SUTNumber = " + SUTNumber + ", clusterSize = " + clusterSize + ", arrivalRateFactor = " + i*accelerationFactor);
+			PricingModelCommon.computeSuccesses(SUTNumber, clusterSize, i*accelerationFactor);
+			PricingModelCommon.computeBenefit(SUTNumber, clusterSize, i*accelerationFactor, "IDS", isolatedExecution);
 		}
 	} 
 	
 	public static void main(String[] args) throws SQLException {
 		//
-		computeIntermediateMetrics(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+		computeIntermediateMetrics(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Boolean.parseBoolean(args[4]));
 	}
 }

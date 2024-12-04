@@ -1,0 +1,25 @@
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=87693.12..87693.15 rows=1 width=358) (actual time=35.243..35.243 rows=0 loops=1)
+   Group Key: ssales.c_last_name, ssales.c_first_name, ssales.s_store_name
+   Filter: (sum(ssales.netpaid) > $2)
+   CTE ssales
+     ->  GroupAggregate  (cost=87693.00..87693.05 rows=1 width=158) (actual time=35.227..35.228 rows=0 loops=1)
+           Group Key: c_last_name, c_first_name, s_store_name, ca_state, s_state, i_color, i_current_price, i_manager_id, i_units, i_size
+           ->  Remote Subquery Scan on all (dn1)  (cost=87693.00..87693.01 rows=1 width=132) (actual time=35.226..35.226 rows=0 loops=1)
+   InitPlan 2 (returns $2)
+     ->  Aggregate  (cost=0.02..0.04 rows=1 width=32) (never executed)
+           ->  CTE Scan on ssales ssales_1  (cost=0.00..0.02 rows=1 width=32) (never executed)
+   ->  Sort  (cost=0.03..0.04 rows=1 width=358) (actual time=35.242..35.242 rows=0 loops=1)
+         Sort Key: ssales.c_last_name, ssales.c_first_name, ssales.s_store_name
+         Sort Method: quicksort  Memory: 25kB
+         ->  CTE Scan on ssales  (cost=0.00..0.02 rows=1 width=358) (actual time=35.229..35.229 rows=0 loops=1)
+               Filter: (i_color = 'aquamarine'::bpchar)
+ Planning time: 5.797 ms
+ Execution time: 39.330 ms
+(17 rows)
+
+ c_last_name | c_first_name | s_store_name | paid 
+-------------+--------------+--------------+------
+(0 rows)
+

@@ -1,0 +1,15 @@
+                                                                                 QUERY PLAN                                                                                 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=4861066.18..4861066.43 rows=100 width=273) (actual time=1027135.562..1027135.570 rows=100 loops=1)
+   ->  Sort  (cost=4861066.18..4864017.66 rows=1180592 width=273) (actual time=1027135.561..1027135.564 rows=100 loops=1)
+         Sort Key: dw2.i_category, dw2.i_class, dw2.i_brand, dw2.i_product_name, dw2.d_year, dw2.d_qoy, dw2.d_moy, dw2.s_store_id, dw2.sumsales, dw2.rk
+         Sort Method: top-N heapsort  Memory: 51kB
+         ->  Subquery Scan on dw2  (cost=4683128.24..4815944.80 rows=1180592 width=273) (actual time=908538.822..1027134.955 rows=1101 loops=1)
+               Filter: (dw2.rk <= 100)
+               Rows Removed by Filter: 48816459
+               ->  WindowAgg  (cost=4683128.24..4771672.61 rows=3541775 width=273) (actual time=908538.819..1025163.571 rows=48817560 loops=1)
+                     ->  Remote Subquery Scan on all (dn2)  (cost=4683128.24..4709691.55 rows=3541775 width=265) (actual time=908538.785..937260.111 rows=48817560 loops=1)
+ Planning time: 1.317 ms
+ Execution time: 1028638.388 ms
+(11 rows)
+

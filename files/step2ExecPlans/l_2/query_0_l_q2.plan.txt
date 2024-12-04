@@ -1,0 +1,36 @@
+                                                                        QUERY PLAN                                                                         
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=12459421.26..12459421.28 rows=8 width=228) (actual time=366220.556..366220.625 rows=2513 loops=1)
+   Sort Key: wswscs.d_week_seq
+   Sort Method: quicksort  Memory: 293kB
+   CTE wscs
+     ->  Remote Subquery Scan on all (dn2)  (cost=0.00..4664675.04 rows=129601804 width=10) (actual time=4.701..120057.888 rows=215998302 loops=1)
+   CTE wswscs
+     ->  HashAggregate  (cost=7794170.51..7794342.99 rows=6272 width=228) (actual time=366207.632..366207.949 rows=264 loops=1)
+           Group Key: d_week_seq
+           ->  Hash Join  (cost=1829.15..2934102.86 rows=129601804 width=28) (actual time=48.981..264144.241 rows=215260799 loops=1)
+                 Hash Cond: (wscs.sold_date_sk = d_date_sk)
+                 ->  CTE Scan on wscs  (cost=0.00..2592036.08 rows=129601804 width=18) (actual time=4.720..221337.026 rows=215998302 loops=1)
+                 ->  Hash  (cost=2389.36..2389.36 rows=43829 width=18) (actual time=43.757..43.757 rows=73049 loops=1)
+                       Buckets: 131072 (originally 65536)  Batches: 1 (originally 1)  Memory Usage: 4734kB
+                       ->  Remote Subquery Scan on all (dn4)  (cost=100.00..2389.36 rows=43829 width=18) (actual time=1.743..19.539 rows=73049 loops=1)
+   ->  Hash Join  (cost=253.78..403.10 rows=8 width=228) (actual time=366213.877..366220.169 rows=2513 loops=1)
+         Hash Cond: (wswscs.d_week_seq = d_week_seq)
+         ->  CTE Scan on wswscs  (cost=0.00..125.44 rows=6272 width=228) (actual time=366207.634..366207.649 rows=264 loops=1)
+         ->  Hash  (cost=253.68..253.68 rows=8 width=232) (actual time=6.225..6.225 rows=2513 loops=1)
+               Buckets: 4096 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 326kB
+               ->  Hash Join  (cost=25.87..253.68 rows=8 width=232) (actual time=4.977..5.666 rows=2513 loops=1)
+                     Hash Cond: ((wswscs_1.d_week_seq - 53) = d_week_seq)
+                     ->  Hash Join  (cost=12.93..234.65 rows=219 width=228) (actual time=2.264..2.705 rows=365 loops=1)
+                           Hash Cond: (wswscs_1.d_week_seq = d_week_seq)
+                           ->  CTE Scan on wswscs wswscs_1  (cost=0.00..125.44 rows=6272 width=228) (actual time=0.001..0.400 rows=264 loops=1)
+                           ->  Hash  (cost=112.17..112.17 rows=219 width=4) (actual time=2.247..2.247 rows=365 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                                 ->  Remote Subquery Scan on all (dn2)  (cost=100.17..112.17 rows=219 width=4) (actual time=2.029..2.113 rows=365 loops=1)
+                     ->  Hash  (cost=112.17..112.17 rows=219 width=4) (actual time=2.708..2.708 rows=365 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 21kB
+                           ->  Remote Subquery Scan on all (dn4)  (cost=100.17..112.17 rows=219 width=4) (actual time=2.507..2.574 rows=365 loops=1)
+ Planning time: 0.586 ms
+ Execution time: 366703.501 ms
+(32 rows)
+

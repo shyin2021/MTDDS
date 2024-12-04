@@ -1,0 +1,20 @@
+                                                                                       QUERY PLAN                                                                                       
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=68878.56..68878.81 rows=100 width=266) (actual time=520.641..520.665 rows=100 loops=1)
+   ->  Sort  (cost=68878.56..68878.89 rows=132 width=266) (actual time=520.639..520.648 rows=100 loops=1)
+         Sort Key: ((tmp1.sum_sales - tmp1.avg_monthly_sales)), tmp1.s_store_name
+         Sort Method: top-N heapsort  Memory: 69kB
+         ->  Subquery Scan on tmp1  (cost=68854.82..68873.92 rows=132 width=266) (actual time=509.671..518.255 rows=1863 loops=1)
+               Filter: (CASE WHEN (tmp1.avg_monthly_sales <> '0'::numeric) THEN (abs((tmp1.sum_sales - tmp1.avg_monthly_sales)) / tmp1.avg_monthly_sales) ELSE NULL::numeric END > 0.1)
+               Rows Removed by Filter: 155
+               ->  WindowAgg  (cost=68854.82..68864.70 rows=395 width=234) (actual time=509.662..513.724 rows=2018 loops=1)
+                     ->  Sort  (cost=68854.82..68855.81 rows=395 width=202) (actual time=509.625..509.831 rows=2018 loops=1)
+                           Sort Key: i_category, i_brand, s_store_name, s_company_name
+                           Sort Method: quicksort  Memory: 585kB
+                           ->  Finalize GroupAggregate  (cost=68781.15..68837.79 rows=395 width=202) (actual time=467.655..507.141 rows=2018 loops=1)
+                                 Group Key: i_category, i_class, i_brand, s_store_name, s_company_name, d_moy
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=68781.15..68826.25 rows=330 width=202) (actual time=467.609..495.300 rows=2018 loops=1)
+ Planning time: 1.564 ms
+ Execution time: 522.402 ms
+(16 rows)
+

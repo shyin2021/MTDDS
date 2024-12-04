@@ -1,0 +1,32 @@
+                                                                                            QUERY PLAN                                                                                            
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=542879.90..542879.92 rows=8 width=126) (actual time=15372.706..15372.707 rows=8 loops=1)
+   ->  Sort  (cost=542879.90..542879.92 rows=8 width=126) (actual time=15372.705..15372.706 rows=8 loops=1)
+         Sort Key: ((GROUPING(s_state) + GROUPING(s_county))) DESC, (CASE WHEN (((GROUPING(s_state) + GROUPING(s_county))) = 0) THEN s_state ELSE NULL::bpchar END), (rank() OVER (?))
+         Sort Method: quicksort  Memory: 25kB
+         ->  WindowAgg  (cost=542879.52..542879.78 rows=8 width=126) (actual time=15372.686..15372.692 rows=8 loops=1)
+               ->  Sort  (cost=542879.52..542879.54 rows=8 width=94) (actual time=15372.683..15372.684 rows=8 loops=1)
+                     Sort Key: ((GROUPING(s_state) + GROUPING(s_county))), (CASE WHEN (GROUPING(s_county) = 0) THEN s_state ELSE NULL::bpchar END), (sum(ss_net_profit)) DESC
+                     Sort Method: quicksort  Memory: 25kB
+                     ->  MixedAggregate  (cost=269538.16..542879.40 rows=8 width=94) (actual time=15372.668..15372.671 rows=8 loops=1)
+                           Hash Key: s_state, s_county
+                           Hash Key: s_state
+                           Group Key: ()
+                           ->  Hash Join  (cost=269538.16..542611.15 rows=17874 width=24) (actual time=4964.032..12842.408 rows=5379182 loops=1)
+                                 Hash Cond: (ss_store_sk = s_store_sk)
+                                 ->  Remote Subquery Scan on all (dn4)  (cost=208.78..273744.37 rows=53622 width=10) (actual time=1.611..5308.097 rows=5509130 loops=1)
+                                 ->  Hash  (cost=269429.20..269429.20 rows=14 width=22) (actual time=4962.406..4962.406 rows=102 loops=1)
+                                       Buckets: 1024  Batches: 1  Memory Usage: 14kB
+                                       ->  Hash Join  (cost=269426.53..269429.20 rows=14 width=22) (actual time=4962.201..4962.361 rows=102 loops=1)
+                                             Hash Cond: (s_state = tmp1.s_state)
+                                             ->  Remote Subquery Scan on all (dn4)  (cost=100.00..103.52 rows=41 width=22) (actual time=2.249..2.288 rows=102 loops=1)
+                                             ->  Hash  (cost=269426.52..269426.52 rows=1 width=3) (actual time=4959.935..4959.935 rows=3 loops=1)
+                                                   Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                                   ->  Subquery Scan on tmp1  (cost=269426.40..269426.52 rows=1 width=3) (actual time=4959.915..4959.930 rows=3 loops=1)
+                                                         Filter: (tmp1.ranking <= 5)
+                                                         ->  WindowAgg  (cost=269426.40..269426.48 rows=3 width=43) (actual time=4959.912..4959.926 rows=3 loops=1)
+                                                               ->  Remote Subquery Scan on all (dn2)  (cost=269426.40..269426.43 rows=3 width=35) (actual time=4959.888..4959.891 rows=3 loops=1)
+ Planning time: 1.292 ms
+ Execution time: 15394.699 ms
+(28 rows)
+

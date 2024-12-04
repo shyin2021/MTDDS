@@ -1,0 +1,54 @@
+                                                                 QUERY PLAN                                                                  
+---------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=10000162736.58..10000162739.07 rows=100 width=132) (actual time=648.196..648.414 rows=44 loops=1)
+   CTE ss
+     ->  Finalize GroupAggregate  (cost=69574.38..69588.86 rows=12 width=68) (actual time=302.466..302.498 rows=6 loops=1)
+           Group Key: s_store_sk
+           ->  Remote Subquery Scan on all (dn1)  (cost=69574.38..69588.38 rows=24 width=68) (actual time=302.431..302.435 rows=6 loops=1)
+   CTE sr
+     ->  Finalize GroupAggregate  (cost=9007.31..9011.99 rows=12 width=68) (actual time=36.859..36.892 rows=6 loops=1)
+           Group Key: s_store_sk
+           ->  Remote Subquery Scan on all (dn1)  (cost=9007.31..9011.51 rows=24 width=68) (actual time=36.823..36.828 rows=6 loops=1)
+   CTE cs
+     ->  Finalize GroupAggregate  (cost=47699.03..47703.28 rows=6 width=68) (actual time=168.315..168.334 rows=4 loops=1)
+           Group Key: cs_call_center_sk
+           ->  Remote Subquery Scan on all (dn1)  (cost=47699.03..47703.04 rows=12 width=68) (actual time=168.280..168.283 rows=4 loops=1)
+   CTE cr
+     ->  Finalize GroupAggregate  (cost=6648.94..6650.25 rows=6 width=68) (actual time=26.083..26.110 rows=5 loops=1)
+           Group Key: cr_call_center_sk
+           ->  Remote Subquery Scan on all (dn1)  (cost=6648.94..6650.08 rows=6 width=68) (actual time=26.047..26.051 rows=5 loops=1)
+   CTE ws
+     ->  Finalize GroupAggregate  (cost=25261.08..25281.90 rows=60 width=68) (actual time=92.811..92.994 rows=30 loops=1)
+           Group Key: wp_web_page_sk
+           ->  Remote Subquery Scan on all (dn1)  (cost=25261.08..25279.50 rows=120 width=68) (actual time=92.773..92.785 rows=30 loops=1)
+   CTE wr
+     ->  GroupAggregate  (cost=4490.07..4490.94 rows=29 width=68) (actual time=18.750..21.004 rows=40 loops=1)
+           Group Key: wp_web_page_sk
+           ->  Remote Subquery Scan on all (dn1)  (cost=4490.07..4490.29 rows=29 width=16) (actual time=18.630..19.279 rows=1061 loops=1)
+   ->  GroupAggregate  (cost=10000000009.35..10000000014.77 rows=217 width=132) (actual time=648.195..648.405 rows=44 loops=1)
+         Group Key: ('store channel'::text), ss.s_store_sk
+         Group Key: ('store channel'::text)
+         Group Key: ()
+         ->  Sort  (cost=10000000009.35..10000000009.62 rows=108 width=132) (actual time=648.173..648.179 rows=56 loops=1)
+               Sort Key: ('store channel'::text), ss.s_store_sk
+               Sort Method: quicksort  Memory: 29kB
+               ->  Append  (cost=0.39..10000000005.70 rows=108 width=132) (actual time=339.396..648.088 rows=56 loops=1)
+                     ->  Hash Left Join  (cost=0.39..0.83 rows=12 width=132) (actual time=339.395..339.440 rows=6 loops=1)
+                           Hash Cond: (ss.s_store_sk = sr.s_store_sk)
+                           ->  CTE Scan on ss  (cost=0.00..0.24 rows=12 width=68) (actual time=302.470..302.505 rows=6 loops=1)
+                           ->  Hash  (cost=0.24..0.24 rows=12 width=68) (actual time=36.910..36.910 rows=6 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                 ->  CTE Scan on sr  (cost=0.00..0.24 rows=12 width=68) (actual time=36.863..36.902 rows=6 loops=1)
+                     ->  Nested Loop  (cost=10000000000.00..10000000000.99 rows=36 width=132) (actual time=194.412..194.492 rows=20 loops=1)
+                           ->  CTE Scan on cs  (cost=0.00..0.12 rows=6 width=68) (actual time=168.318..168.340 rows=4 loops=1)
+                           ->  CTE Scan on cr  (cost=0.00..0.12 rows=6 width=64) (actual time=6.522..6.531 rows=5 loops=4)
+                     ->  Hash Left Join  (cost=0.94..2.81 rows=60 width=132) (actual time=113.896..114.143 rows=30 loops=1)
+                           Hash Cond: (ws.wp_web_page_sk = wr.wp_web_page_sk)
+                           ->  CTE Scan on ws  (cost=0.00..1.20 rows=60 width=68) (actual time=92.815..93.018 rows=30 loops=1)
+                           ->  Hash  (cost=0.58..0.58 rows=29 width=68) (actual time=21.066..21.066 rows=40 loops=1)
+                                 Buckets: 1024  Batches: 1  Memory Usage: 11kB
+                                 ->  CTE Scan on wr  (cost=0.00..0.58 rows=29 width=68) (actual time=18.754..21.041 rows=40 loops=1)
+ Planning time: 3.390 ms
+ Execution time: 668.070 ms
+(50 rows)
+

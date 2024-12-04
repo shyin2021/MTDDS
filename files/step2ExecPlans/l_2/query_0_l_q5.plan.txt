@@ -1,0 +1,24 @@
+                                                                      QUERY PLAN                                                                      
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=11014027.26..11014027.51 rows=100 width=160) (actual time=258952.704..258952.712 rows=100 loops=1)
+   CTE ssr
+     ->  Remote Subquery Scan on all (dn6)  (cost=4391721.32..4391976.07 rows=120 width=145) (actual time=103317.860..103743.430 rows=201 loops=1)
+   CTE csr
+     ->  Remote Subquery Scan on all (dn6)  (cost=2916939.20..2919430.82 rows=12240 width=145) (actual time=105518.122..106017.804 rows=2228 loops=1)
+   CTE wsr
+     ->  Remote Subquery Scan on all (dn2)  (cost=3701819.91..3701829.15 rows=7 width=145) (actual time=49162.498..49162.504 rows=12 loops=1)
+   ->  Sort  (cost=791.23..794.82 rows=1438 width=160) (actual time=258952.702..258952.705 rows=100 loops=1)
+         Sort Key: ('store channel'::text), (('store'::text || (ssr.s_store_id)::text))
+         Sort Method: top-N heapsort  Memory: 48kB
+         ->  MixedAggregate  (cost=0.00..736.27 rows=1438 width=160) (actual time=258941.486..258944.306 rows=2445 loops=1)
+               Hash Key: ('store channel'::text), (('store'::text || (ssr.s_store_id)::text))
+               Hash Key: ('store channel'::text)
+               Group Key: ()
+               ->  Append  (cost=0.00..340.09 rows=12367 width=160) (actual time=103317.909..258934.336 rows=2441 loops=1)
+                     ->  CTE Scan on ssr  (cost=0.00..3.30 rows=120 width=160) (actual time=103317.908..103744.327 rows=201 loops=1)
+                     ->  CTE Scan on csr  (cost=0.00..336.60 rows=12240 width=160) (actual time=105518.162..106027.061 rows=2228 loops=1)
+                     ->  CTE Scan on wsr  (cost=0.00..0.19 rows=7 width=160) (actual time=49162.529..49162.584 rows=12 loops=1)
+ Planning time: 1.482 ms
+ Execution time: 259006.003 ms
+(20 rows)
+

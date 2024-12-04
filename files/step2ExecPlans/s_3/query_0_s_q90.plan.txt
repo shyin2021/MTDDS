@@ -1,0 +1,15 @@
+                                                                    QUERY PLAN                                                                     
+---------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=10000051521.77..10000051521.77 rows=1 width=32) (actual time=236.443..236.444 rows=1 loops=1)
+   ->  Sort  (cost=10000051521.77..10000051521.77 rows=1 width=32) (actual time=236.442..236.443 rows=1 loops=1)
+         Sort Key: ((((count(*)))::numeric(15,4) / ((count(*)))::numeric(15,4)))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Nested Loop  (cost=10000051521.70..10000051521.76 rows=1 width=32) (actual time=236.433..236.434 rows=1 loops=1)
+               ->  Finalize Aggregate  (cost=25760.68..25760.69 rows=1 width=8) (actual time=128.255..128.255 rows=1 loops=1)
+                     ->  Remote Subquery Scan on all (dn1)  (cost=25760.46..25760.68 rows=2 width=8) (actual time=128.239..128.241 rows=1 loops=1)
+               ->  Finalize Aggregate  (cost=25761.01..25761.02 rows=1 width=8) (actual time=108.169..108.169 rows=1 loops=1)
+                     ->  Remote Subquery Scan on all (dn1)  (cost=25760.79..25761.01 rows=2 width=8) (actual time=108.153..108.155 rows=1 loops=1)
+ Planning time: 1.104 ms
+ Execution time: 238.231 ms
+(11 rows)
+

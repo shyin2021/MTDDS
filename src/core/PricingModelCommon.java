@@ -118,12 +118,12 @@ public class PricingModelCommon {
 	}
 	
 	// compute some important intermediate metrics and the final metrics
-	public static void computeBenefit(int SUTNumber, int clusterSize, int arrivalRateFactor, String pricingModel) throws SQLException{
+	public static void computeBenefit(int SUTNumber, int clusterSize, int arrivalRateFactor, String pricingModel, boolean isolatedExecution) throws SQLException{
 		String dropTmp = "DROP TABLE IF EXISTS tmp";
 		String createTmp = "CREATE TABLE IF NOT EXISTS tmp(SUTNumber number(3),clusterSize number(5), arrivalRateFactor number(5), pricingModel varchar(20), depense number(10,3), income number(10, 3), "
 				+ "benefit number(10,3), totalHours number(10,3), UBF_centsPerHour number(10,3), satisfactionRate number(10,3), fairness number(10,3), tpat number(10,3))";
 		String initTmp = "INSERT INTO tmp VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0, 0, 0)";
-		String setTotalDepense = "UPDATE tmp SET depense = (SELECT max(finishTime) - min(launchTime) FROM formatedTraces WHERE SUTNumber = ? AND clusterSize=? AND arrivalRateFactor=?) * (SELECT price FROM RSPrices WHERE resourceType='VM')*1.0/3600000";
+		String setTotalDepense = "UPDATE tmp SET depense = (SELECT max(finishTime) - min(launchTime) FROM formatedTraces WHERE SUTNumber = ? AND clusterSize=? AND arrivalRateFactor=?) * (SELECT price FROM RSPrices WHERE resourceType='VM')*" + clusterSize +"*1.0/3600000";
 		String setTotalIncome = "UPDATE tmp SET income = (SELECT sum(total_cents)*1.0 FROM TotalPerTenant WHERE SUTNumber = ? AND clusterSize=? AND arrivalRateFactor=?)";
 		String setBenefit = "UPDATE tmp SET benefit = income - depense";
 		String setTotalTime = "UPDATE tmp SET totalHours =(SELECT (max(finishTime) - min(launchTime))/1000*1.0 FROM formatedTraces WHERE SUTNumber = ? AND clusterSize=? AND arrivalRateFactor=?)/3600";
@@ -144,6 +144,7 @@ public class PricingModelCommon {
 			stm = conn.createStatement();
 			stm.execute(dropTmp);
 			stm.execute(createTmp);
+			stm.close();
 			pstm = conn.prepareStatement(initTmp);
 			pstm.setInt(1, SUTNumber);
 			pstm.setInt(2, clusterSize);
@@ -152,14 +153,36 @@ public class PricingModelCommon {
 			pstm.executeUpdate();
 			pstm.close();
 			
-			
-			pstm = conn.prepareStatement(setTotalDepense);
-			pstm.setInt(1, SUTNumber);
-			pstm.setInt(2, clusterSize);
-			pstm.setInt(3, arrivalRateFactor);
-			pstm.executeUpdate();
-			pstm.close();
-			System.out.println("depense computed.");
+			if(!isolatedExecution)
+			{
+				pstm = conn.prepareStatement(setTotalDepense);
+				pstm.setInt(1, SUTNumber);
+				pstm.setInt(2, clusterSize);
+				pstm.setInt(3, arrivalRateFactor);
+				pstm.executeUpdate();
+				pstm.close();
+				System.out.println("depense computed.");
+			}else {
+				Statement stm1 = conn.createStatement();
+				try {
+					stm1.execute("DROP TABLE TotalTimePerTenant");
+					System.out.println("TotalTimePerTenant dropped.");
+				} catch(SQLException se){
+					System.out.println(se);
+				} 
+				
+				String createTotalTimePerTenant = "CREATE TABLE TotalTimePerTenant AS SELECT tenantName, (max(finishTime) - min(launchTime)) as totalTime FROM formatedTraces WHERE SUTNumber = ? AND clusterSize=? AND arrivalRateFactor=? GROUP BY tenantName";
+				PreparedStatement preparedStatement = conn.prepareStatement(createTotalTimePerTenant);
+				preparedStatement.setInt(1, SUTNumber);
+				preparedStatement.setInt(2, clusterSize);
+				preparedStatement.setInt(3, arrivalRateFactor);
+				preparedStatement.execute();
+				preparedStatement.close();
+				String setTotalDepenseIso = "UPDATE tmp SET depense = (SELECT SUM(totalTime*nbNodes) FROM TotalTimePerTenant TTPT, tenants TN, DBSizesSF DS WHERE TTPT.tenantName=TN.tenantId AND TN.DBSize=DS.DBSize)*(SELECT price FROM RSPrices WHERE resourceType='VM')*1.0/3600000";
+				stm1.execute(setTotalDepenseIso);
+				System.out.println("depense computed.");
+				stm1.close();
+			}
 			
 			pstm = conn.prepareStatement(setTotalIncome);
 			pstm.setInt(1, SUTNumber);

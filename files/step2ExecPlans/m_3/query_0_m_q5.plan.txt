@@ -1,0 +1,24 @@
+                                                                  QUERY PLAN                                                                   
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=737234.57..737234.82 rows=100 width=160) (actual time=14522.319..14522.327 rows=100 loops=1)
+   CTE ssr
+     ->  Remote Subquery Scan on all (dn3)  (cost=293696.58..293706.22 rows=20 width=145) (actual time=6284.878..6284.900 rows=51 loops=1)
+   CTE csr
+     ->  Remote Subquery Scan on all (dn1)  (cost=195640.38..195834.88 rows=1301 width=145) (actual time=4101.293..4139.885 rows=1120 loops=1)
+   CTE wsr
+     ->  Remote Subquery Scan on all (dn4)  (cost=247593.72..247594.71 rows=8 width=145) (actual time=4082.823..4082.834 rows=21 loops=1)
+   ->  Sort  (cost=98.76..99.76 rows=401 width=160) (actual time=14522.318..14522.320 rows=100 loops=1)
+         Sort Key: ('store channel'::text), (('store'::text || (ssr.s_store_id)::text))
+         Sort Method: top-N heapsort  Memory: 48kB
+         ->  MixedAggregate  (cost=0.00..83.44 rows=401 width=160) (actual time=14513.784..14515.494 rows=1196 loops=1)
+               Hash Key: ('store channel'::text), (('store'::text || (ssr.s_store_id)::text))
+               Hash Key: ('store channel'::text)
+               Group Key: ()
+               ->  Append  (cost=0.00..36.55 rows=1329 width=160) (actual time=6284.925..14511.284 rows=1192 loops=1)
+                     ->  CTE Scan on ssr  (cost=0.00..0.55 rows=20 width=160) (actual time=6284.924..6285.150 rows=51 loops=1)
+                     ->  CTE Scan on csr  (cost=0.00..35.78 rows=1301 width=160) (actual time=4101.325..4143.052 rows=1120 loops=1)
+                     ->  CTE Scan on wsr  (cost=0.00..0.22 rows=8 width=160) (actual time=4082.854..4082.949 rows=21 loops=1)
+ Planning time: 1.512 ms
+ Execution time: 14531.015 ms
+(20 rows)
+

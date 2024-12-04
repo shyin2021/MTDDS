@@ -1,0 +1,24 @@
+                                                                                        QUERY PLAN                                                                                        
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=4385817.39..4387443.84 rows=10 width=36) (actual time=110226.991..110479.188 rows=9 loops=1)
+   ->  GroupAggregate  (cost=4385817.39..4387443.84 rows=10 width=36) (actual time=110226.989..110479.184 rows=9 loops=1)
+         Group Key: s_store_name
+         ->  Sort  (cost=4385817.39..4386359.50 rows=216844 width=10) (actual time=110195.936..110265.652 rows=1774388 loops=1)
+               Sort Key: s_store_name
+               Sort Method: quicksort  Memory: 132327kB
+               ->  Hash Join  (cost=309922.99..4366598.18 rows=216844 width=10) (actual time=7135.757..109422.367 rows=1774388 loops=1)
+                     Hash Cond: (substr((s_zip)::text, 1, 2) = substr(a2.ca_zip, 1, 2))
+                     ->  Remote Subquery Scan on all (dn2)  (cost=226.85..4038145.04 rows=216844 width=21) (actual time=4.514..89506.427 rows=7727822 loops=1)
+                     ->  Hash  (cost=309793.63..309793.63 rows=200 width=32) (actual time=7130.918..7130.918 rows=16 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                           ->  Subquery Scan on a2  (cost=69116.13..309793.63 rows=200 width=32) (actual time=7130.693..7130.901 rows=16 loops=1)
+                                 ->  HashSetOp Intersect  (cost=69116.13..309791.63 rows=200 width=36) (actual time=7130.691..7130.894 rows=16 loops=1)
+                                       ->  Append  (cost=69116.13..308485.45 rows=522473 width=36) (actual time=937.411..7126.471 rows=9948 loops=1)
+                                             ->  Subquery Scan on "*SELECT* 2"  (cost=69116.13..69923.32 rows=3268 width=36) (actual time=937.411..943.243 rows=3705 loops=1)
+                                                   ->  Remote Subquery Scan on all (dn5)  (cost=69116.13..69890.64 rows=3268 width=32) (actual time=937.399..941.577 rows=3705 loops=1)
+                                             ->  Subquery Scan on "*SELECT* 1"  (cost=200.00..238562.13 rows=519205 width=36) (actual time=528.129..6181.826 rows=6243 loops=1)
+                                                   ->  Remote Subquery Scan on all (dn3)  (cost=200.00..233370.08 rows=519205 width=32) (actual time=528.117..6178.733 rows=6243 loops=1)
+ Planning time: 1.936 ms
+ Execution time: 110486.746 ms
+(20 rows)
+

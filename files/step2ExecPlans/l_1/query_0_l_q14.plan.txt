@@ -1,0 +1,204 @@
+                                                                                                 QUERY PLAN                                                                                                 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=25217357.48..25217359.41 rows=100 width=108) (actual time=912236.815..912236.906 rows=100 loops=1)
+   CTE cross_items
+     ->  Hash Join  (cost=8686432.60..8696976.50 rows=39 width=4) (actual time=443233.366..443446.015 rows=203098 loops=1)
+           Hash Cond: ((i_brand_id = r2.brand_id) AND (i_class_id = r2.class_id) AND (i_category_id = r2.category_id))
+           ->  Remote Subquery Scan on all (dn1)  (cost=100.00..12250.40 rows=122400 width=16) (actual time=11.520..116.225 rows=204000 loops=1)
+           ->  Hash  (cost=8686218.40..8686218.40 rows=12240 width=12) (actual time=443221.808..443221.808 rows=26727 loops=1)
+                 Buckets: 32768 (originally 16384)  Batches: 1 (originally 1)  Memory Usage: 1405kB
+                 ->  Subquery Scan on r2  (cost=11335.70..8686218.40 rows=12240 width=12) (actual time=443216.135..443218.906 rows=27095 loops=1)
+                       ->  HashSetOp Intersect  (cost=11335.70..8686096.00 rows=12240 width=16) (actual time=443216.133..443216.960 rows=27095 loops=1)
+                             ->  Append  (cost=11335.70..8682766.26 rows=443965 width=16) (actual time=377498.129..431571.885 rows=43230594 loops=1)
+                                   ->  Result  (cost=11335.70..7236083.42 rows=12240 width=16) (actual time=377498.128..377502.761 rows=27099 loops=1)
+                                         ->  HashSetOp Intersect  (cost=11335.70..7235961.02 rows=12240 width=16) (actual time=377498.126..377499.968 rows=27099 loops=1)
+                                               ->  Append  (cost=11335.70..7216533.75 rows=2590303 width=16) (actual time=91.764..314307.034 rows=250645536 loops=1)
+                                                     ->  Subquery Scan on "*SELECT* 1"  (cost=11335.70..4346503.50 rows=1726868 width=16) (actual time=91.763..186387.245 rows=164990237 loops=1)
+                                                           ->  Remote Subquery Scan on all (dn5)  (cost=11335.70..4329234.82 rows=1726868 width=12) (actual time=91.748..125472.291 rows=164990237 loops=1)
+                                                     ->  Subquery Scan on "*SELECT* 2"  (cost=11335.70..2870030.24 rows=863435 width=16) (actual time=20953.194..110274.288 rows=85655299 loops=1)
+                                                           ->  Remote Subquery Scan on all (dn5)  (cost=11335.70..2861395.89 rows=863435 width=12) (actual time=20953.173..79869.053 rows=85655299 loops=1)
+                                   ->  Subquery Scan on "*SELECT* 3"  (cost=11335.70..1446682.84 rows=431725 width=16) (actual time=91.193..50890.184 rows=43203495 loops=1)
+                                         ->  Remote Subquery Scan on all (dn6)  (cost=11335.70..1442365.59 rows=431725 width=12) (actual time=91.178..33826.175 rows=43203495 loops=1)
+   CTE avg_sales
+     ->  Remote Subquery Scan on all (dn1)  (cost=8416250.22..8416250.23 rows=1 width=32) (actual time=228775.918..228775.920 rows=1 loops=1)
+   ->  GroupAggregate  (cost=8104130.75..8104133.01 rows=117 width=108) (actual time=912236.814..912236.890 rows=100 loops=1)
+         Group Key: ('store'::text), i_brand_id, i_class_id, i_category_id
+         Group Key: ('store'::text), i_brand_id, i_class_id
+         Group Key: ('store'::text), i_brand_id
+         Group Key: ('store'::text)
+         Group Key: ()
+         ->  Sort  (cost=8104130.75..8104130.82 rows=29 width=84) (actual time=912236.804..912236.807 rows=89 loops=1)
+               Sort Key: ('store'::text), i_brand_id, i_class_id, i_category_id
+               Sort Method: quicksort  Memory: 8216kB
+               ->  Append  (cost=4027870.65..8104130.04 rows=29 width=84) (actual time=792982.269..912191.793 rows=65835 loops=1)
+                     ->  GroupAggregate  (cost=4027870.65..4027871.37 rows=17 width=84) (actual time=792982.268..796880.229 rows=21945 loops=1)
+                           Group Key: i_brand_id, i_class_id, i_category_id
+                           Filter: (sum(((ss_quantity)::numeric * ss_list_price)) > $8)
+                           InitPlan 3 (returns $8)
+                             ->  CTE Scan on avg_sales  (cost=0.00..0.02 rows=1 width=32) (actual time=228775.940..228775.943 rows=1 loops=1)
+                           ->  Sort  (cost=4027870.63..4027870.67 rows=17 width=22) (actual time=564195.440..565464.330 rows=8746456 loops=1)
+                                 Sort Key: i_brand_id, i_class_id, i_category_id
+                                 Sort Method: quicksort  Memory: 1070097kB
+                                 ->  Hash Join  (cost=10152.60..4027870.28 rows=17 width=22) (actual time=443876.920..558627.031 rows=8746456 loops=1)
+                                       Hash Cond: (ss_item_sk = i_item_sk)
+                                       ->  Remote Subquery Scan on all (dn1)  (cost=210.97..4019010.73 rows=70967 width=14) (actual time=14.475..103352.682 rows=8786707 loops=1)
+                                       ->  Hash  (cost=10041.14..10041.14 rows=39 width=20) (actual time=443862.410..443862.410 rows=203098 loops=1)
+                                             Buckets: 262144 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 12362kB
+                                             ->  Hash Join  (cost=1.76..10041.14 rows=39 width=20) (actual time=443600.410..443822.538 rows=203098 loops=1)
+                                                   Hash Cond: (i_item_sk = cross_items.ss_item_sk)
+                                                   ->  Remote Subquery Scan on all (dn5)  (cost=100.00..12250.40 rows=122400 width=16) (actual time=9.898..106.652 rows=204000 loops=1)
+                                                   ->  Hash  (cost=1.27..1.27 rows=39 width=4) (actual time=443590.483..443590.483 rows=203098 loops=1)
+                                                         Buckets: 262144 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 9189kB
+                                                         ->  HashAggregate  (cost=0.88..1.27 rows=39 width=4) (actual time=443542.894..443574.049 rows=203098 loops=1)
+                                                               Group Key: cross_items.ss_item_sk
+                                                               ->  CTE Scan on cross_items  (cost=0.00..0.78 rows=39 width=4) (actual time=443233.369..443485.507 rows=203098 loops=1)
+                     ->  GroupAggregate  (cost=2710122.08..2710122.42 rows=8 width=84) (actual time=74698.493..76756.327 rows=21945 loops=1)
+                           Group Key: i_brand_id, i_class_id, i_category_id
+                           Filter: (sum(((cs_quantity)::numeric * cs_list_price)) > $9)
+                           InitPlan 4 (returns $9)
+                             ->  CTE Scan on avg_sales avg_sales_1  (cost=0.00..0.02 rows=1 width=32) (actual time=0.001..0.001 rows=1 loops=1)
+                           ->  Sort  (cost=2710122.06..2710122.08 rows=8 width=22) (actual time=74692.590..75338.828 rows=4617093 loops=1)
+                                 Sort Key: i_brand_id, i_class_id, i_category_id
+                                 Sort Method: quicksort  Memory: 556955kB
+                                 ->  Hash Join  (cost=10152.60..2710121.94 rows=8 width=22) (actual time=63890.731..72701.482 rows=4617093 loops=1)
+                                       Hash Cond: (cs_item_sk = i_item_sk)
+                                       ->  Remote Subquery Scan on all (dn2)  (cost=210.97..2700721.36 rows=35484 width=14) (actual time=63503.266..69115.841 rows=4638343 loops=1)
+                                       ->  Hash  (cost=10041.14..10041.14 rows=39 width=20) (actual time=387.422..387.422 rows=203098 loops=1)
+                                             Buckets: 262144 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 12362kB
+                                             ->  Hash Join  (cost=1.76..10041.14 rows=39 width=20) (actual time=124.618..350.495 rows=203098 loops=1)
+                                                   Hash Cond: (i_item_sk = cross_items_1.ss_item_sk)
+                                                   ->  Remote Subquery Scan on all (dn6)  (cost=100.00..12250.40 rows=122400 width=16) (actual time=13.376..112.927 rows=204000 loops=1)
+                                                   ->  Hash  (cost=1.27..1.27 rows=39 width=4) (actual time=111.206..111.206 rows=203098 loops=1)
+                                                         Buckets: 262144 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 9189kB
+                                                         ->  HashAggregate  (cost=0.88..1.27 rows=39 width=4) (actual time=63.203..94.994 rows=203098 loops=1)
+                                                               Group Key: cross_items_1.ss_item_sk
+                                                               ->  CTE Scan on cross_items cross_items_1  (cost=0.00..0.78 rows=39 width=4) (actual time=0.002..14.205 rows=203098 loops=1)
+                     ->  GroupAggregate  (cost=1366135.79..1366135.96 rows=4 width=84) (actual time=37536.901..38552.151 rows=21945 loops=1)
+                           Group Key: i_brand_id, i_class_id, i_category_id
+                           Filter: (sum(((ws_quantity)::numeric * ws_list_price)) > $10)
+                           InitPlan 5 (returns $10)
+                             ->  CTE Scan on avg_sales avg_sales_2  (cost=0.00..0.02 rows=1 width=32) (actual time=0.002..0.002 rows=1 loops=1)
+                           ->  Sort  (cost=1366135.77..1366135.78 rows=4 width=22) (actual time=37534.023..37839.771 rows=2302097 loops=1)
+                                 Sort Key: i_brand_id, i_class_id, i_category_id
+                                 Sort Method: quicksort  Memory: 278147kB
+                                 ->  Hash Join  (cost=10152.60..1366135.73 rows=4 width=22) (actual time=393.691..36139.273 rows=2302097 loops=1)
+                                       Hash Cond: (ws_item_sk = i_item_sk)
+                                       ->  Remote Subquery Scan on all (dn2)  (cost=210.97..1356464.63 rows=17742 width=14) (actual time=15.457..32598.595 rows=2312679 loops=1)
+                                       ->  Hash  (cost=10041.14..10041.14 rows=39 width=20) (actual time=378.213..378.213 rows=203098 loops=1)
+                                             Buckets: 262144 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 12362kB
+                                             ->  Hash Join  (cost=1.76..10041.14 rows=39 width=20) (actual time=110.080..339.870 rows=203098 loops=1)
+                                                   Hash Cond: (i_item_sk = cross_items_2.ss_item_sk)
+                                                   ->  Remote Subquery Scan on all (dn1)  (cost=100.00..12250.40 rows=122400 width=16) (actual time=10.137..111.351 rows=204000 loops=1)
+                                                   ->  Hash  (cost=1.27..1.27 rows=39 width=4) (actual time=99.917..99.917 rows=203098 loops=1)
+                                                         Buckets: 262144 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 9189kB
+                                                         ->  HashAggregate  (cost=0.88..1.27 rows=39 width=4) (actual time=54.052..84.116 rows=203098 loops=1)
+                                                               Group Key: cross_items_2.ss_item_sk
+                                                               ->  CTE Scan on cross_items cross_items_2  (cost=0.00..0.78 rows=39 width=4) (actual time=0.002..12.651 rows=203098 loops=1)
+ Planning time: 4.617 ms
+ Execution time: 912293.206 ms
+(96 rows)
+
+ ty_channel | ty_brand | ty_class | ty_category |  ty_sales   | ty_number_sales | ly_channel | ly_brand | ly_class | ly_category |  ly_sales   | ly_number_sales 
+------------+----------+----------+-------------+-------------+-----------------+------------+----------+----------+-------------+-------------+-----------------
+ store      |  1001001 |        1 |           1 |  3634325.45 |            1013 | store      |  1001001 |        1 |           1 | 63438852.03 |           17335
+ store      |  1001001 |        1 |           2 |  4131053.38 |            1145 | store      |  1001001 |        1 |           2 |  2088761.52 |             571
+ store      |  1001001 |        1 |           3 |  3151743.88 |             863 | store      |  1001001 |        1 |           3 |  1500204.16 |             416
+ store      |  1001001 |        1 |           4 |  4109459.27 |            1113 | store      |  1001001 |        1 |           4 |  2018145.08 |             584
+ store      |  1001001 |        1 |           5 |  3601838.61 |             986 | store      |  1001001 |        1 |           5 |  1585703.10 |             425
+ store      |  1001001 |        1 |           6 |  3621993.37 |             933 | store      |  1001001 |        1 |           6 |  1626138.08 |             457
+ store      |  1001001 |        1 |           7 |  3352035.74 |             912 | store      |  1001001 |        1 |           7 |  1161163.01 |             327
+ store      |  1001001 |        1 |           8 |  3008354.19 |             804 | store      |  1001001 |        1 |           8 |  1620665.86 |             447
+ store      |  1001001 |        1 |           9 |  2890910.31 |             793 | store      |  1001001 |        1 |           9 |  1435436.20 |             398
+ store      |  1001001 |        1 |          10 |  4118298.89 |            1091 | store      |  1001001 |        1 |          10 |  2100495.76 |             580
+ store      |  1001001 |        2 |           1 |  1095612.27 |             289 | store      |  1001001 |        2 |           1 |   376293.02 |             100
+ store      |  1001001 |        2 |           2 |   841820.84 |             236 | store      |  1001001 |        2 |           2 |   458626.12 |             115
+ store      |  1001001 |        2 |           3 |   262983.90 |              59 | store      |  1001001 |        2 |           3 |   180648.17 |              51
+ store      |  1001001 |        2 |           4 |   522165.40 |             161 | store      |  1001001 |        2 |           4 |   399983.95 |              98
+ store      |  1001001 |        2 |           5 |   559217.08 |             141 | store      |  1001001 |        2 |           5 |   507414.01 |             126
+ store      |  1001001 |        2 |           6 |    56847.68 |              13 | store      |  1001001 |        2 |           6 |   103678.46 |              23
+ store      |  1001001 |        2 |           7 |    65030.72 |              18 | store      |  1001001 |        2 |           7 |    29180.00 |              12
+ store      |  1001001 |        2 |           8 |   406830.71 |             114 | store      |  1001001 |        2 |           8 |   499810.12 |             140
+ store      |  1001001 |        2 |          10 |   234966.48 |              63 | store      |  1001001 |        2 |          10 |    41749.98 |              18
+ store      |  1001001 |        3 |           1 |  1047854.00 |             289 | store      |  1001001 |        3 |           1 |   508949.43 |             134
+ store      |  1001001 |        3 |           2 |  1079528.37 |             272 | store      |  1001001 |        3 |           2 |   598632.28 |             172
+ store      |  1001001 |        3 |           3 |   507073.96 |             142 | store      |  1001001 |        3 |           3 |   371303.18 |             105
+ store      |  1001001 |        3 |           4 |   619063.14 |             172 | store      |  1001001 |        3 |           4 |   279527.16 |              81
+ store      |  1001001 |        3 |           5 |   617302.13 |             188 | store      |  1001001 |        3 |           5 |   149004.73 |              38
+ store      |  1001001 |        3 |           6 |   230640.56 |              50 | store      |  1001001 |        3 |           6 |   130468.56 |              42
+ store      |  1001001 |        3 |           7 |   302337.11 |              82 | store      |  1001001 |        3 |           7 |   220780.62 |              51
+ store      |  1001001 |        3 |           8 |   301437.16 |              88 | store      |  1001001 |        3 |           8 |    67496.23 |              17
+ store      |  1001001 |        3 |           9 |   380601.21 |              95 | store      |  1001001 |        3 |           9 |   215608.27 |              48
+ store      |  1001001 |        3 |          10 |   400651.97 |              96 | store      |  1001001 |        3 |          10 |   274735.60 |              77
+ store      |  1001001 |        4 |           1 |   988331.17 |             265 | store      |  1001001 |        4 |           1 |   733126.77 |             186
+ store      |  1001001 |        4 |           2 |   754680.73 |             212 | store      |  1001001 |        4 |           2 |   394394.98 |             114
+ store      |  1001001 |        4 |           3 |  1117114.67 |             279 | store      |  1001001 |        4 |           3 |   883984.43 |             250
+ store      |  1001001 |        4 |           4 |   363868.59 |             106 | store      |  1001001 |        4 |           4 |   377979.60 |             103
+ store      |  1001001 |        4 |           5 |  1052176.83 |             262 | store      |  1001001 |        4 |           5 |   546838.67 |             163
+ store      |  1001001 |        4 |           6 |   368101.81 |             101 | store      |  1001001 |        4 |           6 |   246006.48 |              71
+ store      |  1001001 |        4 |           7 |    93623.01 |              32 | store      |  1001001 |        4 |           7 |   109040.25 |              28
+ store      |  1001001 |        4 |           8 |   161384.94 |              35 | store      |  1001001 |        4 |           8 |    68167.06 |              20
+ store      |  1001001 |        4 |           9 |    47542.15 |              23 | store      |  1001001 |        4 |           9 |   121682.95 |              24
+ store      |  1001001 |        4 |          10 |   115381.92 |              39 | store      |  1001001 |        4 |          10 |    64687.33 |              16
+ store      |  1001001 |        5 |           6 |   240534.82 |              62 | store      |  1001001 |        5 |           6 |    92762.06 |              31
+ store      |  1001001 |        5 |           9 |   325967.98 |              85 | store      |  1001001 |        5 |           9 |   146951.33 |              39
+ store      |  1001001 |        5 |          10 |   543132.58 |             127 | store      |  1001001 |        5 |          10 |   263809.84 |              68
+ store      |  1001001 |        6 |           9 |   280245.04 |              67 | store      |  1001001 |        6 |           9 |   122851.75 |              40
+ store      |  1001001 |        6 |          10 |    86957.16 |              24 | store      |  1001001 |        6 |          10 |    51715.59 |              20
+ store      |  1001001 |        7 |           6 |   126880.30 |              39 | store      |  1001001 |        7 |           6 |    67666.89 |              22
+ store      |  1001001 |        7 |           7 |   245053.66 |              62 | store      |  1001001 |        7 |           7 |    73454.72 |              19
+ store      |  1001001 |        7 |           9 |   154868.24 |              44 | store      |  1001001 |        7 |           9 |   110732.03 |              21
+ store      |  1001001 |        7 |          10 |   210328.44 |              59 | store      |  1001001 |        7 |          10 |   115208.58 |              26
+ store      |  1001001 |        8 |           6 |   333113.86 |              79 | store      |  1001001 |        8 |           6 |   183590.51 |              46
+ store      |  1001001 |        8 |           8 |   324101.37 |              83 | store      |  1001001 |        8 |           8 |    92325.14 |              21
+ store      |  1001001 |        8 |           9 |    60931.69 |              22 | store      |  1001001 |        8 |           9 |   112200.85 |              27
+ store      |  1001001 |        9 |           6 |   175627.67 |              44 | store      |  1001001 |        9 |           6 |    83755.31 |              22
+ store      |  1001001 |        9 |           7 |   503357.26 |             124 | store      |  1001001 |        9 |           7 |   171193.08 |              51
+ store      |  1001001 |        9 |           8 |   219274.29 |              46 | store      |  1001001 |        9 |           8 |   161228.67 |              46
+ store      |  1001001 |        9 |          10 |   188455.30 |              47 | store      |  1001001 |        9 |          10 |    71868.39 |              20
+ store      |  1001001 |       10 |           8 |   131969.22 |              40 | store      |  1001001 |       10 |           8 |    99326.44 |              21
+ store      |  1001001 |       10 |           9 |   291775.25 |              79 | store      |  1001001 |       10 |           9 |   251605.40 |              54
+ store      |  1001001 |       10 |          10 |   231257.74 |              59 | store      |  1001001 |       10 |          10 |   119740.82 |              39
+ store      |  1001001 |       11 |           6 |   114839.25 |              35 | store      |  1001001 |       11 |           6 |    87465.62 |              22
+ store      |  1001001 |       11 |           7 |   384396.44 |             101 | store      |  1001001 |       11 |           7 |   324344.81 |              81
+ store      |  1001001 |       11 |           9 |   433009.78 |             122 | store      |  1001001 |       11 |           9 |   232624.61 |              62
+ store      |  1001001 |       12 |           6 |    83520.76 |              21 | store      |  1001001 |       12 |           6 |    75299.90 |              24
+ store      |  1001001 |       12 |           7 |    66737.98 |              28 | store      |  1001001 |       12 |           7 |    49893.39 |              16
+ store      |  1001001 |       12 |           8 |   449441.77 |             138 | store      |  1001001 |       12 |           8 |   471756.65 |             123
+ store      |  1001001 |       12 |           9 |   132322.44 |              36 | store      |  1001001 |       12 |           9 |    93365.72 |              20
+ store      |  1001001 |       13 |           7 |   563099.39 |             146 | store      |  1001001 |       13 |           7 |   349806.82 |              84
+ store      |  1001001 |       13 |           8 |   282612.98 |              84 | store      |  1001001 |       13 |           8 |   252078.09 |              66
+ store      |  1001001 |       13 |          10 |   234462.65 |              62 | store      |  1001001 |       13 |          10 |   261550.44 |              74
+ store      |  1001001 |       14 |           6 |   323505.26 |              76 | store      |  1001001 |       14 |           6 |   135491.54 |              34
+ store      |  1001001 |       14 |           8 |   232261.74 |              69 | store      |  1001001 |       14 |           8 |   278923.38 |              72
+ store      |  1001001 |       15 |           6 |   132185.80 |              38 | store      |  1001001 |       15 |           6 |    55080.36 |              18
+ store      |  1001001 |       15 |           7 |   215236.52 |              54 | store      |  1001001 |       15 |           7 |   150216.52 |              47
+ store      |  1001001 |       15 |           8 |   280310.06 |              78 | store      |  1001001 |       15 |           8 |    31320.96 |               9
+ store      |  1001001 |       15 |           9 |   129480.62 |              49 | store      |  1001001 |       15 |           9 |    47168.04 |              14
+ store      |  1001001 |       15 |          10 |   305879.19 |             100 | store      |  1001001 |       15 |          10 |   213749.75 |              50
+ store      |  1001001 |       16 |           6 |   139899.45 |              42 | store      |  1001001 |       16 |           6 |    51398.19 |              20
+ store      |  1001001 |       16 |           7 |   119303.69 |              36 | store      |  1001001 |       16 |           7 |   167901.43 |              45
+ store      |  1001001 |       16 |           8 |    87409.87 |              24 | store      |  1001001 |       16 |           8 |    82794.10 |              16
+ store      |  1001001 |       16 |           9 |   184690.26 |              46 | store      |  1001001 |       16 |           9 |   152557.94 |              40
+ store      |  1001001 |       16 |          10 |   152999.04 |              39 | store      |  1001001 |       16 |          10 |    50131.72 |              16
+ store      |  1001002 |        1 |           1 | 98714824.43 |           26817 | store      |  1001002 |        1 |           1 | 79992614.99 |           21943
+ store      |  1001002 |        2 |           1 |  4883547.27 |            1335 | store      |  1001002 |        2 |           1 |  3169302.84 |             831
+ store      |  1001002 |        3 |           1 |  4389903.65 |            1188 | store      |  1001002 |        3 |           1 |  2384476.92 |             639
+ store      |  1001002 |        4 |           1 |  4413132.90 |            1154 | store      |  1001002 |        4 |           1 |  2671378.41 |             714
+ store      |  1001002 |        5 |           1 |  1382671.87 |             373 | store      |  1001002 |        5 |           1 |   571458.79 |             167
+ store      |  1001002 |        6 |           1 |  1181415.01 |             335 | store      |  1001002 |        6 |           1 |   848322.37 |             231
+ store      |  1001002 |        7 |           1 |  1103935.46 |             273 | store      |  1001002 |        7 |           1 |   499743.52 |             117
+ store      |  1001002 |        8 |           1 |   771296.66 |             225 | store      |  1001002 |        8 |           1 |   519439.38 |             140
+ store      |  1001002 |        9 |           1 |   789233.88 |             194 | store      |  1001002 |        9 |           1 |   303772.76 |              83
+ store      |  1001002 |       10 |           1 |   732702.28 |             195 | store      |  1001002 |       10 |           1 |   454106.21 |             105
+ store      |  1001002 |       11 |           1 |   808258.71 |             203 | store      |  1001002 |       11 |           1 |   506047.28 |             134
+ store      |  1001002 |       12 |           1 |  1126865.18 |             279 | store      |  1001002 |       12 |           1 |   626120.09 |             163
+ store      |  1001002 |       13 |           1 |   724795.02 |             190 | store      |  1001002 |       13 |           1 |   349204.38 |             103
+ store      |  1001002 |       14 |           1 |   423234.93 |             115 | store      |  1001002 |       14 |           1 |   324445.08 |              92
+ store      |  1001002 |       15 |           1 |   786796.66 |             221 | store      |  1001002 |       15 |           1 |   206579.30 |              64
+ store      |  1001002 |       16 |           1 |  1702439.64 |             438 | store      |  1001002 |       16 |           1 |   901398.46 |             219
+ store      |  1002001 |        1 |           1 |   794970.39 |             228 | store      |  1002001 |        1 |           1 |   417990.53 |             103
+ store      |  1002001 |        1 |           2 |  1023913.07 |             273 | store      |  1002001 |        1 |           2 |   517704.34 |             145
+ store      |  1002001 |        1 |           3 |   748047.08 |             207 | store      |  1002001 |        1 |           3 |   446421.95 |             115
+ store      |  1002001 |        1 |           4 |  1005055.70 |             253 | store      |  1002001 |        1 |           4 |   275810.93 |              82
+(100 rows)
+

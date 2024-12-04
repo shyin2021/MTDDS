@@ -1,0 +1,10 @@
+                                                                   QUERY PLAN                                                                    
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=122545.75..122549.75 rows=100 width=163) (actual time=464.122..464.800 rows=100 loops=1)
+   ->  Finalize GroupAggregate  (cost=122545.75..123076.31 rows=13264 width=163) (actual time=464.121..464.781 rows=100 loops=1)
+         Group Key: foo.channel, foo.col_name, foo.d_year, foo.d_qoy, foo.i_category
+         ->  Remote Subquery Scan on all (dn1)  (cost=122545.75..122645.23 rows=13264 width=163) (actual time=464.065..464.160 rows=101 loops=1)
+ Planning time: 2.134 ms
+ Execution time: 467.609 ms
+(6 rows)
+

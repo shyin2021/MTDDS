@@ -1,0 +1,29 @@
+                                                                                         QUERY PLAN                                                                                         
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=96539.48..96566.50 rows=8 width=37) (actual time=356.968..356.968 rows=0 loops=1)
+   ->  GroupAggregate  (cost=96539.48..96566.50 rows=8 width=37) (actual time=356.967..356.967 rows=0 loops=1)
+         Group Key: s_store_name
+         ->  Sort  (cost=96539.48..96548.45 rows=3589 width=11) (actual time=356.966..356.966 rows=0 loops=1)
+               Sort Key: s_store_name
+               Sort Method: quicksort  Memory: 25kB
+               ->  Hash Join  (cost=29071.01..96327.56 rows=3589 width=11) (actual time=356.959..356.959 rows=0 loops=1)
+                     Hash Cond: (ss_store_sk = s_store_sk)
+                     ->  Remote Subquery Scan on all (dn1)  (cost=218.91..67481.50 rows=3589 width=10) (actual time=1.352..1.352 rows=1 loops=1)
+                     ->  Hash  (cost=28951.96..28951.96 rows=12 width=9) (actual time=355.599..355.599 rows=0 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 8kB
+                           ->  Hash Join  (cost=6498.99..28951.96 rows=12 width=9) (actual time=355.599..355.599 rows=0 loops=1)
+                                 Hash Cond: (substr(a2.ca_zip, 1, 2) = substr((s_zip)::text, 1, 2))
+                                 ->  Subquery Scan on a2  (cost=6497.72..28949.07 rows=200 width=32) (actual time=352.903..352.927 rows=5 loops=1)
+                                       ->  HashSetOp Intersect  (cost=6497.72..28947.07 rows=200 width=36) (actual time=352.901..352.924 rows=5 loops=1)
+                                             ->  Append  (cost=6497.72..28830.87 rows=46477 width=36) (actual time=42.588..352.268 rows=1262 loops=1)
+                                                   ->  Subquery Scan on "*SELECT* 2"  (cost=6497.72..6728.84 rows=3210 width=36) (actual time=42.587..43.403 rows=962 loops=1)
+                                                         ->  Remote Subquery Scan on all (dn1)  (cost=6497.72..6696.74 rows=3210 width=32) (actual time=42.575..42.933 rows=962 loops=1)
+                                                   ->  Subquery Scan on "*SELECT* 1"  (cost=200.00..22102.04 rows=43267 width=36) (actual time=308.427..308.682 rows=300 loops=1)
+                                                         ->  Remote Subquery Scan on all (dn1)  (cost=200.00..21669.37 rows=43267 width=32) (actual time=308.414..308.523 rows=300 loops=1)
+                                 ->  Hash  (cost=101.42..101.42 rows=12 width=20) (actual time=2.660..2.660 rows=12 loops=1)
+                                       Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                       ->  Remote Subquery Scan on all (dn1)  (cost=100.00..101.42 rows=12 width=20) (actual time=2.610..2.617 rows=12 loops=1)
+ Planning time: 1.891 ms
+ Execution time: 359.385 ms
+(25 rows)
+

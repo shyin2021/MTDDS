@@ -1,0 +1,29 @@
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=4864421.61..4864421.64 rows=1 width=358) (actual time=126207.231..126207.233 rows=2 loops=1)
+   Group Key: ssales.c_last_name, ssales.c_first_name, ssales.s_store_name
+   Filter: (sum(ssales.netpaid) > $2)
+   Rows Removed by Filter: 2
+   CTE ssales
+     ->  Remote Subquery Scan on all (dn3)  (cost=4864421.46..4864421.54 rows=1 width=157) (actual time=126195.428..126197.508 rows=2135 loops=1)
+   InitPlan 2 (returns $2)
+     ->  Aggregate  (cost=0.02..0.04 rows=1 width=32) (actual time=0.394..0.394 rows=1 loops=1)
+           ->  CTE Scan on ssales ssales_1  (cost=0.00..0.02 rows=1 width=32) (actual time=0.000..0.131 rows=2135 loops=1)
+   ->  Sort  (cost=0.03..0.04 rows=1 width=358) (actual time=126206.825..126206.826 rows=4 loops=1)
+         Sort Key: ssales.c_last_name, ssales.c_first_name, ssales.s_store_name
+         Sort Method: quicksort  Memory: 25kB
+         ->  CTE Scan on ssales  (cost=0.00..0.02 rows=1 width=358) (actual time=126196.912..126206.803 rows=4 loops=1)
+               Filter: (i_color = 'beige'::bpchar)
+               Rows Removed by Filter: 2131
+ Planning time: 3.015 ms
+ Execution time: 126210.482 ms
+(17 rows)
+
+          c_last_name           |     c_first_name     | s_store_name |  paid  
+--------------------------------+----------------------+--------------+--------
+ Collins                        | Mabel                | cally        | -40.54
+ Hatch                          | Samuel               | cally        |  54.36
+ Hoover                         | Sharon               | cally        | 141.48
+ Smith                          | Laura                | ese          | 903.70
+(4 rows)
+

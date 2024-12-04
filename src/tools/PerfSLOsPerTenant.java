@@ -30,11 +30,20 @@ public class PerfSLOsPerTenant {
     }
 	
 	// Load the performance SLOs into the database
-	public static void  LoadPerfSLOs(String inputFile) throws SQLException {
+	public static void  LoadPerfSLOs(String inputFile, String SUTName) throws SQLException {
 		//read the input file
 		BufferedReader csvReader;
-		String deletePerfSLOs = "DELETE FROM PerfSLOs";
-		String insertPerfSLOs = "INSERT INTO perfSLOs VALUES(?, ?, ?, ?, ?, ?, ?)"; //(queryId, scaleFactor, expectedExecTime, expectedQCT, perfSLO_premium, perfSLO_standard, perfSLO_basic)
+		String createSUTPerfSLOs = "CREATE TABLE IF NOT EXISTS " + SUTName + "perfSLOs(\r\n"
+				+ "		queryId varchar(20), \r\n"
+				+ "		scaleFactor number(6),\r\n"
+				+ "		expectedExecTime number(20),\r\n"
+				+ "		expectedQCT number(20), \r\n"
+				+ "		perfSLO_premium number(20), \r\n"
+				+ "		perfSLO_standard number(20), \r\n"
+				+ "		perfSLO_basic number(20),\r\n"
+				+ "		PRIMARY KEY (queryId, scaleFactor))";
+		String deleteSUTPerfSLOs = "DELETE FROM " + SUTName + "PerfSLOs";
+		String insertSUTPerfSLOs = "INSERT INTO " + SUTName + "perfSLOs VALUES(?, ?, ?, ?, ?, ?, ?)"; //(queryId, scaleFactor, expectedExecTime, expectedQCT, perfSLO_premium, perfSLO_standard, perfSLO_basic)
 		
 		Statement stm = null;
 		PreparedStatement pstm = null;
@@ -43,8 +52,9 @@ public class PerfSLOsPerTenant {
 		Connection conn = DBConnect();
 		try {
 	    	stm = conn.createStatement();
-	    	stm.executeUpdate(deletePerfSLOs);
-	    	System.out.println("PerfSLOs deleted.");
+	    	stm.execute(createSUTPerfSLOs);
+	    	stm.executeUpdate(deleteSUTPerfSLOs);
+	    	System.out.println(SUTName + "PerfSLOs deleted.");
 	    } catch (SQLException se) {
 	    	System.out.println(se);
 	    } finally {
@@ -69,7 +79,7 @@ public class PerfSLOsPerTenant {
 			    long perfSLO_basic = Long.parseLong(data[6]);
 			    
 			    try {
-			    	pstm = conn.prepareStatement(insertPerfSLOs);
+			    	pstm = conn.prepareStatement(insertSUTPerfSLOs);
 			    	pstm.setString(1, queryId);
 			    	pstm.setInt(2, scaleFactor);
 			    	pstm.setLong(3, expectedExecTime);
@@ -86,13 +96,75 @@ public class PerfSLOsPerTenant {
 			    }
 			}
 			csvReader.close();
-			System.out.println("PerfSLOs inserted.");
+			System.out.println(SUTName + "PerfSLOs inserted.");
 		} catch (IOException ie) {
 			System.out.println(ie);
 		} finally {
 			conn.close();
 			System.out.println("Connection closed.");
 		}
+	}
+	
+	// compute the performance SLOs to use for comparing SUTs
+	public static void  ComputePerfSLOs(String SUT_A, String SUT_B, String PriorityTRTFile) throws SQLException {
+		//get the tolerance rate threshold for the premium tenants : trp
+		BufferedReader priorityTRTReader;
+		double trp = 1;
+		try {
+			priorityTRTReader = new BufferedReader(new FileReader(PriorityTRTFile)); // Priority, TRT
+						
+			//skip the file header
+			String row = priorityTRTReader.readLine();
+			while ((row = priorityTRTReader.readLine()) != null) {
+				String[] data = row.split(";");
+				String Priority = data[0];
+				double TRT = Double.parseDouble(data[1]);
+				if(Priority.equals("Premium")) {
+					trp = TRT;
+				}
+			}
+			priorityTRTReader.close();
+		} catch (IOException ie) {
+			System.out.println(ie);
+		}
+		
+		// prepare the statements
+		String deletePerfSLOs = "DELETE FROM PerfSLOs";
+		String insertPerfSLOs = "INSERT INTO perfSLOs SELECT SUT_A.queryId, SUT_A.scaleFactor, "
+				+ "MAX(MAX(SUT_A.expectedExecTime, SUT_B.expectedExecTime)/" + Double.toString(trp) +", MIN(SUT_A.expectedExecTime, SUT_B.expectedExecTime)), "
+				+ "MAX(MAX(SUT_A.expectedQCT, SUT_B.expectedQCT)/" + Double.toString(trp) +", MIN(SUT_A.expectedQCT, SUT_B.expectedQCT)), "
+				+ "MAX(MAX(SUT_A.perfSLO_premium, SUT_B.perfSLO_premium)/" + Double.toString(trp) +", MIN(SUT_A.perfSLO_premium, SUT_B.perfSLO_premium)), "
+				+ "MAX(MAX(SUT_A.perfSLO_standard, SUT_B.perfSLO_standard)/" + Double.toString(trp) +", MIN(SUT_A.perfSLO_standard, SUT_B.perfSLO_standard)), "
+				+ "MAX(MAX(SUT_A.perfSLO_basic, SUT_B.perfSLO_basic)/" + Double.toString(trp) +", MIN(SUT_A.perfSLO_basic, SUT_B.perfSLO_basic)) "
+				+ "FROM " + SUT_A + "perfSLOs SUT_A, " + SUT_B + "perfSLOs SUT_B "
+				+ "WHERE SUT_A.queryId = SUT_B.queryId AND SUT_A.scaleFactor = SUT_B.scaleFactor";
+		//(queryId, scaleFactor, expectedExecTime, expectedQCT, perfSLO_premium, perfSLO_standard, perfSLO_basic)
+		/*String insertPerfSLOs = "INSERT INTO perfSLOs SELECT SUT_A.queryId, SUT_A.scaleFactor, "
+				+ "MAX(SUT_A.expectedExecTime, SUT_B.expectedExecTime), "
+				+ "MAX(SUT_A.expectedQCT, SUT_B.expectedQCT), "
+				+ "MAX(SUT_A.perfSLO_premium, SUT_B.perfSLO_premium), "
+				+ "MAX(SUT_A.perfSLO_standard, SUT_B.perfSLO_standard), "
+				+ "MAX(SUT_A.perfSLO_basic, SUT_B.perfSLO_basic) "
+				+ "FROM " + SUT_A + "perfSLOs SUT_A, " + SUT_B + "perfSLOs SUT_B "
+				+ "WHERE SUT_A.queryId = SUT_B.queryId AND SUT_A.scaleFactor = SUT_B.scaleFactor";*/
+		
+		Statement stm = null;
+		
+		// Connection
+		Connection conn = DBConnect();
+		try {
+	    	stm = conn.createStatement();
+	    	stm.executeUpdate(deletePerfSLOs);
+	    	System.out.println("PerfSLOs deleted.");
+	    	stm.executeUpdate(insertPerfSLOs);
+	    	System.out.println("PerfSLOs inserted.");
+	    } catch (SQLException se) {
+	    	System.out.println(se);
+	    } finally {
+	    	stm.close();
+			conn.close();
+			System.out.println("Connection closed.");
+	    }
 	}
 	
 	// compute the perfSLOs for each tenant
@@ -227,7 +299,9 @@ public class PerfSLOsPerTenant {
 	
 	public static void main(String[] args) throws SQLException {
 		// args[0]: PerfSLOs.csv
-		LoadPerfSLOs(args[0]);
-		computePerfSLOs_per_tenant(args[1]);
+		LoadPerfSLOs(args[0], args[1]);
+		LoadPerfSLOs(args[2], args[3]);
+		ComputePerfSLOs(args[4], args[5], args[6]);
+		computePerfSLOs_per_tenant(args[7]);
 	}
 }

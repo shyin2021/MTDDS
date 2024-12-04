@@ -1,0 +1,8 @@
+                                                              QUERY PLAN                                                              
+--------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=184895.52..184895.54 rows=1 width=32) (actual time=2206.124..2206.126 rows=1 loops=1)
+   ->  Remote Subquery Scan on all (dn1)  (cost=184895.52..184895.54 rows=1 width=32) (actual time=2206.123..2206.124 rows=1 loops=1)
+ Planning time: 0.471 ms
+ Execution time: 2207.920 ms
+(4 rows)
+

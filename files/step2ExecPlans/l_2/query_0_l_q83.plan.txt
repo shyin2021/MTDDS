@@ -1,0 +1,33 @@
+                                                                      QUERY PLAN                                                                      
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1383678.67..1383678.92 rows=100 width=220) (actual time=10992.806..10992.815 rows=100 loops=1)
+   CTE sr_items
+     ->  Remote Subquery Scan on all (dn5)  (cost=402635.51..404073.23 rows=12221 width=25) (actual time=3426.279..3495.671 rows=94008 loops=1)
+   CTE cr_items
+     ->  Remote Subquery Scan on all (dn2)  (cost=237717.70..238436.84 rows=6113 width=25) (actual time=6111.475..6157.330 rows=75326 loops=1)
+   CTE wr_items
+     ->  Remote Subquery Scan on all (dn2)  (cost=120041.73..120401.16 rows=3055 width=25) (actual time=976.543..1009.651 rows=52725 loops=1)
+   ->  Sort  (cost=620767.43..635031.80 rows=5705747 width=220) (actual time=10992.804..10992.807 rows=100 loops=1)
+         Sort Key: sr_items.item_id, sr_items.sr_item_qty
+         Sort Method: top-N heapsort  Memory: 38kB
+         ->  Merge Join  (cost=1818.68..402697.89 rows=5705747 width=220) (actual time=10862.474..10980.330 rows=35830 loops=1)
+               Merge Cond: (sr_items.item_id = cr_items.item_id)
+               ->  Sort  (cost=1074.05..1104.60 rows=12221 width=76) (actual time=3583.039..3586.003 rows=94008 loops=1)
+                     Sort Key: sr_items.item_id
+                     Sort Method: quicksort  Memory: 10417kB
+                     ->  CTE Scan on sr_items  (cost=0.00..244.42 rows=12221 width=76) (actual time=3426.300..3551.249 rows=94008 loops=1)
+               ->  Materialize  (cost=744.63..2393.99 rows=93376 width=152) (actual time=7279.423..7330.158 rows=38914 loops=1)
+                     ->  Merge Join  (cost=744.63..2160.55 rows=93376 width=152) (actual time=7279.421..7325.086 rows=38914 loops=1)
+                           Merge Cond: (wr_items.item_id = cr_items.item_id)
+                           ->  Sort  (cost=237.94..245.58 rows=3055 width=76) (actual time=1054.583..1056.274 rows=52725 loops=1)
+                                 Sort Key: wr_items.item_id
+                                 Sort Method: quicksort  Memory: 5656kB
+                                 ->  CTE Scan on wr_items  (cost=0.00..61.10 rows=3055 width=76) (actual time=976.580..1036.179 rows=52725 loops=1)
+                           ->  Sort  (cost=506.70..521.98 rows=6113 width=76) (actual time=6224.831..6227.388 rows=75326 loops=1)
+                                 Sort Key: cr_items.item_id
+                                 Sort Method: quicksort  Memory: 8957kB
+                                 ->  CTE Scan on cr_items  (cost=0.00..122.26 rows=6113 width=76) (actual time=6111.510..6197.534 rows=75326 loops=1)
+ Planning time: 2.429 ms
+ Execution time: 11003.762 ms
+(29 rows)
+

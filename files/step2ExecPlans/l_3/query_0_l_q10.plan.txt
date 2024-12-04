@@ -1,0 +1,22 @@
+                                                                                                                                                                          QUERY PLAN                                                                                                                                                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=8221025.12..8221029.87 rows=100 width=100) (actual time=197977.062..197977.425 rows=100 loops=1)
+   ->  GroupAggregate  (cost=8221025.12..8221038.32 rows=278 width=100) (actual time=197977.060..197977.417 rows=100 loops=1)
+         Group Key: customer_demographics.cd_gender, customer_demographics.cd_marital_status, customer_demographics.cd_education_status, customer_demographics.cd_purchase_estimate, customer_demographics.cd_credit_rating, customer_demographics.cd_dep_count, customer_demographics.cd_dep_employed_count, customer_demographics.cd_dep_college_count
+         ->  Sort  (cost=8221025.12..8221025.81 rows=278 width=52) (actual time=197977.050..197977.101 rows=1324 loops=1)
+               Sort Key: customer_demographics.cd_gender, customer_demographics.cd_marital_status, customer_demographics.cd_education_status, customer_demographics.cd_purchase_estimate, customer_demographics.cd_credit_rating, customer_demographics.cd_dep_count, customer_demographics.cd_dep_employed_count, customer_demographics.cd_dep_college_count
+               Sort Method: quicksort  Memory: 3585kB
+               ->  Hash Join  (cost=4180779.99..8221013.83 rows=278 width=52) (actual time=103239.566..197927.013 rows=20026 loops=1)
+                     Hash Cond: (c.c_customer_sk = web_sales.ws_bill_customer_sk)
+                     ->  Remote Subquery Scan on all (dn5)  (cost=92465.79..4132795.88 rows=1543 width=60) (actual time=795.133..95347.259 rows=58125 loops=1)
+                     ->  Hash  (cost=4085715.95..4085715.95 rows=215860 width=4) (actual time=102444.113..102444.113 rows=681899 loops=1)
+                           Buckets: 1048576 (originally 262144)  Batches: 1 (originally 1)  Memory Usage: 32166kB
+                           ->  HashAggregate  (cost=4081398.75..4083557.35 rows=215860 width=4) (actual time=102239.581..102361.736 rows=681900 loops=1)
+                                 Group Key: web_sales.ws_bill_customer_sk
+                                 ->  Append  (cost=212.20..4080859.10 rows=215860 width=4) (actual time=1463.681..98937.763 rows=8166131 loops=1)
+                                       ->  Remote Subquery Scan on all (dn5)  (cost=212.20..1363636.63 rows=71954 width=4) (actual time=1463.681..35475.290 rows=2768485 loops=1)
+                                       ->  Remote Subquery Scan on all (dn4)  (cost=212.20..2715063.87 rows=143906 width=4) (actual time=37671.423..62771.705 rows=5397646 loops=1)
+ Planning time: 3.786 ms
+ Execution time: 197985.146 ms
+(18 rows)
+

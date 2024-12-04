@@ -1,0 +1,35 @@
+                                                                                                         QUERY PLAN                                                                                                          
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1297257.10..1297257.11 rows=1 width=80) (actual time=19365.795..19365.803 rows=100 loops=1)
+   CTE all_sales
+     ->  HashAggregate  (cost=1285311.74..1287880.60 rows=205509 width=60) (actual time=19341.328..19348.960 rows=23967 loops=1)
+           Group Key: d_year, i_brand_id, i_class_id, i_category_id, i_manufact_id
+           ->  HashAggregate  (cost=1208245.94..1228796.82 rows=2055088 width=56) (actual time=16822.188..17924.707 rows=4873411 loops=1)
+                 Group Key: d_year, i_brand_id, i_class_id, i_category_id, i_manufact_id, ((cs_quantity - COALESCE(cr_return_quantity, 0))), ((cs_ext_sales_price - COALESCE(cr_return_amount, 0.0)))
+                 ->  Append  (cost=30563.94..1172281.90 rows=2055088 width=56) (actual time=517.998..9663.859 rows=4904696 loops=1)
+                       ->  Remote Subquery Scan on all (dn1)  (cost=30563.94..357218.02 rows=587220 width=56) (actual time=517.998..3002.766 rows=1433379 loops=1)
+                       ->  Remote Subquery Scan on all (dn1)  (cost=52582.69..613692.44 rows=1174389 width=56) (actual time=922.826..4897.982 rows=2750917 loops=1)
+                       ->  Remote Subquery Scan on all (dn1)  (cost=17170.61..180820.56 rows=293479 width=56) (actual time=266.745..1325.608 rows=720400 loops=1)
+   ->  Sort  (cost=9376.50..9376.51 rows=1 width=80) (actual time=19365.793..19365.796 rows=100 loops=1)
+         Sort Key: ((curr_yr.sales_cnt - prev_yr.sales_cnt)), ((curr_yr.sales_amt - prev_yr.sales_amt))
+         Sort Method: top-N heapsort  Memory: 49kB
+         ->  Merge Join  (cost=9350.76..9376.49 rows=1 width=80) (actual time=19363.047..19365.694 rows=557 loops=1)
+               Merge Cond: ((curr_yr.i_brand_id = prev_yr.i_brand_id) AND (curr_yr.i_class_id = prev_yr.i_class_id) AND (curr_yr.i_category_id = prev_yr.i_category_id) AND (curr_yr.i_manufact_id = prev_yr.i_manufact_id))
+               Join Filter: (((curr_yr.sales_cnt)::numeric(17,2) / (prev_yr.sales_cnt)::numeric(17,2)) < 0.9)
+               Rows Removed by Join Filter: 2279
+               ->  Sort  (cost=4675.38..4677.95 rows=1028 width=60) (actual time=19355.658..19355.833 rows=4163 loops=1)
+                     Sort Key: curr_yr.i_brand_id, curr_yr.i_class_id, curr_yr.i_category_id, curr_yr.i_manufact_id
+                     Sort Method: quicksort  Memory: 518kB
+                     ->  CTE Scan on all_sales curr_yr  (cost=0.00..4623.95 rows=1028 width=60) (actual time=19341.332..19354.165 rows=4165 loops=1)
+                           Filter: (d_year = 2001)
+                           Rows Removed by Filter: 19802
+               ->  Sort  (cost=4675.38..4677.95 rows=1028 width=60) (actual time=7.373..7.511 rows=4541 loops=1)
+                     Sort Key: prev_yr.i_brand_id, prev_yr.i_class_id, prev_yr.i_category_id, prev_yr.i_manufact_id
+                     Sort Method: quicksort  Memory: 548kB
+                     ->  CTE Scan on all_sales prev_yr  (cost=0.00..4623.95 rows=1028 width=60) (actual time=0.002..1.554 rows=4544 loops=1)
+                           Filter: (d_year = 2000)
+                           Rows Removed by Filter: 19423
+ Planning time: 1.663 ms
+ Execution time: 19438.831 ms
+(31 rows)
+

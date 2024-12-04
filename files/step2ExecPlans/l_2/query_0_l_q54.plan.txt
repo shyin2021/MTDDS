@@ -1,0 +1,43 @@
+                                                                                  QUERY PLAN                                                                                   
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=9433048.11..9433048.12 rows=2 width=16) (actual time=181455.311..181455.315 rows=50 loops=1)
+   CTE my_customers
+     ->  Remote Subquery Scan on all (dn3)  (cost=4125463.90..4125464.82 rows=123 width=8) (actual time=81315.483..81335.573 rows=46061 loops=1)
+   CTE my_revenue
+     ->  GroupAggregate  (cost=5307583.11..5307583.15 rows=2 width=36) (actual time=181451.162..181455.242 rows=50 loops=1)
+           Group Key: my_customers.c_customer_sk
+           InitPlan 2 (returns $3)
+             ->  Remote Subquery Scan on all (dn1)  (cost=10.83..11.06 rows=18 width=4) (actual time=8.299..8.302 rows=1 loops=1)
+           InitPlan 3 (returns $4)
+             ->  Remote Subquery Scan on all (dn6)  (cost=10.83..11.06 rows=18 width=4) (actual time=4.793..4.794 rows=1 loops=1)
+           ->  Sort  (cost=5307560.99..5307561.00 rows=2 width=10) (actual time=181451.075..181452.044 rows=29850 loops=1)
+                 Sort Key: my_customers.c_customer_sk
+                 Sort Method: quicksort  Memory: 2168kB
+                 ->  Hash Join  (cost=21335.21..5307560.98 rows=2 width=10) (actual time=83325.351..181443.622 rows=29850 loops=1)
+                       Hash Cond: (ss_customer_sk = my_customers.c_customer_sk)
+                       ->  Remote Subquery Scan on all (dn1)  (cost=113.48..5296052.83 rows=863434 width=10) (actual time=20.883..90314.284 rows=11229592 loops=1)
+                       ->  Hash  (cost=21321.72..21321.72 rows=1 width=4) (actual time=82242.876..82242.876 rows=5663 loops=1)
+                             Buckets: 8192 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 264kB
+                             ->  Hash Join  (cost=20.02..21321.72 rows=1 width=4) (actual time=81386.114..82242.115 rows=5663 loops=1)
+                                   Hash Cond: (((ca_county)::text = (s_county)::text) AND (ca_state = s_state))
+                                   ->  Hash Join  (cost=4.00..21295.23 rows=123 width=21) (actual time=81366.782..82224.795 rows=46061 loops=1)
+                                         Hash Cond: (ca_address_sk = my_customers.c_current_addr_sk)
+                                         ->  Remote Subquery Scan on all (dn2)  (cost=100.00..34740.00 rows=600000 width=21) (actual time=7.671..457.615 rows=1000000 loops=1)
+                                         ->  Hash  (cost=2.46..2.46 rows=123 width=8) (actual time=81359.058..81359.058 rows=46061 loops=1)
+                                               Buckets: 65536 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 2312kB
+                                               ->  CTE Scan on my_customers  (cost=0.00..2.46 rows=123 width=8) (actual time=81315.498..81353.336 rows=46061 loops=1)
+                                   ->  Hash  (cost=117.95..117.95 rows=241 width=18) (actual time=9.135..9.135 rows=397 loops=1)
+                                         Buckets: 1024  Batches: 1  Memory Usage: 28kB
+                                         ->  Remote Subquery Scan on all (dn5)  (cost=100.00..117.95 rows=241 width=18) (actual time=8.639..8.776 rows=402 loops=1)
+   CTE segments
+     ->  CTE Scan on my_revenue  (cost=0.00..0.05 rows=2 width=4) (actual time=181451.165..181455.266 rows=50 loops=1)
+   ->  Sort  (cost=0.09..0.09 rows=2 width=16) (actual time=181455.310..181455.311 rows=50 loops=1)
+         Sort Key: segments.segment, (count(*))
+         Sort Method: quicksort  Memory: 28kB
+         ->  HashAggregate  (cost=0.05..0.07 rows=2 width=16) (actual time=181455.291..181455.296 rows=50 loops=1)
+               Group Key: segments.segment
+               ->  CTE Scan on segments  (cost=0.00..0.04 rows=2 width=4) (actual time=181451.166..181455.274 rows=50 loops=1)
+ Planning time: 0.954 ms
+ Execution time: 181464.674 ms
+(39 rows)
+

@@ -1,0 +1,17 @@
+                                                                    QUERY PLAN                                                                    
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=98484.20..98484.32 rows=51 width=11) (actual time=317.211..317.223 rows=44 loops=1)
+   InitPlan 1 (returns $0)
+     ->  Remote Subquery Scan on all (dn1)  (cost=17.85..18.16 rows=31 width=4) (actual time=2.730..2.731 rows=1 loops=1)
+   ->  Sort  (cost=98466.04..98466.17 rows=51 width=11) (actual time=317.210..317.215 rows=44 loops=1)
+         Sort Key: (count(*)), a.ca_state
+         Sort Method: quicksort  Memory: 27kB
+         ->  GroupAggregate  (cost=98458.19..98464.59 rows=51 width=11) (actual time=313.887..317.158 rows=44 loops=1)
+               Group Key: a.ca_state
+               Filter: (count(*) >= 10)
+               Rows Removed by Filter: 6
+               ->  Remote Subquery Scan on all (dn1)  (cost=98458.19..98461.14 rows=393 width=3) (actual time=313.841..315.564 rows=2707 loops=1)
+ Planning time: 1.181 ms
+ Execution time: 318.921 ms
+(13 rows)
+

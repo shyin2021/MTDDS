@@ -1,0 +1,13 @@
+                                                                   QUERY PLAN                                                                    
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=64051.76..64051.76 rows=1 width=72) (actual time=3382.246..3382.247 rows=1 loops=1)
+   ->  Sort  (cost=64051.76..64051.76 rows=1 width=72) (actual time=3382.244..3382.245 rows=1 loops=1)
+         Sort Key: (count(DISTINCT cs1.cs_order_number))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Aggregate  (cost=64051.74..64051.75 rows=1 width=72) (actual time=3382.235..3382.235 rows=1 loops=1)
+               ->  Remote Subquery Scan on all (dn1)  (cost=6319.03..64051.73 rows=1 width=16) (actual time=3381.813..3381.879 rows=172 loops=1)
+ Planning time: 6.401 ms
+ Execution time: 3384.842 ms
+(8 rows)
+
+SET

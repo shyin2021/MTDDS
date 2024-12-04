@@ -13,17 +13,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-//input 1: directory(execTimeDir) with execTime_*.csv (queryId, execTime) for the three scale factors, for example, execTime_2.csv for scale factor 2 
-//input 2: query_types.csv (queryId, type)
-//output: perfSLOs.csv (queryId, scaleFactor, expectedQCT, perfSLO_premium, perfSLO_standard, perfSLO_basic)
+// input 1: directory(execTimeDir) with execTime_*.csv (queryId, execTime) for the three scale factors, for example, execTime_2.csv for scale factor 2 
+// input 2: query_types.csv (queryId, type)
+// output: perfSLOs.csv (queryId, scaleFactor, expectedQCT, perfSLO_premium, perfSLO_standard, perfSLO_basic)
 public class PerfSLOGenerator {
 	private static Set<Integer> reportingQueries;
 	private static double trp; // tolerance rate threshold of premium tenants
 	private static double trs; // tolerance rate threshold of standard tenants
 	private static double trb; // tolerance rate threshold of basic tenants
 
-	public static void generatePerfSLO(String execTimeDir, String queryTypesFile, String PriorityTRTFile, String outputFile) {
-		BufferedReader execTimeReader;
+	public static void generatePerfSLO(String execTimeDir_SUT, String queryTypesFile, String PriorityTRTFile, String outputFile) {
+		BufferedReader execTimeReader_SUT;
 		BufferedReader queryTypesReader;
 		BufferedReader priorityTRTReader;
 		FileWriter csvWriter = null;
@@ -90,21 +90,21 @@ public class PerfSLOGenerator {
 		} catch (IOException ie) {
 			System.out.println(ie);
 		}
-			Set<String> execTimeFiles = listFiles(execTimeDir);
-			Iterator<String> itr = execTimeFiles.iterator();
-			while(itr.hasNext()) {
-				String execTimeFile = itr.next();
-				execTimeReader = new BufferedReader(new FileReader(execTimeDir+"\\"+execTimeFile));			
+			Set<String> execTimeFiles_SUT = listFiles(execTimeDir_SUT);
+			Iterator<String> itr_SUT = execTimeFiles_SUT.iterator();
+			while(itr_SUT.hasNext()) {
+				String execTimeFile_SUT = itr_SUT.next();
+				execTimeReader_SUT = new BufferedReader(new FileReader(execTimeDir_SUT+"\\"+execTimeFile_SUT));			
 				//skip the file header
-				row = execTimeReader.readLine();
-				while ((row = execTimeReader.readLine()) != null) {
+				row = execTimeReader_SUT.readLine();
+				while ((row = execTimeReader_SUT.readLine()) != null) {
 				    String[] data = row.split(";");
 				    // retrieve the registered execution time of each query
 				    int queryId = Integer.parseInt(data[0]);
 				    csvWriter.append("q" + Integer.toString(queryId));
 					csvWriter.append(";");
 					//the name of the execTime file follows the format: execTime_scaleFactor_.csv
-					String[] fileNameToken = execTimeFile.split("[_.]");
+					String[] fileNameToken = execTimeFile_SUT.split("[_.]");
 					csvWriter.append(fileNameToken[1]); // write the scale factor
 					csvWriter.append(";");
 				    execTime = Long.parseLong(data[1]);
@@ -114,16 +114,16 @@ public class PerfSLOGenerator {
 				    }
 				    if(reportingQueries.contains(queryId)) {
 				    	// it is a reporting
-				    	QCT_EXP = execTime * 1000;
-				    	perfSLO_premium = execTime * 1000;
-				    	perfSLO_standard = execTime * 1000;
-				    	perfSLO_basic = execTime * 1000;				    	
+				    	QCT_EXP = (long) (execTime * 1000);
+				    	perfSLO_premium = QCT_EXP;
+				    	perfSLO_standard = QCT_EXP;
+				    	perfSLO_basic = QCT_EXP;				    	
 				    } else {
 				    	// it is an ad-hoc query
-				    	QCT_EXP = execTime;
-				    	perfSLO_premium = (long)(execTime * trp);
-				    	perfSLO_standard = (long)(execTime * trs);
-				    	perfSLO_basic = (long)(execTime* trb);
+				    	QCT_EXP = (long) (execTime); 
+				    	perfSLO_premium = (long)(QCT_EXP * trp);
+				    	perfSLO_standard = (long)(QCT_EXP * trs);
+				    	perfSLO_basic = (long)(QCT_EXP* trb);
 				    }
 				    csvWriter.append(Long.toString(execTime));
 				    csvWriter.append(";");
@@ -136,7 +136,7 @@ public class PerfSLOGenerator {
 				    csvWriter.append(Long.toString(perfSLO_basic));
 					csvWriter.append("\n");
 				}
-				execTimeReader.close();
+				execTimeReader_SUT.close();
 			}
 			//flush the data and close the files
 			csvWriter.flush();

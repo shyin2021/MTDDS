@@ -1,0 +1,42 @@
+                                                                                                                                                                                                        QUERY PLAN                                                                                                                                                                                                        
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=331290.13..331290.38 rows=100 width=180) (actual time=17921.163..17921.179 rows=100 loops=1)
+   CTE ws
+     ->  Remote Subquery Scan on all (dn1)  (cost=49376.20..53878.21 rows=300134 width=84) (actual time=976.821..1543.748 rows=647429 loops=1)
+   CTE cs
+     ->  Remote Subquery Scan on all (dn1)  (cost=93980.83..101288.77 rows=487196 width=84) (actual time=1999.425..3208.849 rows=1290853 loops=1)
+   CTE ss
+     ->  Remote Subquery Scan on all (dn1)  (cost=146540.45..151129.43 rows=305932 width=84) (actual time=3915.951..6171.355 rows=2449192 loops=1)
+   ->  Sort  (cost=24993.72..24995.84 rows=850 width=180) (actual time=17921.162..17921.171 rows=100 loops=1)
+         Sort Key: ss.ss_customer_sk, ss.ss_qty DESC, ss.ss_wc DESC, ss.ss_sp DESC, ((COALESCE(ws.ws_qty, '0'::bigint) + COALESCE(cs.cs_qty, '0'::bigint))), ((COALESCE(ws.ws_wc, '0'::numeric) + COALESCE(cs.cs_wc, '0'::numeric))), ((COALESCE(ws.ws_sp, '0'::numeric) + COALESCE(cs.cs_sp, '0'::numeric))), (round(((ss.ss_qty / (COALESCE(ws.ws_qty, '0'::bigint) + COALESCE(cs.cs_qty, '0'::bigint))))::numeric, 2))
+         Sort Method: quicksort  Memory: 50kB
+         ->  Merge Left Join  (cost=24895.55..24961.23 rows=850 width=180) (actual time=17663.599..17921.085 rows=178 loops=1)
+               Merge Cond: ((ss.ss_item_sk = ws.ws_item_sk) AND (ss.ss_customer_sk = ws.ws_customer_sk))
+               Join Filter: (ws.ws_sold_year = ss.ss_sold_year)
+               Filter: ((COALESCE(ws.ws_qty, '0'::bigint) > 0) OR (COALESCE(cs.cs_qty, '0'::bigint) > 0))
+               Rows Removed by Filter: 490259
+               ->  Merge Left Join  (cost=18063.34..18094.25 rows=1530 width=156) (actual time=15153.733..15351.723 rows=490437 loops=1)
+                     Merge Cond: ((ss.ss_item_sk = cs.cs_item_sk) AND (ss.ss_customer_sk = cs.cs_customer_sk))
+                     Join Filter: (cs.cs_sold_year = ss.ss_sold_year)
+                     ->  Sort  (cost=6964.40..6968.23 rows=1530 width=84) (actual time=9922.926..9981.186 rows=490437 loops=1)
+                           Sort Key: ss.ss_item_sk, ss.ss_customer_sk
+                           Sort Method: quicksort  Memory: 50495kB
+                           ->  CTE Scan on ss  (cost=0.00..6883.47 rows=1530 width=84) (actual time=3915.977..9591.139 rows=490437 loops=1)
+                                 Filter: (ss_sold_year = 1998)
+                                 Rows Removed by Filter: 1958755
+                     ->  Sort  (cost=11098.94..11105.03 rows=2436 width=84) (actual time=5230.801..5261.953 rows=257020 loops=1)
+                           Sort Key: cs.cs_item_sk, cs.cs_customer_sk
+                           Sort Method: quicksort  Memory: 26213kB
+                           ->  CTE Scan on cs  (cost=0.00..10961.91 rows=2436 width=84) (actual time=1999.470..5030.879 rows=257020 loops=1)
+                                 Filter: (cs_sold_year = 1998)
+                                 Rows Removed by Filter: 1033833
+               ->  Sort  (cost=6832.21..6835.96 rows=1501 width=84) (actual time=2509.445..2520.433 rows=128881 loops=1)
+                     Sort Key: ws.ws_item_sk, ws.ws_customer_sk
+                     Sort Method: quicksort  Memory: 13141kB
+                     ->  CTE Scan on ws  (cost=0.00..6753.01 rows=1501 width=84) (actual time=976.853..2411.091 rows=128881 loops=1)
+                           Filter: (ws_sold_year = 1998)
+                           Rows Removed by Filter: 518548
+ Planning time: 4.721 ms
+ Execution time: 18067.929 ms
+(38 rows)
+

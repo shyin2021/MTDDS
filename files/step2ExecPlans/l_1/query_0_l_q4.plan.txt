@@ -1,0 +1,64 @@
+                                                                                                                                                     QUERY PLAN                                                                                                                                                     
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=418043068.27..418043068.52 rows=100 width=334) (actual time=3472045.606..3472045.616 rows=100 loops=1)
+   CTE year_total
+     ->  Remote Subquery Scan on all (dn2)  (cost=17982343.75..79324948.42 rows=302402988 width=255) (actual time=1409434.248..3353410.343 rows=21696335 loops=1)
+   ->  Sort  (cost=338718119.85..344720378.22 rows=2400903351 width=334) (actual time=3472045.605..3472045.608 rows=100 loops=1)
+         Sort Key: t_s_secyear.customer_id, t_s_secyear.customer_first_name, t_s_secyear.customer_last_name, t_s_secyear.customer_birth_country
+         Sort Method: top-N heapsort  Memory: 38kB
+         ->  Merge Join  (cost=47630358.78..246957320.14 rows=2400903351 width=334) (actual time=3467282.959..3472021.856 rows=71378 loops=1)
+               Merge Cond: (t_s_secyear.customer_id = t_c_secyear.customer_id)
+               Join Filter: (CASE WHEN (t_c_firstyear.year_total > '0'::numeric) THEN (t_c_secyear.year_total / t_c_firstyear.year_total) ELSE NULL::numeric END > CASE WHEN (t_s_firstyear.year_total > '0'::numeric) THEN (t_s_secyear.year_total / t_s_firstyear.year_total) ELSE NULL::numeric END)
+               Rows Removed by Join Filter: 31071
+               ->  Merge Join  (cost=15876786.26..15878227.70 rows=95256 width=466) (actual time=3453780.777..3455231.788 rows=1656597 loops=1)
+                     Merge Cond: (t_s_firstyear.customer_id = t_s_secyear.customer_id)
+                     ->  Sort  (cost=8316224.54..8316230.84 rows=2520 width=100) (actual time=3450589.518..3450651.243 rows=1818880 loops=1)
+                           Sort Key: t_s_firstyear.customer_id
+                           Sort Method: quicksort  Memory: 191253kB
+                           ->  CTE Scan on year_total t_s_firstyear  (cost=0.00..8316082.17 rows=2520 width=100) (actual time=1409434.315..3448942.320 rows=1818881 loops=1)
+                                 Filter: ((year_total > '0'::numeric) AND (sale_type = 's'::text) AND (dyear = 1999))
+                                 Rows Removed by Filter: 19877454
+                     ->  Sort  (cost=7560561.72..7560580.62 rows=7560 width=366) (actual time=3191.252..3249.657 rows=1821440 loops=1)
+                           Sort Key: t_s_secyear.customer_id
+                           Sort Method: quicksort  Memory: 302311kB
+                           ->  CTE Scan on year_total t_s_secyear  (cost=0.00..7560074.70 rows=7560 width=366) (actual time=0.003..2433.410 rows=1821441 loops=1)
+                                 Filter: ((sale_type = 's'::text) AND (dyear = 2000))
+                                 Rows Removed by Filter: 19874894
+               ->  Materialize  (cost=31753572.52..33042135.18 rows=15122848 width=336) (actual time=13502.127..16187.255 rows=124006 loops=1)
+                     ->  Merge Join  (cost=31753572.52..33004328.06 rows=15122848 width=336) (actual time=13502.125..16166.050 rows=124006 loops=1)
+                           Merge Cond: (t_c_secyear.customer_id = t_w_firstyear.customer_id)
+                           Join Filter: (CASE WHEN (t_c_firstyear.year_total > '0'::numeric) THEN (t_c_secyear.year_total / t_c_firstyear.year_total) ELSE NULL::numeric END > CASE WHEN (t_w_firstyear.year_total > '0'::numeric) THEN (t_w_secyear.year_total / t_w_firstyear.year_total) ELSE NULL::numeric END)
+                           Rows Removed by Join Filter: 125971
+                           ->  Merge Join  (cost=15876786.26..15878227.70 rows=95256 width=200) (actual time=7055.806..8265.322 rows=1245427 loops=1)
+                                 Merge Cond: (t_c_firstyear.customer_id = t_c_secyear.customer_id)
+                                 ->  Sort  (cost=8316224.54..8316230.84 rows=2520 width=100) (actual time=4083.404..4134.685 rows=1560540 loops=1)
+                                       Sort Key: t_c_firstyear.customer_id
+                                       Sort Method: quicksort  Memory: 171070kB
+                                       ->  CTE Scan on year_total t_c_firstyear  (cost=0.00..8316082.17 rows=2520 width=100) (actual time=1443.758..3529.431 rows=1560540 loops=1)
+                                             Filter: ((year_total > '0'::numeric) AND (sale_type = 'c'::text) AND (dyear = 1999))
+                                             Rows Removed by Filter: 20135795
+                                 ->  Sort  (cost=7560561.72..7560580.62 rows=7560 width=100) (actual time=2972.395..3022.532 rows=1596082 loops=1)
+                                       Sort Key: t_c_secyear.customer_id
+                                       Sort Method: quicksort  Memory: 173846kB
+                                       ->  CTE Scan on year_total t_c_secyear  (cost=0.00..7560074.70 rows=7560 width=100) (actual time=958.027..2404.296 rows=1596082 loops=1)
+                                             Filter: ((sale_type = 'c'::text) AND (dyear = 2000))
+                                             Rows Removed by Filter: 20100253
+                           ->  Materialize  (cost=15876786.26..15878465.84 rows=95256 width=200) (actual time=6446.286..7160.792 rows=402271 loops=1)
+                                 ->  Merge Join  (cost=15876786.26..15878227.70 rows=95256 width=200) (actual time=6446.283..7098.183 rows=402271 loops=1)
+                                       Merge Cond: (t_w_firstyear.customer_id = t_w_secyear.customer_id)
+                                       ->  Sort  (cost=8316224.54..8316230.84 rows=2520 width=100) (actual time=3773.976..3806.112 rows=889541 loops=1)
+                                             Sort Key: t_w_firstyear.customer_id
+                                             Sort Method: quicksort  Memory: 94072kB
+                                             ->  CTE Scan on year_total t_w_firstyear  (cost=0.00..8316082.17 rows=2520 width=100) (actual time=2684.624..3459.998 rows=889541 loops=1)
+                                                   Filter: ((year_total > '0'::numeric) AND (sale_type = 'w'::text) AND (dyear = 1999))
+                                                   Rows Removed by Filter: 20806794
+                                       ->  Sort  (cost=7560561.72..7560580.62 rows=7560 width=100) (actual time=2672.301..2701.123 rows=905462 loops=1)
+                                             Sort Key: t_w_secyear.customer_id
+                                             Sort Method: quicksort  Memory: 95316kB
+                                             ->  CTE Scan on year_total t_w_secyear  (cost=0.00..7560074.70 rows=7560 width=100) (actual time=1800.187..2348.091 rows=905462 loops=1)
+                                                   Filter: ((sale_type = 'w'::text) AND (dyear = 2000))
+                                                   Rows Removed by Filter: 20790873
+ Planning time: 2.350 ms
+ Execution time: 3475360.964 ms
+(60 rows)
+

@@ -1,0 +1,27 @@
+                                                                               QUERY PLAN                                                                               
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=140273.46..140273.71 rows=100 width=202) (actual time=1481.936..1481.965 rows=100 loops=1)
+   ->  Sort  (cost=140273.46..140274.14 rows=274 width=202) (actual time=1481.934..1481.945 rows=100 loops=1)
+         Sort Key: store.s_store_name, item.i_item_desc
+         Sort Method: quicksort  Memory: 58kB
+         ->  Hash Join  (cost=136389.14..140262.98 rows=274 width=202) (actual time=1230.078..1481.467 rows=115 loops=1)
+               Hash Cond: (sc.ss_item_sk = item.i_item_sk)
+               ->  Merge Join  (cost=134754.14..138627.26 rows=274 width=41) (actual time=1186.401..1437.511 rows=115 loops=1)
+                     Merge Cond: (sc.ss_store_sk = sa.ss_store_sk)
+                     Join Filter: (sc.revenue <= (0.1 * (avg(sa.revenue))))
+                     Rows Removed by Join Filter: 53881
+                     ->  Remote Subquery Scan on all (dn1)  (cost=67426.40..69915.72 rows=13723 width=40) (actual time=523.312..673.145 rows=53997 loops=1)
+                     ->  Materialize  (cost=67427.74..69378.34 rows=12 width=45) (actual time=663.012..669.488 rows=44999 loops=1)
+                           ->  Merge Join  (cost=67427.74..69378.31 rows=12 width=45) (actual time=663.008..663.121 rows=6 loops=1)
+                                 Merge Cond: (store.s_store_sk = sa.ss_store_sk)
+                                 ->  Remote Subquery Scan on all (dn1)  (cost=101.34..101.53 rows=12 width=9) (actual time=2.071..2.079 rows=11 loops=1)
+                                 ->  Finalize GroupAggregate  (cost=67426.40..69374.30 rows=200 width=36) (actual time=660.919..660.997 rows=7 loops=1)
+                                       Group Key: sa.ss_store_sk
+                                       ->  Remote Subquery Scan on all (dn1)  (cost=67426.40..69370.30 rows=200 width=36) (actual time=660.885..660.891 rows=7 loops=1)
+               ->  Hash  (cost=4642.00..4642.00 rows=18000 width=169) (actual time=43.642..43.642 rows=18000 loops=1)
+                     Buckets: 32768  Batches: 1  Memory Usage: 3841kB
+                     ->  Remote Subquery Scan on all (dn1)  (cost=100.00..4642.00 rows=18000 width=169) (actual time=0.874..15.163 rows=18000 loops=1)
+ Planning time: 1.485 ms
+ Execution time: 1487.166 ms
+(23 rows)
+

@@ -1,0 +1,153 @@
+{
+  "database_id": 7,
+  "scale_factor": 1,
+  "database_byte_count": 1000000000,
+  "size_bucket": 9,
+  "pattern_id": 3,
+  "cpu_time": 12342868,
+  "cpu_time_h":"0.00342857h",
+  "query_count": 35,
+  "queries": [
+    {
+      "query_id": 11,
+      "start": 471929,
+      "arguments": ["CANADA",1]
+    },{
+      "query_id": 7,
+      "start": 483105,
+      "arguments": ["JAPAN","UNITED KINGDOM"]
+    },{
+      "query_id": 2,
+      "start": 485678,
+      "arguments": [14,"STEEL","EUROPE"]
+    },{
+      "query_id": 7,
+      "start": 510914,
+      "arguments": ["CANADA","UNITED STATES"]
+    },{
+      "query_id": 14,
+      "start": 533058,
+      "arguments": ["1995-06-01"]
+    },{
+      "query_id": 23,
+      "start": 556508,
+      "arguments": [5994016,6000032,0,7]
+    },{
+      "query_id": 2,
+      "start": 602430,
+      "arguments": [50,"NICKEL","ASIA"]
+    },{
+      "query_id": 18,
+      "start": 610875,
+      "arguments": [315]
+    },{
+      "query_id": 9,
+      "start": 613902,
+      "arguments": ["coral"]
+    },{
+      "query_id": 12,
+      "start": 650880,
+      "arguments": ["TRUCK","RAIL","1995-01-01"]
+    },{
+      "query_id": 12,
+      "start": 683321,
+      "arguments": ["REG AIR","SHIP","1995-01-01"]
+    },{
+      "query_id": 3,
+      "start": 696499,
+      "arguments": ["FURNITURE","1995-03-19"]
+    },{
+      "query_id": 22,
+      "start": 1127499,
+      "arguments": [15,13,21,20,22,32,12]
+    },{
+      "query_id": 12,
+      "start": 1149685,
+      "arguments": ["SHIP","FOB","1994-01-01"]
+    },{
+      "query_id": 3,
+      "start": 1159445,
+      "arguments": ["FURNITURE","1995-03-11"]
+    },{
+      "query_id": 15,
+      "start": 1161198,
+      "arguments": ["1996-07-01"]
+    },{
+      "query_id": 21,
+      "start": 1211559,
+      "arguments": ["JAPAN"]
+    },{
+      "query_id": 9,
+      "start": 1580336,
+      "arguments": ["olive"]
+    },{
+      "query_id": 3,
+      "start": 1587422,
+      "arguments": ["FURNITURE","1995-03-06"]
+    },{
+      "query_id": 22,
+      "start": 1625370,
+      "arguments": [32,22,16,31,14,34,12]
+    },{
+      "query_id": 23,
+      "start": 1631325,
+      "arguments": [5988000,5994016,0,7]
+    },{
+      "query_id": 17,
+      "start": 1688103,
+      "arguments": ["Brand#11","SM DRUM"]
+    },{
+      "query_id": 19,
+      "start": 1708115,
+      "arguments": ["Brand#24","Brand#21","Brand#11",9,20,23]
+    },{
+      "query_id": 9,
+      "start": 3011726,
+      "arguments": ["lemon"]
+    },{
+      "query_id": 6,
+      "start": 3025764,
+      "arguments": ["1993-01-01",2,24]
+    },{
+      "query_id": 1,
+      "start": 3031270,
+      "arguments": [71]
+    },{
+      "query_id": 5,
+      "start": 3065924,
+      "arguments": ["EUROPE","1995-01-01"]
+    },{
+      "query_id": 15,
+      "start": 3080388,
+      "arguments": ["1994-10-01"]
+    },{
+      "query_id": 10,
+      "start": 3104573,
+      "arguments": ["1993-04-01"]
+    },{
+      "query_id": 14,
+      "start": 3106269,
+      "arguments": ["1996-12-01"]
+    },{
+      "query_id": 3,
+      "start": 3157698,
+      "arguments": ["FURNITURE","1995-03-25"]
+    },{
+      "query_id": 10,
+      "start": 3187247,
+      "arguments": ["1994-07-01"]
+    },{
+      "query_id": 2,
+      "start": 3217559,
+      "arguments": [7,"TIN","EUROPE"]
+    },{
+      "query_id": 12,
+      "start": 3247451,
+      "arguments": ["TRUCK","FOB","1993-01-01"]
+    },{
+      "query_id": 1,
+      "start": 3290175,
+      "arguments": [80]
+    }
+  ]
+}

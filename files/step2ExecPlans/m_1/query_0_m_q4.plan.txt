@@ -1,0 +1,54 @@
+                                                                                                                                                  QUERY PLAN                                                                                                                                                  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=5056780.36..5056780.61 rows=100 width=334) (actual time=74454.700..74454.712 rows=100 loops=1)
+   CTE year_total
+     ->  Remote Subquery Scan on all (dn2)  (cost=768140.40..1881380.36 rows=20160519 width=255) (actual time=35709.850..67211.130 rows=3264650 loops=1)
+   ->  Sort  (cost=3175400.00..3175400.52 rows=210 width=334) (actual time=74454.698..74454.702 rows=100 loops=1)
+         Sort Key: t_s_secyear.customer_id, t_s_secyear.customer_first_name, t_s_secyear.customer_last_name, t_s_secyear.customer_birth_country
+         Sort Method: top-N heapsort  Memory: 47kB
+         ->  Hash Join  (cost=2620890.57..3175391.97 rows=210 width=334) (actual time=73769.465..74453.695 rows=637 loops=1)
+               Hash Cond: (t_s_firstyear.customer_id = t_s_secyear.customer_id)
+               Join Filter: (CASE WHEN (t_c_firstyear.year_total > '0'::numeric) THEN (t_c_secyear.year_total / t_c_firstyear.year_total) ELSE NULL::numeric END > CASE WHEN (t_s_firstyear.year_total > '0'::numeric) THEN (t_s_secyear.year_total / t_s_firstyear.year_total) ELSE NULL::numeric END)
+               Rows Removed by Join Filter: 261
+               ->  Hash Join  (cost=2116871.29..2671342.27 rows=250 width=436) (actual time=1876.794..2559.824 rows=1453 loops=1)
+                     Hash Cond: (t_s_firstyear.customer_id = t_c_secyear.customer_id)
+                     Join Filter: (CASE WHEN (t_c_firstyear.year_total > '0'::numeric) THEN (t_c_secyear.year_total / t_c_firstyear.year_total) ELSE NULL::numeric END > CASE WHEN (t_w_firstyear.year_total > '0'::numeric) THEN (t_w_secyear.year_total / t_w_firstyear.year_total) ELSE NULL::numeric END)
+                     Rows Removed by Join Filter: 1546
+                     ->  Hash Join  (cost=1612852.02..2167286.86 rows=297 width=400) (actual time=1471.345..2149.036 rows=6335 loops=1)
+                           Hash Cond: (t_s_firstyear.customer_id = t_w_secyear.customer_id)
+                           ->  Hash Join  (cost=1108832.75..1663256.95 rows=118 width=300) (actual time=1100.006..1769.319 rows=29397 loops=1)
+                                 Hash Cond: (t_s_firstyear.customer_id = t_w_firstyear.customer_id)
+                                 ->  Hash Join  (cost=554416.37..1108836.05 rows=141 width=200) (actual time=564.610..1203.040 rows=140510 loops=1)
+                                       Hash Cond: (t_s_firstyear.customer_id = t_c_firstyear.customer_id)
+                                       ->  CTE Scan on year_total t_s_firstyear  (cost=0.00..554414.27 rows=168 width=100) (actual time=0.002..574.478 rows=308319 loops=1)
+                                             Filter: ((year_total > '0'::numeric) AND (sale_type = 's'::text) AND (dyear = 1999))
+                                             Rows Removed by Filter: 2956331
+                                       ->  Hash  (cost=554414.27..554414.27 rows=168 width=100) (actual time=564.598..564.598 rows=227875 loops=1)
+                                             Buckets: 262144 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 14787kB
+                                             ->  CTE Scan on year_total t_c_firstyear  (cost=0.00..554414.27 rows=168 width=100) (actual time=242.151..530.468 rows=227875 loops=1)
+                                                   Filter: ((year_total > '0'::numeric) AND (sale_type = 'c'::text) AND (dyear = 1999))
+                                                   Rows Removed by Filter: 3036775
+                                 ->  Hash  (cost=554414.27..554414.27 rows=168 width=100) (actual time=535.372..535.372 rows=105004 loops=1)
+                                       Buckets: 131072 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 6915kB
+                                       ->  CTE Scan on year_total t_w_firstyear  (cost=0.00..554414.27 rows=168 width=100) (actual time=426.457..519.863 rows=105004 loops=1)
+                                             Filter: ((year_total > '0'::numeric) AND (sale_type = 'w'::text) AND (dyear = 1999))
+                                             Rows Removed by Filter: 3159646
+                           ->  Hash  (cost=504012.98..504012.98 rows=504 width=100) (actual time=371.300..371.300 rows=107512 loops=1)
+                                 Buckets: 131072 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 7053kB
+                                 ->  CTE Scan on year_total t_w_secyear  (cost=0.00..504012.98 rows=504 width=100) (actual time=289.057..355.541 rows=107512 loops=1)
+                                       Filter: ((sale_type = 'w'::text) AND (dyear = 2000))
+                                       Rows Removed by Filter: 3157138
+                     ->  Hash  (cost=504012.98..504012.98 rows=504 width=100) (actual time=405.301..405.301 rows=236574 loops=1)
+                           Buckets: 262144 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 15264kB
+                           ->  CTE Scan on year_total t_c_secyear  (cost=0.00..504012.98 rows=504 width=100) (actual time=164.029..369.778 rows=236574 loops=1)
+                                 Filter: ((sale_type = 'c'::text) AND (dyear = 2000))
+                                 Rows Removed by Filter: 3028076
+               ->  Hash  (cost=504012.98..504012.98 rows=504 width=366) (actual time=71892.207..71892.207 rows=309098 loops=1)
+                     Buckets: 524288 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 39516kB
+                     ->  CTE Scan on year_total t_s_secyear  (cost=0.00..504012.98 rows=504 width=366) (actual time=35709.994..71806.965 rows=309098 loops=1)
+                           Filter: ((sale_type = 's'::text) AND (dyear = 2000))
+                           Rows Removed by Filter: 2955552
+ Planning time: 2.903 ms
+ Execution time: 74608.969 ms
+(50 rows)
+

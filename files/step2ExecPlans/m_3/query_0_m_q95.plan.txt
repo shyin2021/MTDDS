@@ -1,0 +1,33 @@
+                                                                                      QUERY PLAN                                                                                       
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=10513637.35..10513637.36 rows=1 width=72) (actual time=112568.084..112568.085 rows=1 loops=1)
+   CTE ws_wh
+     ->  Remote Subquery Scan on all (dn4)  (cost=825538.67..2293887.71 rows=74775359 width=12) (actual time=3917.826..39106.859 rows=74793180 loops=1)
+   ->  Sort  (cost=8219749.64..8219749.65 rows=1 width=72) (actual time=112568.083..112568.083 rows=1 loops=1)
+         Sort Key: (count(DISTINCT ws_order_number))
+         Sort Method: quicksort  Memory: 25kB
+         ->  Aggregate  (cost=8219749.62..8219749.63 rows=1 width=72) (actual time=112568.072..112568.073 rows=1 loops=1)
+               ->  Hash Join  (cost=8108294.78..8219749.56 rows=8 width=16) (actual time=112261.532..112567.677 rows=1112 loops=1)
+                     Hash Cond: (ws_order_number = ws_wh.ws_order_number)
+                     ->  Hash Join  (cost=6425844.70..6537299.35 rows=16 width=24) (actual time=25179.757..25485.353 rows=1112 loops=1)
+                           Hash Cond: (ws_order_number = wr_order_number)
+                           ->  Remote Subquery Scan on all (dn3)  (cost=4528.52..115983.29 rows=16 width=16) (actual time=161.313..465.375 rows=1537 loops=1)
+                           ->  Hash  (cost=6419746.89..6419746.89 rows=133543 width=8) (actual time=25018.221..25018.221 rows=423639 loops=1)
+                                 Buckets: 524288 (originally 262144)  Batches: 1 (originally 1)  Memory Usage: 20645kB
+                                 ->  HashAggregate  (cost=6418411.46..6419746.89 rows=133543 width=8) (actual time=24895.614..24967.639 rows=423639 loops=1)
+                                       Group Key: wr_order_number
+                                       ->  Hash Join  (cost=11784.96..6015696.63 rows=161085933 width=8) (actual time=609.015..15506.040 rows=97901914 loops=1)
+                                             Hash Cond: (ws_wh_1.ws_order_number = wr_order_number)
+                                             ->  CTE Scan on ws_wh ws_wh_1  (cost=0.00..1495507.18 rows=74775359 width=4) (actual time=0.002..3753.883 rows=74793180 loops=1)
+                                             ->  Hash  (cost=10878.05..10878.05 rows=287687 width=4) (actual time=608.633..608.633 rows=719217 loops=1)
+                                                   Buckets: 1048576 (originally 524288)  Batches: 1 (originally 1)  Memory Usage: 33477kB
+                                                   ->  Remote Subquery Scan on all (dn4)  (cost=100.00..10878.05 rows=287687 width=4) (actual time=1.403..363.226 rows=719217 loops=1)
+                     ->  Hash  (cost=1682447.58..1682447.58 rows=200 width=4) (actual time=87081.766..87081.767 rows=600000 loops=1)
+                           Buckets: 1048576 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 29286kB
+                           ->  HashAggregate  (cost=1682445.58..1682447.58 rows=200 width=4) (actual time=86934.268..87030.939 rows=600000 loops=1)
+                                 Group Key: ws_wh.ws_order_number
+                                 ->  CTE Scan on ws_wh  (cost=0.00..1495507.18 rows=74775359 width=4) (actual time=3917.842..74447.074 rows=74793180 loops=1)
+ Planning time: 3.068 ms
+ Execution time: 113060.491 ms
+(29 rows)
+

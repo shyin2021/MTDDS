@@ -1,0 +1,29 @@
+                                                                                    QUERY PLAN                                                                                    
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=81936.41..81936.66 rows=100 width=273) (actual time=6860.598..6860.607 rows=100 loops=1)
+   ->  Sort  (cost=81936.41..81995.11 rows=23477 width=273) (actual time=6860.597..6860.600 rows=100 loops=1)
+         Sort Key: dw2.i_category, dw2.i_class, dw2.i_brand, dw2.i_product_name, dw2.d_year, dw2.d_qoy, dw2.d_moy, dw2.s_store_id, dw2.sumsales, dw2.rk
+         Sort Method: top-N heapsort  Memory: 51kB
+         ->  Subquery Scan on dw2  (cost=78750.13..81039.14 rows=23477 width=273) (actual time=6447.781..6860.093 rows=1100 loops=1)
+               Filter: (dw2.rk <= 100)
+               Rows Removed by Filter: 523683
+               ->  WindowAgg  (cost=78750.13..80158.75 rows=70431 width=273) (actual time=6447.780..6842.321 rows=524783 loops=1)
+                     ->  Sort  (cost=78750.13..78926.21 rows=70431 width=265) (actual time=6447.772..6510.231 rows=524783 loops=1)
+                           Sort Key: dw1.i_category, dw1.sumsales DESC
+                           Sort Method: quicksort  Memory: 247430kB
+                           ->  Subquery Scan on dw1  (cost=71020.95..73079.05 rows=70431 width=265) (actual time=3532.803..5263.507 rows=524783 loops=1)
+                                 ->  GroupAggregate  (cost=71020.95..72374.74 rows=70431 width=265) (actual time=3532.802..5217.979 rows=524783 loops=1)
+                                       Group Key: i_category, i_class, i_brand, i_product_name, d_year, d_qoy, d_moy, s_store_id
+                                       Group Key: i_category, i_class, i_brand, i_product_name, d_year, d_qoy, d_moy
+                                       Group Key: i_category, i_class, i_brand, i_product_name, d_year, d_qoy
+                                       Group Key: i_category, i_class, i_brand, i_product_name, d_year
+                                       Group Key: i_category, i_class, i_brand, i_product_name
+                                       Group Key: i_category, i_class, i_brand
+                                       Group Key: i_category, i_class
+                                       Group Key: i_category
+                                       Group Key: ()
+                                       ->  Remote Subquery Scan on all (dn1)  (cost=71020.95..71122.39 rows=13526 width=243) (actual time=3532.738..3797.199 rows=536789 loops=1)
+ Planning time: 1.261 ms
+ Execution time: 6891.689 ms
+(25 rows)
+

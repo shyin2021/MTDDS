@@ -1,0 +1,24 @@
+                                                                     QUERY PLAN                                                                     
+----------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=11014027.26..11014027.51 rows=100 width=160) (actual time=231519.789..231519.799 rows=100 loops=1)
+   CTE ssr
+     ->  Remote Subquery Scan on all (dn3)  (cost=4391721.32..4391976.07 rows=120 width=145) (actual time=110629.582..111059.276 rows=201 loops=1)
+   CTE csr
+     ->  Remote Subquery Scan on all (dn5)  (cost=2916939.20..2919430.82 rows=12240 width=145) (actual time=71524.110..72018.873 rows=2228 loops=1)
+   CTE wsr
+     ->  Remote Subquery Scan on all (dn3)  (cost=3701819.91..3701829.15 rows=7 width=145) (actual time=48416.368..48416.374 rows=12 loops=1)
+   ->  Sort  (cost=791.23..794.82 rows=1438 width=160) (actual time=231519.787..231519.791 rows=100 loops=1)
+         Sort Key: ('store channel'::text), (('store'::text || (ssr.s_store_id)::text))
+         Sort Method: top-N heapsort  Memory: 48kB
+         ->  MixedAggregate  (cost=0.00..736.27 rows=1438 width=160) (actual time=231512.299..231514.211 rows=2445 loops=1)
+               Hash Key: ('store channel'::text), (('store'::text || (ssr.s_store_id)::text))
+               Hash Key: ('store channel'::text)
+               Group Key: ()
+               ->  Append  (cost=0.00..340.09 rows=12367 width=160) (actual time=110629.621..231505.142 rows=2441 loops=1)
+                     ->  CTE Scan on ssr  (cost=0.00..3.30 rows=120 width=160) (actual time=110629.620..111060.157 rows=201 loops=1)
+                     ->  CTE Scan on csr  (cost=0.00..336.60 rows=12240 width=160) (actual time=71524.143..72028.159 rows=2228 loops=1)
+                     ->  CTE Scan on wsr  (cost=0.00..0.19 rows=7 width=160) (actual time=48416.399..48416.454 rows=12 loops=1)
+ Planning time: 1.389 ms
+ Execution time: 231555.796 ms
+(20 rows)
+

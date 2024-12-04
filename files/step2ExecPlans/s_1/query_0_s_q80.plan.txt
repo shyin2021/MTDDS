@@ -1,0 +1,30 @@
+                                                                  QUERY PLAN                                                                  
+----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=163398.59..163401.09 rows=100 width=160) (actual time=640.319..640.730 rows=100 loops=1)
+   CTE ssr
+     ->  Finalize GroupAggregate  (cost=80260.52..80260.78 rows=6 width=113) (actual time=340.428..340.474 rows=6 loops=1)
+           Group Key: s_store_id
+           ->  Remote Subquery Scan on all (dn1)  (cost=80260.52..80260.57 rows=6 width=113) (actual time=340.374..340.379 rows=6 loops=1)
+   CTE csr
+     ->  GroupAggregate  (cost=54458.65..54459.81 rows=31 width=113) (actual time=185.987..192.191 rows=397 loops=1)
+           Group Key: cp_catalog_page_id
+           ->  Remote Subquery Scan on all (dn1)  (cost=54458.65..54458.88 rows=31 width=41) (actual time=185.920..186.949 rows=1843 loops=1)
+   CTE wsr
+     ->  GroupAggregate  (cost=28674.64..28675.22 rows=15 width=113) (actual time=99.155..101.365 rows=15 loops=1)
+           Group Key: web_site_id
+           ->  Remote Subquery Scan on all (dn1)  (cost=28674.64..28674.76 rows=16 width=41) (actual time=98.975..99.328 rows=870 loops=1)
+   ->  GroupAggregate  (cost=2.78..5.40 rows=105 width=160) (actual time=640.318..640.710 rows=100 loops=1)
+         Group Key: ('store channel'::text), (('store'::text || (ssr.store_id)::text))
+         Group Key: ('store channel'::text)
+         Group Key: ()
+         ->  Sort  (cost=2.78..2.91 rows=52 width=160) (actual time=640.304..640.315 rows=101 loops=1)
+               Sort Key: ('store channel'::text), (('store'::text || (ssr.store_id)::text))
+               Sort Method: quicksort  Memory: 83kB
+               ->  Append  (cost=0.00..1.30 rows=52 width=160) (actual time=340.436..634.789 rows=418 loops=1)
+                     ->  CTE Scan on ssr  (cost=0.00..0.15 rows=6 width=160) (actual time=340.435..340.491 rows=6 loops=1)
+                     ->  CTE Scan on csr  (cost=0.00..0.78 rows=31 width=160) (actual time=185.994..192.831 rows=397 loops=1)
+                     ->  CTE Scan on wsr  (cost=0.00..0.38 rows=15 width=160) (actual time=99.163..101.398 rows=15 loops=1)
+ Planning time: 5.550 ms
+ Execution time: 647.954 ms
+(26 rows)
+

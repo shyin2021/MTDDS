@@ -1,0 +1,8 @@
+                                                   QUERY PLAN                                                   
+----------------------------------------------------------------------------------------------------------------
+ Remote Fast Query Execution  (cost=0.00..0.00 rows=0 width=0) (actual time=1352.401..1352.415 rows=30 loops=1)
+   Node/s: dn1
+ Planning time: 0.347 ms
+ Execution time: 1352.501 ms
+(4 rows)
+
