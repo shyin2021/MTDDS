@@ -1,0 +1,14 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['i_item_id ASC NULLS FIRST], true
+      +- 'Aggregate ['i_item_id], ['i_item_id, 'avg('cs_quantity) AS agg1#25493, 'avg('cs_list_price) AS agg2#25494, 'avg('cs_coupon_amt) AS agg3#25495, 'avg('cs_sales_price) AS agg4#25496]
+         +- 'Filter ((((('cs_sold_date_sk = 'd_date_sk) AND ('cs_item_sk = 'i_item_sk)) AND ('cs_bill_cdemo_sk = 'cd_demo_sk)) AND (('cs_promo_sk = 'p_promo_sk) AND ('cd_gender = M))) AND ((('cd_marital_status = D) AND ('cd_education_status = Secondary)) AND ((('p_channel_email = N) OR ('p_channel_event = N)) AND ('d_year = 2001))))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'Join Inner
+               :  :  :  :- 'UnresolvedRelation [catalog_sales], [], false
+               :  :  :  +- 'UnresolvedRelation [customer_demographics], [], false
+               :  :  +- 'UnresolvedRelation [date_dim], [], false
+               :  +- 'UnresolvedRelation [item], [], false
+               +- 'UnresolvedRelation [promotion], [], false

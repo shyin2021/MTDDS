@@ -1,0 +1,32 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Project [*]
+      +- 'Join Inner
+         :- 'Join Inner
+         :  :- 'Join Inner
+         :  :  :- 'Join Inner
+         :  :  :  :- 'Join Inner
+         :  :  :  :  :- 'SubqueryAlias B1
+         :  :  :  :  :  +- 'Project ['avg('ss_list_price) AS B1_LP#25658, 'count('ss_list_price) AS B1_CNT#25659, 'count(distinct 'ss_list_price) AS B1_CNTD#25660]
+         :  :  :  :  :     +- 'Filter ((('ss_quantity >= 0) AND ('ss_quantity <= 5)) AND (((('ss_list_price >= 32) AND ('ss_list_price <= (32 + 10))) OR (('ss_coupon_amt >= 4429) AND ('ss_coupon_amt <= (4429 + 1000)))) OR (('ss_wholesale_cost >= 0) AND ('ss_wholesale_cost <= (0 + 20)))))
+         :  :  :  :  :        +- 'UnresolvedRelation [store_sales], [], false
+         :  :  :  :  +- 'SubqueryAlias B2
+         :  :  :  :     +- 'Project ['avg('ss_list_price) AS B2_LP#25661, 'count('ss_list_price) AS B2_CNT#25662, 'count(distinct 'ss_list_price) AS B2_CNTD#25663]
+         :  :  :  :        +- 'Filter ((('ss_quantity >= 6) AND ('ss_quantity <= 10)) AND (((('ss_list_price >= 170) AND ('ss_list_price <= (170 + 10))) OR (('ss_coupon_amt >= 4727) AND ('ss_coupon_amt <= (4727 + 1000)))) OR (('ss_wholesale_cost >= 8) AND ('ss_wholesale_cost <= (8 + 20)))))
+         :  :  :  :           +- 'UnresolvedRelation [store_sales], [], false
+         :  :  :  +- 'SubqueryAlias B3
+         :  :  :     +- 'Project ['avg('ss_list_price) AS B3_LP#25664, 'count('ss_list_price) AS B3_CNT#25665, 'count(distinct 'ss_list_price) AS B3_CNTD#25666]
+         :  :  :        +- 'Filter ((('ss_quantity >= 11) AND ('ss_quantity <= 15)) AND (((('ss_list_price >= 124) AND ('ss_list_price <= (124 + 10))) OR (('ss_coupon_amt >= 9657) AND ('ss_coupon_amt <= (9657 + 1000)))) OR (('ss_wholesale_cost >= 43) AND ('ss_wholesale_cost <= (43 + 20)))))
+         :  :  :           +- 'UnresolvedRelation [store_sales], [], false
+         :  :  +- 'SubqueryAlias B4
+         :  :     +- 'Project ['avg('ss_list_price) AS B4_LP#25667, 'count('ss_list_price) AS B4_CNT#25668, 'count(distinct 'ss_list_price) AS B4_CNTD#25669]
+         :  :        +- 'Filter ((('ss_quantity >= 16) AND ('ss_quantity <= 20)) AND (((('ss_list_price >= 104) AND ('ss_list_price <= (104 + 10))) OR (('ss_coupon_amt >= 17161) AND ('ss_coupon_amt <= (17161 + 1000)))) OR (('ss_wholesale_cost >= 34) AND ('ss_wholesale_cost <= (34 + 20)))))
+         :  :           +- 'UnresolvedRelation [store_sales], [], false
+         :  +- 'SubqueryAlias B5
+         :     +- 'Project ['avg('ss_list_price) AS B5_LP#25670, 'count('ss_list_price) AS B5_CNT#25671, 'count(distinct 'ss_list_price) AS B5_CNTD#25672]
+         :        +- 'Filter ((('ss_quantity >= 21) AND ('ss_quantity <= 25)) AND (((('ss_list_price >= 73) AND ('ss_list_price <= (73 + 10))) OR (('ss_coupon_amt >= 17064) AND ('ss_coupon_amt <= (17064 + 1000)))) OR (('ss_wholesale_cost >= 56) AND ('ss_wholesale_cost <= (56 + 20)))))
+         :           +- 'UnresolvedRelation [store_sales], [], false
+         +- 'SubqueryAlias B6
+            +- 'Project ['avg('ss_list_price) AS B6_LP#25673, 'count('ss_list_price) AS B6_CNT#25674, 'count(distinct 'ss_list_price) AS B6_CNTD#25675]
+               +- 'Filter ((('ss_quantity >= 26) AND ('ss_quantity <= 30)) AND (((('ss_list_price >= 65) AND ('ss_list_price <= (65 + 10))) OR (('ss_coupon_amt >= 10899) AND ('ss_coupon_amt <= (10899 + 1000)))) OR (('ss_wholesale_cost >= 54) AND ('ss_wholesale_cost <= (54 + 20)))))
+                  +- 'UnresolvedRelation [store_sales], [], false

@@ -1,0 +1,15 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort [('sum_sales - 'avg_monthly_sales) ASC NULLS FIRST, 's_store_name ASC NULLS FIRST], true
+      +- 'Project [*]
+         +- 'Filter (CASE WHEN NOT ('avg_monthly_sales = 0) THEN ('abs(('sum_sales - 'avg_monthly_sales)) / 'avg_monthly_sales) ELSE null END > 0.1)
+            +- 'SubqueryAlias tmp1
+               +- 'Aggregate ['i_category, 'i_class, 'i_brand, 's_store_name, 's_company_name, 'd_moy], ['i_category, 'i_class, 'i_brand, 's_store_name, 's_company_name, 'd_moy, 'sum('ss_sales_price) AS sum_sales#48446, 'avg('sum('ss_sales_price)) windowspecdefinition('i_category, 'i_brand, 's_store_name, 's_company_name, unspecifiedframe$()) AS avg_monthly_sales#48447]
+                  +- 'Filter (((('ss_item_sk = 'i_item_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND ('ss_store_sk = 's_store_sk)) AND ('d_year IN (2002) AND (('i_category IN (Women,Music,Children) AND 'i_class IN (dresses,classical,school-uniforms)) OR ('i_category IN (Jewelry,Sports,Electronics) AND 'i_class IN (pendants,camping,musical)))))
+                     +- 'Join Inner
+                        :- 'Join Inner
+                        :  :- 'Join Inner
+                        :  :  :- 'UnresolvedRelation [item], [], false
+                        :  :  +- 'UnresolvedRelation [store_sales], [], false
+                        :  +- 'UnresolvedRelation [date_dim], [], false
+                        +- 'UnresolvedRelation [store], [], false

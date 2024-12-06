@@ -1,0 +1,24 @@
+AdaptiveSparkPlan isFinalPlan=false
++- HashAggregate(keys=[], functions=[count(1)], output=[count(1)#49339L])
+   +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=177085]
+      +- HashAggregate(keys=[], functions=[partial_count(1)], output=[count#49345L])
+         +- Project
+            +- BroadcastHashJoin [ss_store_sk#1255], [s_store_sk#52], Inner, BuildRight, false
+               :- Project [ss_store_sk#1255]
+               :  +- BroadcastHashJoin [ss_sold_time_sk#1249], [t_time_sk#39576], Inner, BuildRight, false
+               :     :- Project [ss_sold_time_sk#1249, ss_store_sk#1255]
+               :     :  +- BroadcastHashJoin [ss_hdemo_sk#1253], [hd_demo_sk#12110], Inner, BuildRight, false
+               :     :     :- Filter ((isnotnull(ss_hdemo_sk#1253) AND isnotnull(ss_sold_time_sk#1249)) AND isnotnull(ss_store_sk#1255))
+               :     :     :  +- FileScan parquet spark_catalog.m.store_sales[ss_sold_time_sk#1249,ss_hdemo_sk#1253,ss_store_sk#1255] Batched: true, DataFilters: [isnotnull(ss_hdemo_sk#1253), isnotnull(ss_sold_time_sk#1249), isnotnull(ss_store_sk#1255)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_hdemo_sk), IsNotNull(ss_sold_time_sk), IsNotNull(ss_store_sk)], ReadSchema: struct<ss_sold_time_sk:int,ss_hdemo_sk:int,ss_store_sk:int>
+               :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=177072]
+               :     :        +- Project [hd_demo_sk#12110]
+               :     :           +- Filter ((isnotnull(hd_dep_count#12113) AND (hd_dep_count#12113 = 6)) AND isnotnull(hd_demo_sk#12110))
+               :     :              +- FileScan parquet spark_catalog.m.household_demographics[hd_demo_sk#12110,hd_dep_count#12113] Batched: true, DataFilters: [isnotnull(hd_dep_count#12113), (hd_dep_count#12113 = 6), isnotnull(hd_demo_sk#12110)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/household_demograp..., PartitionFilters: [], PushedFilters: [IsNotNull(hd_dep_count), EqualTo(hd_dep_count,6), IsNotNull(hd_demo_sk)], ReadSchema: struct<hd_demo_sk:int,hd_dep_count:int>
+               :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=177076]
+               :        +- Project [t_time_sk#39576]
+               :           +- Filter ((((isnotnull(t_hour#39579) AND isnotnull(t_minute#39580)) AND (t_hour#39579 = 8)) AND (t_minute#39580 >= 30)) AND isnotnull(t_time_sk#39576))
+               :              +- FileScan parquet spark_catalog.m.time_dim[t_time_sk#39576,t_hour#39579,t_minute#39580] Batched: true, DataFilters: [isnotnull(t_hour#39579), isnotnull(t_minute#39580), (t_hour#39579 = 8), (t_minute#39580 >= 30), ..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/time_dim], PartitionFilters: [], PushedFilters: [IsNotNull(t_hour), IsNotNull(t_minute), EqualTo(t_hour,8), GreaterThanOrEqual(t_minute,30), IsNo..., ReadSchema: struct<t_time_sk:int,t_hour:int,t_minute:int>
+               +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=177080]
+                  +- Project [s_store_sk#52]
+                     +- Filter ((isnotnull(s_store_name#57) AND (s_store_name#57 = ese)) AND isnotnull(s_store_sk#52))
+                        +- FileScan parquet spark_catalog.m.store[s_store_sk#52,s_store_name#57] Batched: true, DataFilters: [isnotnull(s_store_name#57), (s_store_name#57 = ese), isnotnull(s_store_sk#52)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store], PartitionFilters: [], PushedFilters: [IsNotNull(s_store_name), EqualTo(s_store_name,ese), IsNotNull(s_store_sk)], ReadSchema: struct<s_store_sk:int,s_store_name:string>

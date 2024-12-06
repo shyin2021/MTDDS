@@ -142,9 +142,10 @@ public class Reproduce {
 		// Input: Execution traces with Format1 (TenantName, QueryNumber, ThreadName, Event, TimeStamp)
 		// Output: Execution traces with Format2 (SUTNumber, clusterSize, arrivalRateFactor, TenantName, QueryNumber, ThreadName, LaunchTime, StartTime, FinishTime);
 		System.out.println("[REPRODUCE] Transform the execution traces from Format1 to Format2...");
-		tools.ExecutionTraceTransformer.transformAllTraces(1, "files\\step6ExecTraces\\SUT1", 20, "files\\step6FormatedTraces\\SUT1", 11, 1);
-		tools.ExecutionTraceTransformer.transformAllTraces(2, "files\\step6ExecTraces\\SUT2", 20, "files\\step6FormatedTraces\\SUT2", 11, 1);
-		tools.ExecutionTraceTransformer.transformAllTraces(3, "files\\step6ExecTraces\\SUT3", 20, "files\\step6FormatedTraces\\SUT3", 11, 10);
+		//tools.ExecutionTraceTransformer.transformAllTraces(1, "files\\step6ExecTraces\\SUT1", 20, "files\\step6FormatedTraces\\SUT1", 11, 1);
+		//tools.ExecutionTraceTransformer.transformAllTraces(2, "files\\step6ExecTraces\\SUT2", 20, "files\\step6FormatedTraces\\SUT2", 11, 1);
+		//tools.ExecutionTraceTransformer.transformAllTraces(3, "files\\step6ExecTraces\\SUT3", 20, "files\\step6FormatedTraces\\SUT3", 11, 10);
+		//tools.ExecutionTraceTransformer.transformAllTracesSUT4(4, "files\\step6ExecTraces\\SUT4", 20, "files\\step6FormatedTraces\\SUT4", 11, 10);
 		System.out.println("[REPRODUCE] Execution Traces transformed.");
 		
 		/*** Step 7 - Final scores computation ***/
@@ -237,7 +238,7 @@ public class Reproduce {
 		
 		/*** Export of data files for reproducing the Figures in the paper ***/
 		System.out.println("\n====== Exporting data files for reproducing the Figures in the paper ======");
-		example.DataForFigures.exportDataForFigure13("files");
+		example.DataForFigures.exportDataForFigure13ref("files");
 		
 		
 		// Compute intermediate metrics for SUT2b+ and SUT3 using the pricing model QLSA
@@ -259,11 +260,20 @@ public class Reproduce {
 		
 		/*** Export of data files for reproducing the Figures in the paper ***/
 		System.out.println("\n====== Exporting data files for reproducing the Figures in the paper ======");
+		example.DataForFigures.exportDataForFigure13("files");
+		
+		// ****** compare SUT3a and SUT4a by CAB
+		// Merge the individual CAB traces
+		CABTracesProcessing.MergeCABTraces(3, "files\\CABTraces\\SUT3", 20, "files\\CABTraces\\SUT3");
+		System.out.println("[REPRODUCE] CAB traces for SUT3 merged.");
+		CABTracesProcessing.MergeCABTraces(4, "files\\CABTraces\\SUT4", 20, "files\\CABTraces\\SUT4");
+		System.out.println("[REPRODUCE] CAB traces for SUT4 merged.");
+
+		/*** Export of data files for reproducing the Figures in the paper ***/
+		System.out.println("\n====== Exporting data files for reproducing the Figures in the paper ======");
 		example.DataForFigures.exportDataForFigure14("files");
 		
-		// ****** compare SUT3a and SUT4a
-		tools.ExecutionTraceTransformer.transformAllTracesSUT4(4, "files\\step6ExecTraces\\SUT4", 20, "files\\step6FormatedTraces\\SUT4", 11, 10);
-
+		// ****** compare SUT3a and SUT4a by MTD-DS
 		// Load the generic performance SLOs generated in Step 2 and compute the performance SLOs for each tenant 
 		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs_SUT3.csv", "SUT3");
 		tools.PerfSLOsPerTenant.LoadPerfSLOs("files\\step2PerfSLOs\\perfSLOs_SUT4.csv", "SUT4");

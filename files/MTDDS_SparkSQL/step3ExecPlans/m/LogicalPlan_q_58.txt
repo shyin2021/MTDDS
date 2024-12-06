@@ -1,0 +1,53 @@
+CTE [ss_items, cs_items, ws_items]
+:  :- 'SubqueryAlias ss_items
+:  :  +- 'Aggregate ['i_item_id], ['i_item_id AS item_id#35732, 'sum('ss_ext_sales_price) AS ss_item_rev#35733]
+:  :     +- 'Filter ((('ss_item_sk = 'i_item_sk) AND 'd_date IN (list#35735 [])) AND ('ss_sold_date_sk = 'd_date_sk))
+:  :        :  +- 'Project ['d_date]
+:  :        :     +- 'Filter ('d_week_seq = scalar-subquery#35734 [])
+:  :        :        :  +- 'Project ['d_week_seq]
+:  :        :        :     +- 'Filter ('d_date = 1998-01-26)
+:  :        :        :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'UnresolvedRelation [store_sales], [], false
+:  :           :  +- 'UnresolvedRelation [item], [], false
+:  :           +- 'UnresolvedRelation [date_dim], [], false
+:  :- 'SubqueryAlias cs_items
+:  :  +- 'Aggregate ['i_item_id], ['i_item_id AS item_id#35736, 'sum('cs_ext_sales_price) AS cs_item_rev#35737]
+:  :     +- 'Filter ((('cs_item_sk = 'i_item_sk) AND 'd_date IN (list#35739 [])) AND ('cs_sold_date_sk = 'd_date_sk))
+:  :        :  +- 'Project ['d_date]
+:  :        :     +- 'Filter ('d_week_seq = scalar-subquery#35738 [])
+:  :        :        :  +- 'Project ['d_week_seq]
+:  :        :        :     +- 'Filter ('d_date = 1998-01-26)
+:  :        :        :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'UnresolvedRelation [catalog_sales], [], false
+:  :           :  +- 'UnresolvedRelation [item], [], false
+:  :           +- 'UnresolvedRelation [date_dim], [], false
+:  +- 'SubqueryAlias ws_items
+:     +- 'Aggregate ['i_item_id], ['i_item_id AS item_id#35740, 'sum('ws_ext_sales_price) AS ws_item_rev#35741]
+:        +- 'Filter ((('ws_item_sk = 'i_item_sk) AND 'd_date IN (list#35743 [])) AND ('ws_sold_date_sk = 'd_date_sk))
+:           :  +- 'Project ['d_date]
+:           :     +- 'Filter ('d_week_seq = scalar-subquery#35742 [])
+:           :        :  +- 'Project ['d_week_seq]
+:           :        :     +- 'Filter ('d_date = 1998-01-26)
+:           :        :        +- 'UnresolvedRelation [date_dim], [], false
+:           :        +- 'UnresolvedRelation [date_dim], [], false
+:           +- 'Join Inner
+:              :- 'Join Inner
+:              :  :- 'UnresolvedRelation [web_sales], [], false
+:              :  +- 'UnresolvedRelation [item], [], false
+:              +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['item_id ASC NULLS FIRST, 'ss_item_rev ASC NULLS FIRST], true
+         +- 'Project ['ss_items.item_id, 'ss_item_rev, (('ss_item_rev / ((('ss_item_rev + 'cs_item_rev) + 'ws_item_rev) / 3)) * 100) AS ss_dev#35728, 'cs_item_rev, (('cs_item_rev / ((('ss_item_rev + 'cs_item_rev) + 'ws_item_rev) / 3)) * 100) AS cs_dev#35729, 'ws_item_rev, (('ws_item_rev / ((('ss_item_rev + 'cs_item_rev) + 'ws_item_rev) / 3)) * 100) AS ws_dev#35730, ((('ss_item_rev + 'cs_item_rev) + 'ws_item_rev) / 3) AS average#35731]
+            +- 'Filter (((('ss_items.item_id = 'cs_items.item_id) AND ('ss_items.item_id = 'ws_items.item_id)) AND ((('ss_item_rev >= (0.9 * 'cs_item_rev)) AND ('ss_item_rev <= (1.1 * 'cs_item_rev))) AND (('ss_item_rev >= (0.9 * 'ws_item_rev)) AND ('ss_item_rev <= (1.1 * 'ws_item_rev))))) AND (((('cs_item_rev >= (0.9 * 'ss_item_rev)) AND ('cs_item_rev <= (1.1 * 'ss_item_rev))) AND (('cs_item_rev >= (0.9 * 'ws_item_rev)) AND ('cs_item_rev <= (1.1 * 'ws_item_rev)))) AND ((('ws_item_rev >= (0.9 * 'ss_item_rev)) AND ('ws_item_rev <= (1.1 * 'ss_item_rev))) AND (('ws_item_rev >= (0.9 * 'cs_item_rev)) AND ('ws_item_rev <= (1.1 * 'cs_item_rev))))))
+               +- 'Join Inner
+                  :- 'Join Inner
+                  :  :- 'UnresolvedRelation [ss_items], [], false
+                  :  +- 'UnresolvedRelation [cs_items], [], false
+                  +- 'UnresolvedRelation [ws_items], [], false

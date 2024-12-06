@@ -1,0 +1,27 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['cd_gender ASC NULLS FIRST, 'cd_marital_status ASC NULLS FIRST, 'cd_education_status ASC NULLS FIRST, 'cd_purchase_estimate ASC NULLS FIRST, 'cd_credit_rating ASC NULLS FIRST], true
+      +- 'Aggregate ['cd_gender, 'cd_marital_status, 'cd_education_status, 'cd_purchase_estimate, 'cd_credit_rating], ['cd_gender, 'cd_marital_status, 'cd_education_status, 'count(1) AS cnt1#40791, 'cd_purchase_estimate, 'count(1) AS cnt2#40792, 'cd_credit_rating, 'count(1) AS cnt3#40793]
+         +- 'Filter (((('c.c_current_addr_sk = 'ca.ca_address_sk) AND 'ca_state IN (AR,SD,KY)) AND ('cd_demo_sk = 'c.c_current_cdemo_sk)) AND (exists#40794 [] AND (NOT exists#40795 [] AND NOT exists#40796 [])))
+            :  :- 'Project [*]
+            :  :  +- 'Filter ((('c.c_customer_sk = 'ss_customer_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND (('d_year = 2003) AND (('d_moy >= 4) AND ('d_moy <= (4 + 2)))))
+            :  :     +- 'Join Inner
+            :  :        :- 'UnresolvedRelation [store_sales], [], false
+            :  :        +- 'UnresolvedRelation [date_dim], [], false
+            :  :- 'Project [*]
+            :  :  +- 'Filter ((('c.c_customer_sk = 'ws_bill_customer_sk) AND ('ws_sold_date_sk = 'd_date_sk)) AND (('d_year = 2003) AND (('d_moy >= 4) AND ('d_moy <= (4 + 2)))))
+            :  :     +- 'Join Inner
+            :  :        :- 'UnresolvedRelation [web_sales], [], false
+            :  :        +- 'UnresolvedRelation [date_dim], [], false
+            :  +- 'Project [*]
+            :     +- 'Filter ((('c.c_customer_sk = 'cs_ship_customer_sk) AND ('cs_sold_date_sk = 'd_date_sk)) AND (('d_year = 2003) AND (('d_moy >= 4) AND ('d_moy <= (4 + 2)))))
+            :        +- 'Join Inner
+            :           :- 'UnresolvedRelation [catalog_sales], [], false
+            :           +- 'UnresolvedRelation [date_dim], [], false
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'SubqueryAlias c
+               :  :  +- 'UnresolvedRelation [customer], [], false
+               :  +- 'SubqueryAlias ca
+               :     +- 'UnresolvedRelation [customer_address], [], false
+               +- 'UnresolvedRelation [customer_demographics], [], false

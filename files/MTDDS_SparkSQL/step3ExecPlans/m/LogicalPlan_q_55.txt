@@ -1,0 +1,10 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['ext_price DESC NULLS LAST, 'i_brand_id ASC NULLS FIRST], true
+      +- 'Aggregate ['i_brand, 'i_brand_id], ['i_brand_id AS brand_id#34060, 'i_brand AS brand#34061, 'sum('ss_ext_sales_price) AS ext_price#34062]
+         +- 'Filter (((('d_date_sk = 'ss_sold_date_sk) AND ('ss_item_sk = 'i_item_sk)) AND ('i_manager_id = 63)) AND (('d_moy = 11) AND ('d_year = 2002)))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'UnresolvedRelation [date_dim], [], false
+               :  +- 'UnresolvedRelation [store_sales], [], false
+               +- 'UnresolvedRelation [item], [], false

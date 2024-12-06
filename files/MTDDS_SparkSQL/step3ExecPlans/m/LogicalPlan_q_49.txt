@@ -1,0 +1,51 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort [1 ASC NULLS FIRST, 4 ASC NULLS FIRST, 5 ASC NULLS FIRST, 2 ASC NULLS FIRST], true
+      +- 'Project ['channel, 'item, 'return_ratio, 'return_rank, 'currency_rank]
+         +- 'SubqueryAlias r7
+            +- 'Distinct
+               +- 'Union false, false
+                  :- 'Distinct
+                  :  +- 'Union false, false
+                  :     :- 'Project [web AS channel#33133, 'web.item, 'web.return_ratio, 'web.return_rank, 'web.currency_rank]
+                  :     :  +- 'Filter (('web.return_rank <= 10) OR ('web.currency_rank <= 10))
+                  :     :     +- 'SubqueryAlias web
+                  :     :        +- 'Project ['item, 'return_ratio, 'currency_ratio, 'rank() windowspecdefinition('return_ratio ASC NULLS FIRST, unspecifiedframe$()) AS return_rank#33131, 'rank() windowspecdefinition('currency_ratio ASC NULLS FIRST, unspecifiedframe$()) AS currency_rank#33132]
+                  :     :           +- 'SubqueryAlias in_web
+                  :     :              +- 'Aggregate ['ws.ws_item_sk], ['ws.ws_item_sk AS item#33128, (cast('sum('coalesce('wr.wr_return_quantity, 0)) as decimal(15,4)) / cast('sum('coalesce('ws.ws_quantity, 0)) as decimal(15,4))) AS return_ratio#33129, (cast('sum('coalesce('wr.wr_return_amt, 0)) as decimal(15,4)) / cast('sum('coalesce('ws.ws_net_paid, 0)) as decimal(15,4))) AS currency_ratio#33130]
+                  :     :                 +- 'Filter (((('wr.wr_return_amt > 10000) AND ('ws.ws_net_profit > 1)) AND (('ws.ws_net_paid > 0) AND ('ws.ws_quantity > 0))) AND ((('ws_sold_date_sk = 'd_date_sk) AND ('d_year = 2002)) AND ('d_moy = 12)))
+                  :     :                    +- 'Join Inner
+                  :     :                       :- 'Join LeftOuter, (('ws.ws_order_number = 'wr.wr_order_number) AND ('ws.ws_item_sk = 'wr.wr_item_sk))
+                  :     :                       :  :- 'SubqueryAlias ws
+                  :     :                       :  :  +- 'UnresolvedRelation [web_sales], [], false
+                  :     :                       :  +- 'SubqueryAlias wr
+                  :     :                       :     +- 'UnresolvedRelation [web_returns], [], false
+                  :     :                       +- 'UnresolvedRelation [date_dim], [], false
+                  :     +- 'Project [catalog AS channel#33139, 'catalog.item, 'catalog.return_ratio, 'catalog.return_rank, 'catalog.currency_rank]
+                  :        +- 'Filter (('catalog.return_rank <= 10) OR ('catalog.currency_rank <= 10))
+                  :           +- 'SubqueryAlias catalog
+                  :              +- 'Project ['item, 'return_ratio, 'currency_ratio, 'rank() windowspecdefinition('return_ratio ASC NULLS FIRST, unspecifiedframe$()) AS return_rank#33137, 'rank() windowspecdefinition('currency_ratio ASC NULLS FIRST, unspecifiedframe$()) AS currency_rank#33138]
+                  :                 +- 'SubqueryAlias in_cat
+                  :                    +- 'Aggregate ['cs.cs_item_sk], ['cs.cs_item_sk AS item#33134, (cast('sum('coalesce('cr.cr_return_quantity, 0)) as decimal(15,4)) / cast('sum('coalesce('cs.cs_quantity, 0)) as decimal(15,4))) AS return_ratio#33135, (cast('sum('coalesce('cr.cr_return_amount, 0)) as decimal(15,4)) / cast('sum('coalesce('cs.cs_net_paid, 0)) as decimal(15,4))) AS currency_ratio#33136]
+                  :                       +- 'Filter (((('cr.cr_return_amount > 10000) AND ('cs.cs_net_profit > 1)) AND (('cs.cs_net_paid > 0) AND ('cs.cs_quantity > 0))) AND ((('cs_sold_date_sk = 'd_date_sk) AND ('d_year = 2002)) AND ('d_moy = 12)))
+                  :                          +- 'Join Inner
+                  :                             :- 'Join LeftOuter, (('cs.cs_order_number = 'cr.cr_order_number) AND ('cs.cs_item_sk = 'cr.cr_item_sk))
+                  :                             :  :- 'SubqueryAlias cs
+                  :                             :  :  +- 'UnresolvedRelation [catalog_sales], [], false
+                  :                             :  +- 'SubqueryAlias cr
+                  :                             :     +- 'UnresolvedRelation [catalog_returns], [], false
+                  :                             +- 'UnresolvedRelation [date_dim], [], false
+                  +- 'Project [store AS channel#33145, 'store.item, 'store.return_ratio, 'store.return_rank, 'store.currency_rank]
+                     +- 'Filter (('store.return_rank <= 10) OR ('store.currency_rank <= 10))
+                        +- 'SubqueryAlias store
+                           +- 'Project ['item, 'return_ratio, 'currency_ratio, 'rank() windowspecdefinition('return_ratio ASC NULLS FIRST, unspecifiedframe$()) AS return_rank#33143, 'rank() windowspecdefinition('currency_ratio ASC NULLS FIRST, unspecifiedframe$()) AS currency_rank#33144]
+                              +- 'SubqueryAlias in_store
+                                 +- 'Aggregate ['sts.ss_item_sk], ['sts.ss_item_sk AS item#33140, (cast('sum('coalesce('sr.sr_return_quantity, 0)) as decimal(15,4)) / cast('sum('coalesce('sts.ss_quantity, 0)) as decimal(15,4))) AS return_ratio#33141, (cast('sum('coalesce('sr.sr_return_amt, 0)) as decimal(15,4)) / cast('sum('coalesce('sts.ss_net_paid, 0)) as decimal(15,4))) AS currency_ratio#33142]
+                                    +- 'Filter (((('sr.sr_return_amt > 10000) AND ('sts.ss_net_profit > 1)) AND (('sts.ss_net_paid > 0) AND ('sts.ss_quantity > 0))) AND ((('ss_sold_date_sk = 'd_date_sk) AND ('d_year = 2002)) AND ('d_moy = 12)))
+                                       +- 'Join Inner
+                                          :- 'Join LeftOuter, (('sts.ss_ticket_number = 'sr.sr_ticket_number) AND ('sts.ss_item_sk = 'sr.sr_item_sk))
+                                          :  :- 'SubqueryAlias sts
+                                          :  :  +- 'UnresolvedRelation [store_sales], [], false
+                                          :  +- 'SubqueryAlias sr
+                                          :     +- 'UnresolvedRelation [store_returns], [], false
+                                          +- 'UnresolvedRelation [date_dim], [], false

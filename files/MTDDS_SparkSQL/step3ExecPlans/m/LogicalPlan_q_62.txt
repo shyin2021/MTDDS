@@ -1,0 +1,14 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['substr('w_warehouse_name, 1, 20) ASC NULLS FIRST, 'sm_type ASC NULLS FIRST, 'web_name ASC NULLS FIRST], true
+      +- 'Aggregate ['substr('w_warehouse_name, 1, 20), 'sm_type, 'web_name], [unresolvedalias('substr('w_warehouse_name, 1, 20), None), 'sm_type, 'web_name, 'sum(CASE WHEN (('ws_ship_date_sk - 'ws_sold_date_sk) <= 30) THEN 1 ELSE 0 END) AS 30_days#37110, 'sum(CASE WHEN ((('ws_ship_date_sk - 'ws_sold_date_sk) > 30) AND (('ws_ship_date_sk - 'ws_sold_date_sk) <= 60)) THEN 1 ELSE 0 END) AS 31_60_days#37111, 'sum(CASE WHEN ((('ws_ship_date_sk - 'ws_sold_date_sk) > 60) AND (('ws_ship_date_sk - 'ws_sold_date_sk) <= 90)) THEN 1 ELSE 0 END) AS 61_90_days#37112, 'sum(CASE WHEN ((('ws_ship_date_sk - 'ws_sold_date_sk) > 90) AND (('ws_ship_date_sk - 'ws_sold_date_sk) <= 120)) THEN 1 ELSE 0 END) AS 91_120_days#37113, 'sum(CASE WHEN (('ws_ship_date_sk - 'ws_sold_date_sk) > 120) THEN 1 ELSE 0 END) AS more_than_120_days#37114]
+         +- 'Filter ((((('d_month_seq >= 1178) AND ('d_month_seq <= (1178 + 11))) AND ('ws_ship_date_sk = 'd_date_sk)) AND ('ws_warehouse_sk = 'w_warehouse_sk)) AND (('ws_ship_mode_sk = 'sm_ship_mode_sk) AND ('ws_web_site_sk = 'web_site_sk)))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'Join Inner
+               :  :  :  :- 'UnresolvedRelation [web_sales], [], false
+               :  :  :  +- 'UnresolvedRelation [warehouse], [], false
+               :  :  +- 'UnresolvedRelation [ship_mode], [], false
+               :  +- 'UnresolvedRelation [web_site], [], false
+               +- 'UnresolvedRelation [date_dim], [], false

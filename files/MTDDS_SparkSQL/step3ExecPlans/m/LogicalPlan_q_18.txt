@@ -1,0 +1,20 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['ca_country ASC NULLS FIRST, 'ca_state ASC NULLS FIRST, 'ca_county ASC NULLS FIRST, 'i_item_id ASC NULLS FIRST], true
+      +- 'Aggregate [rollup(Vector(0), Vector(1), Vector(2), Vector(3), 'i_item_id, 'ca_country, 'ca_state, 'ca_county)], ['i_item_id, 'ca_country, 'ca_state, 'ca_county, 'avg(cast('cs_quantity as decimal(12,2))) AS agg1#20969, 'avg(cast('cs_list_price as decimal(12,2))) AS agg2#20970, 'avg(cast('cs_coupon_amt as decimal(12,2))) AS agg3#20971, 'avg(cast('cs_sales_price as decimal(12,2))) AS agg4#20972, 'avg(cast('cs_net_profit as decimal(12,2))) AS agg5#20973, 'avg(cast('c_birth_year as decimal(12,2))) AS agg6#20974, 'avg(cast('cd1.cd_dep_count as decimal(12,2))) AS agg7#20975]
+         +- 'Filter ((((('cs_sold_date_sk = 'd_date_sk) AND ('cs_item_sk = 'i_item_sk)) AND ('cs_bill_cdemo_sk = 'cd1.cd_demo_sk)) AND ((('cs_bill_customer_sk = 'c_customer_sk) AND ('cd1.cd_gender = M)) AND ('cd1.cd_education_status = 4 yr Degree))) AND (((('c_current_cdemo_sk = 'cd2.cd_demo_sk) AND ('c_current_addr_sk = 'ca_address_sk)) AND 'c_birth_month IN (6,8,3,11,9,10)) AND (('d_year = 2001) AND 'ca_state IN (AR,TN,KS,TX,SD,NY,IN))))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'Join Inner
+               :  :  :  :- 'Join Inner
+               :  :  :  :  :- 'Join Inner
+               :  :  :  :  :  :- 'UnresolvedRelation [catalog_sales], [], false
+               :  :  :  :  :  +- 'SubqueryAlias cd1
+               :  :  :  :  :     +- 'UnresolvedRelation [customer_demographics], [], false
+               :  :  :  :  +- 'SubqueryAlias cd2
+               :  :  :  :     +- 'UnresolvedRelation [customer_demographics], [], false
+               :  :  :  +- 'UnresolvedRelation [customer], [], false
+               :  :  +- 'UnresolvedRelation [customer_address], [], false
+               :  +- 'UnresolvedRelation [date_dim], [], false
+               +- 'UnresolvedRelation [item], [], false

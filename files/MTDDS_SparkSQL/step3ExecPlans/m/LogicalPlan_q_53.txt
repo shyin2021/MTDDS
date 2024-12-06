@@ -1,0 +1,15 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['avg_quarterly_sales ASC NULLS FIRST, 'sum_sales ASC NULLS FIRST, 'i_manufact_id ASC NULLS FIRST], true
+      +- 'Project [*]
+         +- 'Filter (CASE WHEN ('avg_quarterly_sales > 0) THEN ('abs(('sum_sales - 'avg_quarterly_sales)) / 'avg_quarterly_sales) ELSE null END > 0.1)
+            +- 'SubqueryAlias tmp1
+               +- 'Aggregate ['i_manufact_id, 'd_qoy], ['i_manufact_id, 'sum('ss_sales_price) AS sum_sales#33900, 'avg('sum('ss_sales_price)) windowspecdefinition('i_manufact_id, unspecifiedframe$()) AS avg_quarterly_sales#33901]
+                  +- 'Filter (((('ss_item_sk = 'i_item_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND ('ss_store_sk = 's_store_sk)) AND ('d_month_seq IN (1189,(1189 + 1),(1189 + 2),(1189 + 3),(1189 + 4),(1189 + 5),(1189 + 6),(1189 + 7),(1189 + 8),(1189 + 9),(1189 + 10),(1189 + 11)) AND ((('i_category IN (Books,Children,Electronics) AND 'i_class IN (personal,portable,reference,self-help)) AND 'i_brand IN (scholaramalgamalg #14,scholaramalgamalg #7,exportiunivamalg #9,scholaramalgamalg #9)) OR (('i_category IN (Women,Music,Men) AND 'i_class IN (accessories,classical,fragrances,pants)) AND 'i_brand IN (amalgimporto #1,edu packscholar #1,exportiimporto #1,importoamalg #1)))))
+                     +- 'Join Inner
+                        :- 'Join Inner
+                        :  :- 'Join Inner
+                        :  :  :- 'UnresolvedRelation [item], [], false
+                        :  :  +- 'UnresolvedRelation [store_sales], [], false
+                        :  +- 'UnresolvedRelation [date_dim], [], false
+                        +- 'UnresolvedRelation [store], [], false

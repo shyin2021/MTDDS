@@ -1,0 +1,296 @@
+== Parsed Logical Plan ==
+CTE [ss, cs, ws]
+:  :- 'SubqueryAlias ss
+:  :  +- 'Aggregate ['i_manufact_id], ['i_manufact_id, 'sum('ss_ext_sales_price) AS total_sales#28676]
+:  :     +- 'Filter ((('i_manufact_id IN (list#28677 []) AND ('ss_item_sk = 'i_item_sk)) AND (('ss_sold_date_sk = 'd_date_sk) AND ('d_year = 2000))) AND ((('d_moy = 6) AND ('ss_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -6)))
+:  :        :  +- 'Project ['i_manufact_id]
+:  :        :     +- 'Filter 'i_category IN (Jewelry)
+:  :        :        +- 'UnresolvedRelation [item], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'UnresolvedRelation [store_sales], [], false
+:  :           :  :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           :  +- 'UnresolvedRelation [customer_address], [], false
+:  :           +- 'UnresolvedRelation [item], [], false
+:  :- 'SubqueryAlias cs
+:  :  +- 'Aggregate ['i_manufact_id], ['i_manufact_id, 'sum('cs_ext_sales_price) AS total_sales#28678]
+:  :     +- 'Filter ((('i_manufact_id IN (list#28679 []) AND ('cs_item_sk = 'i_item_sk)) AND (('cs_sold_date_sk = 'd_date_sk) AND ('d_year = 2000))) AND ((('d_moy = 6) AND ('cs_bill_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -6)))
+:  :        :  +- 'Project ['i_manufact_id]
+:  :        :     +- 'Filter 'i_category IN (Jewelry)
+:  :        :        +- 'UnresolvedRelation [item], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'UnresolvedRelation [catalog_sales], [], false
+:  :           :  :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           :  +- 'UnresolvedRelation [customer_address], [], false
+:  :           +- 'UnresolvedRelation [item], [], false
+:  +- 'SubqueryAlias ws
+:     +- 'Aggregate ['i_manufact_id], ['i_manufact_id, 'sum('ws_ext_sales_price) AS total_sales#28680]
+:        +- 'Filter ((('i_manufact_id IN (list#28681 []) AND ('ws_item_sk = 'i_item_sk)) AND (('ws_sold_date_sk = 'd_date_sk) AND ('d_year = 2000))) AND ((('d_moy = 6) AND ('ws_bill_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -6)))
+:           :  +- 'Project ['i_manufact_id]
+:           :     +- 'Filter 'i_category IN (Jewelry)
+:           :        +- 'UnresolvedRelation [item], [], false
+:           +- 'Join Inner
+:              :- 'Join Inner
+:              :  :- 'Join Inner
+:              :  :  :- 'UnresolvedRelation [web_sales], [], false
+:              :  :  +- 'UnresolvedRelation [date_dim], [], false
+:              :  +- 'UnresolvedRelation [customer_address], [], false
+:              +- 'UnresolvedRelation [item], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['total_sales ASC NULLS FIRST], true
+         +- 'Aggregate ['i_manufact_id], ['i_manufact_id, 'sum('total_sales) AS total_sales#28675]
+            +- 'SubqueryAlias tmp1
+               +- 'Union false, false
+                  :- 'Union false, false
+                  :  :- 'Project [*]
+                  :  :  +- 'UnresolvedRelation [ss], [], false
+                  :  +- 'Project [*]
+                  :     +- 'UnresolvedRelation [cs], [], false
+                  +- 'Project [*]
+                     +- 'UnresolvedRelation [ws], [], false
+
+== Analyzed Logical Plan ==
+i_manufact_id: int, total_sales: double
+WithCTE
+:- CTERelationDef 33, false
+:  +- SubqueryAlias ss
+:     +- Aggregate [i_manufact_id#1284], [i_manufact_id#1284, sum(ss_ext_sales_price#1263) AS total_sales#28676]
+:        +- Filter (((i_manufact_id#1284 IN (list#28677 []) AND (ss_item_sk#1250 = i_item_sk#1271)) AND ((ss_sold_date_sk#1248 = d_date_sk#24) AND (d_year#30 = 2000))) AND (((d_moy#32 = 6) AND (ss_addr_sk#1254 = ca_address_sk#8171)) AND (ca_gmt_offset#8182 = cast(-6 as double))))
+:           :  +- Project [i_manufact_id#28827]
+:           :     +- Filter i_category#28826 IN (Jewelry)
+:           :        +- SubqueryAlias spark_catalog.m.item
+:           :           +- Relation spark_catalog.m.item[i_item_sk#28814,i_item_id#28815,i_rec_start_date#28816,i_rec_end_date#28817,i_item_desc#28818,i_current_price#28819,i_wholesale_cost#28820,i_brand_id#28821,i_brand#28822,i_class_id#28823,i_class#28824,i_category_id#28825,i_category#28826,i_manufact_id#28827,i_manufact#28828,i_size#28829,i_formulation#28830,i_color#28831,i_units#28832,i_container#28833,i_manager_id#28834,i_product_name#28835] parquet
+:           +- Join Inner
+:              :- Join Inner
+:              :  :- Join Inner
+:              :  :  :- SubqueryAlias spark_catalog.m.store_sales
+:              :  :  :  +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+:              :  :  +- SubqueryAlias spark_catalog.m.date_dim
+:              :  :     +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+:              :  +- SubqueryAlias spark_catalog.m.customer_address
+:              :     +- Relation spark_catalog.m.customer_address[ca_address_sk#8171,ca_address_id#8172,ca_street_number#8173,ca_street_name#8174,ca_street_type#8175,ca_suite_number#8176,ca_city#8177,ca_county#8178,ca_state#8179,ca_zip#8180,ca_country#8181,ca_gmt_offset#8182,ca_location_type#8183] parquet
+:              +- SubqueryAlias spark_catalog.m.item
+:                 +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+:- CTERelationDef 34, false
+:  +- SubqueryAlias cs
+:     +- Aggregate [i_manufact_id#28736], [i_manufact_id#28736, sum(cs_ext_sales_price#484) AS total_sales#28678]
+:        +- Filter (((i_manufact_id#28736 IN (list#28679 []) AND (cs_item_sk#476 = i_item_sk#28723)) AND ((cs_sold_date_sk#461 = d_date_sk#28682) AND (d_year#28688 = 2000))) AND (((d_moy#28690 = 6) AND (cs_bill_addr_sk#467 = ca_address_sk#28710)) AND (ca_gmt_offset#28721 = cast(-6 as double))))
+:           :  +- Project [i_manufact_id#28849]
+:           :     +- Filter i_category#28848 IN (Jewelry)
+:           :        +- SubqueryAlias spark_catalog.m.item
+:           :           +- Relation spark_catalog.m.item[i_item_sk#28836,i_item_id#28837,i_rec_start_date#28838,i_rec_end_date#28839,i_item_desc#28840,i_current_price#28841,i_wholesale_cost#28842,i_brand_id#28843,i_brand#28844,i_class_id#28845,i_class#28846,i_category_id#28847,i_category#28848,i_manufact_id#28849,i_manufact#28850,i_size#28851,i_formulation#28852,i_color#28853,i_units#28854,i_container#28855,i_manager_id#28856,i_product_name#28857] parquet
+:           +- Join Inner
+:              :- Join Inner
+:              :  :- Join Inner
+:              :  :  :- SubqueryAlias spark_catalog.m.catalog_sales
+:              :  :  :  +- Relation spark_catalog.m.catalog_sales[cs_sold_date_sk#461,cs_sold_time_sk#462,cs_ship_date_sk#463,cs_bill_customer_sk#464,cs_bill_cdemo_sk#465,cs_bill_hdemo_sk#466,cs_bill_addr_sk#467,cs_ship_customer_sk#468,cs_ship_cdemo_sk#469,cs_ship_hdemo_sk#470,cs_ship_addr_sk#471,cs_call_center_sk#472,cs_catalog_page_sk#473,cs_ship_mode_sk#474,cs_warehouse_sk#475,cs_item_sk#476,cs_promo_sk#477,cs_order_number#478,cs_quantity#479,cs_wholesale_cost#480,cs_list_price#481,cs_sales_price#482,cs_ext_discount_amt#483,cs_ext_sales_price#484,... 10 more fields] parquet
+:              :  :  +- SubqueryAlias spark_catalog.m.date_dim
+:              :  :     +- Relation spark_catalog.m.date_dim[d_date_sk#28682,d_date_id#28683,d_date#28684,d_month_seq#28685,d_week_seq#28686,d_quarter_seq#28687,d_year#28688,d_dow#28689,d_moy#28690,d_dom#28691,d_qoy#28692,d_fy_year#28693,d_fy_quarter_seq#28694,d_fy_week_seq#28695,d_day_name#28696,d_quarter_name#28697,d_holiday#28698,d_weekend#28699,d_following_holiday#28700,d_first_dom#28701,d_last_dom#28702,d_same_day_ly#28703,d_same_day_lq#28704,d_current_day#28705,... 4 more fields] parquet
+:              :  +- SubqueryAlias spark_catalog.m.customer_address
+:              :     +- Relation spark_catalog.m.customer_address[ca_address_sk#28710,ca_address_id#28711,ca_street_number#28712,ca_street_name#28713,ca_street_type#28714,ca_suite_number#28715,ca_city#28716,ca_county#28717,ca_state#28718,ca_zip#28719,ca_country#28720,ca_gmt_offset#28721,ca_location_type#28722] parquet
+:              +- SubqueryAlias spark_catalog.m.item
+:                 +- Relation spark_catalog.m.item[i_item_sk#28723,i_item_id#28724,i_rec_start_date#28725,i_rec_end_date#28726,i_item_desc#28727,i_current_price#28728,i_wholesale_cost#28729,i_brand_id#28730,i_brand#28731,i_class_id#28732,i_class#28733,i_category_id#28734,i_category#28735,i_manufact_id#28736,i_manufact#28737,i_size#28738,i_formulation#28739,i_color#28740,i_units#28741,i_container#28742,i_manager_id#28743,i_product_name#28744] parquet
+:- CTERelationDef 35, false
+:  +- SubqueryAlias ws
+:     +- Aggregate [i_manufact_id#28799], [i_manufact_id#28799, sum(ws_ext_sales_price#450) AS total_sales#28680]
+:        +- Filter (((i_manufact_id#28799 IN (list#28681 []) AND (ws_item_sk#430 = i_item_sk#28786)) AND ((ws_sold_date_sk#427 = d_date_sk#28745) AND (d_year#28751 = 2000))) AND (((d_moy#28753 = 6) AND (ws_bill_addr_sk#434 = ca_address_sk#28773)) AND (ca_gmt_offset#28784 = cast(-6 as double))))
+:           :  +- Project [i_manufact_id#28871]
+:           :     +- Filter i_category#28870 IN (Jewelry)
+:           :        +- SubqueryAlias spark_catalog.m.item
+:           :           +- Relation spark_catalog.m.item[i_item_sk#28858,i_item_id#28859,i_rec_start_date#28860,i_rec_end_date#28861,i_item_desc#28862,i_current_price#28863,i_wholesale_cost#28864,i_brand_id#28865,i_brand#28866,i_class_id#28867,i_class#28868,i_category_id#28869,i_category#28870,i_manufact_id#28871,i_manufact#28872,i_size#28873,i_formulation#28874,i_color#28875,i_units#28876,i_container#28877,i_manager_id#28878,i_product_name#28879] parquet
+:           +- Join Inner
+:              :- Join Inner
+:              :  :- Join Inner
+:              :  :  :- SubqueryAlias spark_catalog.m.web_sales
+:              :  :  :  +- Relation spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_sold_time_sk#428,ws_ship_date_sk#429,ws_item_sk#430,ws_bill_customer_sk#431,ws_bill_cdemo_sk#432,ws_bill_hdemo_sk#433,ws_bill_addr_sk#434,ws_ship_customer_sk#435,ws_ship_cdemo_sk#436,ws_ship_hdemo_sk#437,ws_ship_addr_sk#438,ws_web_page_sk#439,ws_web_site_sk#440,ws_ship_mode_sk#441,ws_warehouse_sk#442,ws_promo_sk#443,ws_order_number#444,ws_quantity#445,ws_wholesale_cost#446,ws_list_price#447,ws_sales_price#448,ws_ext_discount_amt#449,ws_ext_sales_price#450,... 10 more fields] parquet
+:              :  :  +- SubqueryAlias spark_catalog.m.date_dim
+:              :  :     +- Relation spark_catalog.m.date_dim[d_date_sk#28745,d_date_id#28746,d_date#28747,d_month_seq#28748,d_week_seq#28749,d_quarter_seq#28750,d_year#28751,d_dow#28752,d_moy#28753,d_dom#28754,d_qoy#28755,d_fy_year#28756,d_fy_quarter_seq#28757,d_fy_week_seq#28758,d_day_name#28759,d_quarter_name#28760,d_holiday#28761,d_weekend#28762,d_following_holiday#28763,d_first_dom#28764,d_last_dom#28765,d_same_day_ly#28766,d_same_day_lq#28767,d_current_day#28768,... 4 more fields] parquet
+:              :  +- SubqueryAlias spark_catalog.m.customer_address
+:              :     +- Relation spark_catalog.m.customer_address[ca_address_sk#28773,ca_address_id#28774,ca_street_number#28775,ca_street_name#28776,ca_street_type#28777,ca_suite_number#28778,ca_city#28779,ca_county#28780,ca_state#28781,ca_zip#28782,ca_country#28783,ca_gmt_offset#28784,ca_location_type#28785] parquet
+:              +- SubqueryAlias spark_catalog.m.item
+:                 +- Relation spark_catalog.m.item[i_item_sk#28786,i_item_id#28787,i_rec_start_date#28788,i_rec_end_date#28789,i_item_desc#28790,i_current_price#28791,i_wholesale_cost#28792,i_brand_id#28793,i_brand#28794,i_class_id#28795,i_class#28796,i_category_id#28797,i_category#28798,i_manufact_id#28799,i_manufact#28800,i_size#28801,i_formulation#28802,i_color#28803,i_units#28804,i_container#28805,i_manager_id#28806,i_product_name#28807] parquet
++- GlobalLimit 100
+   +- LocalLimit 100
+      +- Sort [total_sales#28675 ASC NULLS FIRST], true
+         +- Aggregate [i_manufact_id#1284], [i_manufact_id#1284, sum(total_sales#28676) AS total_sales#28675]
+            +- SubqueryAlias tmp1
+               +- Union false, false
+                  :- Union false, false
+                  :  :- Project [i_manufact_id#1284, total_sales#28676]
+                  :  :  +- SubqueryAlias ss
+                  :  :     +- CTERelationRef 33, true, [i_manufact_id#1284, total_sales#28676], false
+                  :  +- Project [i_manufact_id#28736, total_sales#28678]
+                  :     +- SubqueryAlias cs
+                  :        +- CTERelationRef 34, true, [i_manufact_id#28736, total_sales#28678], false
+                  +- Project [i_manufact_id#28799, total_sales#28680]
+                     +- SubqueryAlias ws
+                        +- CTERelationRef 35, true, [i_manufact_id#28799, total_sales#28680], false
+
+== Optimized Logical Plan ==
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [total_sales#28675 ASC NULLS FIRST], true
+      +- Aggregate [i_manufact_id#1284], [i_manufact_id#1284, sum(total_sales#28676) AS total_sales#28675]
+         +- Union false, false
+            :- Aggregate [i_manufact_id#1284], [i_manufact_id#1284, sum(ss_ext_sales_price#1263) AS total_sales#28676]
+            :  +- Project [ss_ext_sales_price#1263, i_manufact_id#1284]
+            :     +- Join Inner, (ss_item_sk#1250 = i_item_sk#1271)
+            :        :- Project [ss_item_sk#1250, ss_ext_sales_price#1263]
+            :        :  +- Join Inner, (ss_addr_sk#1254 = ca_address_sk#8171)
+            :        :     :- Project [ss_item_sk#1250, ss_addr_sk#1254, ss_ext_sales_price#1263]
+            :        :     :  +- Join Inner, (ss_sold_date_sk#1248 = d_date_sk#24)
+            :        :     :     :- Project [ss_sold_date_sk#1248, ss_item_sk#1250, ss_addr_sk#1254, ss_ext_sales_price#1263]
+            :        :     :     :  +- Filter (isnotnull(ss_sold_date_sk#1248) AND (isnotnull(ss_addr_sk#1254) AND isnotnull(ss_item_sk#1250)))
+            :        :     :     :     +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+            :        :     :     +- Project [d_date_sk#24]
+            :        :     :        +- Filter (((isnotnull(d_year#30) AND isnotnull(d_moy#32)) AND ((d_year#30 = 2000) AND (d_moy#32 = 6))) AND isnotnull(d_date_sk#24))
+            :        :     :           +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+            :        :     +- Project [ca_address_sk#8171]
+            :        :        +- Filter ((isnotnull(ca_gmt_offset#8182) AND (ca_gmt_offset#8182 = -6.0)) AND isnotnull(ca_address_sk#8171))
+            :        :           +- Relation spark_catalog.m.customer_address[ca_address_sk#8171,ca_address_id#8172,ca_street_number#8173,ca_street_name#8174,ca_street_type#8175,ca_suite_number#8176,ca_city#8177,ca_county#8178,ca_state#8179,ca_zip#8180,ca_country#8181,ca_gmt_offset#8182,ca_location_type#8183] parquet
+            :        +- Join LeftSemi, (i_manufact_id#1284 = i_manufact_id#28827)
+            :           :- Project [i_item_sk#1271, i_manufact_id#1284]
+            :           :  +- Filter isnotnull(i_item_sk#1271)
+            :           :     +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+            :           +- Project [i_manufact_id#28827]
+            :              +- Filter (isnotnull(i_category#28826) AND (i_category#28826 = Jewelry))
+            :                 +- Relation spark_catalog.m.item[i_item_sk#28814,i_item_id#28815,i_rec_start_date#28816,i_rec_end_date#28817,i_item_desc#28818,i_current_price#28819,i_wholesale_cost#28820,i_brand_id#28821,i_brand#28822,i_class_id#28823,i_class#28824,i_category_id#28825,i_category#28826,i_manufact_id#28827,i_manufact#28828,i_size#28829,i_formulation#28830,i_color#28831,i_units#28832,i_container#28833,i_manager_id#28834,i_product_name#28835] parquet
+            :- Aggregate [i_manufact_id#28736], [i_manufact_id#28736, sum(cs_ext_sales_price#484) AS total_sales#28678]
+            :  +- Project [cs_ext_sales_price#484, i_manufact_id#28736]
+            :     +- Join Inner, (cs_item_sk#476 = i_item_sk#28723)
+            :        :- Project [cs_item_sk#476, cs_ext_sales_price#484]
+            :        :  +- Join Inner, (cs_bill_addr_sk#467 = ca_address_sk#28710)
+            :        :     :- Project [cs_bill_addr_sk#467, cs_item_sk#476, cs_ext_sales_price#484]
+            :        :     :  +- Join Inner, (cs_sold_date_sk#461 = d_date_sk#28682)
+            :        :     :     :- Project [cs_sold_date_sk#461, cs_bill_addr_sk#467, cs_item_sk#476, cs_ext_sales_price#484]
+            :        :     :     :  +- Filter (isnotnull(cs_sold_date_sk#461) AND (isnotnull(cs_bill_addr_sk#467) AND isnotnull(cs_item_sk#476)))
+            :        :     :     :     +- Relation spark_catalog.m.catalog_sales[cs_sold_date_sk#461,cs_sold_time_sk#462,cs_ship_date_sk#463,cs_bill_customer_sk#464,cs_bill_cdemo_sk#465,cs_bill_hdemo_sk#466,cs_bill_addr_sk#467,cs_ship_customer_sk#468,cs_ship_cdemo_sk#469,cs_ship_hdemo_sk#470,cs_ship_addr_sk#471,cs_call_center_sk#472,cs_catalog_page_sk#473,cs_ship_mode_sk#474,cs_warehouse_sk#475,cs_item_sk#476,cs_promo_sk#477,cs_order_number#478,cs_quantity#479,cs_wholesale_cost#480,cs_list_price#481,cs_sales_price#482,cs_ext_discount_amt#483,cs_ext_sales_price#484,... 10 more fields] parquet
+            :        :     :     +- Project [d_date_sk#28682]
+            :        :     :        +- Filter (((isnotnull(d_year#28688) AND isnotnull(d_moy#28690)) AND ((d_year#28688 = 2000) AND (d_moy#28690 = 6))) AND isnotnull(d_date_sk#28682))
+            :        :     :           +- Relation spark_catalog.m.date_dim[d_date_sk#28682,d_date_id#28683,d_date#28684,d_month_seq#28685,d_week_seq#28686,d_quarter_seq#28687,d_year#28688,d_dow#28689,d_moy#28690,d_dom#28691,d_qoy#28692,d_fy_year#28693,d_fy_quarter_seq#28694,d_fy_week_seq#28695,d_day_name#28696,d_quarter_name#28697,d_holiday#28698,d_weekend#28699,d_following_holiday#28700,d_first_dom#28701,d_last_dom#28702,d_same_day_ly#28703,d_same_day_lq#28704,d_current_day#28705,... 4 more fields] parquet
+            :        :     +- Project [ca_address_sk#28710]
+            :        :        +- Filter ((isnotnull(ca_gmt_offset#28721) AND (ca_gmt_offset#28721 = -6.0)) AND isnotnull(ca_address_sk#28710))
+            :        :           +- Relation spark_catalog.m.customer_address[ca_address_sk#28710,ca_address_id#28711,ca_street_number#28712,ca_street_name#28713,ca_street_type#28714,ca_suite_number#28715,ca_city#28716,ca_county#28717,ca_state#28718,ca_zip#28719,ca_country#28720,ca_gmt_offset#28721,ca_location_type#28722] parquet
+            :        +- Join LeftSemi, (i_manufact_id#28736 = i_manufact_id#28849)
+            :           :- Project [i_item_sk#28723, i_manufact_id#28736]
+            :           :  +- Filter isnotnull(i_item_sk#28723)
+            :           :     +- Relation spark_catalog.m.item[i_item_sk#28723,i_item_id#28724,i_rec_start_date#28725,i_rec_end_date#28726,i_item_desc#28727,i_current_price#28728,i_wholesale_cost#28729,i_brand_id#28730,i_brand#28731,i_class_id#28732,i_class#28733,i_category_id#28734,i_category#28735,i_manufact_id#28736,i_manufact#28737,i_size#28738,i_formulation#28739,i_color#28740,i_units#28741,i_container#28742,i_manager_id#28743,i_product_name#28744] parquet
+            :           +- Project [i_manufact_id#28849]
+            :              +- Filter (isnotnull(i_category#28848) AND (i_category#28848 = Jewelry))
+            :                 +- Relation spark_catalog.m.item[i_item_sk#28836,i_item_id#28837,i_rec_start_date#28838,i_rec_end_date#28839,i_item_desc#28840,i_current_price#28841,i_wholesale_cost#28842,i_brand_id#28843,i_brand#28844,i_class_id#28845,i_class#28846,i_category_id#28847,i_category#28848,i_manufact_id#28849,i_manufact#28850,i_size#28851,i_formulation#28852,i_color#28853,i_units#28854,i_container#28855,i_manager_id#28856,i_product_name#28857] parquet
+            +- Aggregate [i_manufact_id#28799], [i_manufact_id#28799, sum(ws_ext_sales_price#450) AS total_sales#28680]
+               +- Project [ws_ext_sales_price#450, i_manufact_id#28799]
+                  +- Join Inner, (ws_item_sk#430 = i_item_sk#28786)
+                     :- Project [ws_item_sk#430, ws_ext_sales_price#450]
+                     :  +- Join Inner, (ws_bill_addr_sk#434 = ca_address_sk#28773)
+                     :     :- Project [ws_item_sk#430, ws_bill_addr_sk#434, ws_ext_sales_price#450]
+                     :     :  +- Join Inner, (ws_sold_date_sk#427 = d_date_sk#28745)
+                     :     :     :- Project [ws_sold_date_sk#427, ws_item_sk#430, ws_bill_addr_sk#434, ws_ext_sales_price#450]
+                     :     :     :  +- Filter (isnotnull(ws_sold_date_sk#427) AND (isnotnull(ws_bill_addr_sk#434) AND isnotnull(ws_item_sk#430)))
+                     :     :     :     +- Relation spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_sold_time_sk#428,ws_ship_date_sk#429,ws_item_sk#430,ws_bill_customer_sk#431,ws_bill_cdemo_sk#432,ws_bill_hdemo_sk#433,ws_bill_addr_sk#434,ws_ship_customer_sk#435,ws_ship_cdemo_sk#436,ws_ship_hdemo_sk#437,ws_ship_addr_sk#438,ws_web_page_sk#439,ws_web_site_sk#440,ws_ship_mode_sk#441,ws_warehouse_sk#442,ws_promo_sk#443,ws_order_number#444,ws_quantity#445,ws_wholesale_cost#446,ws_list_price#447,ws_sales_price#448,ws_ext_discount_amt#449,ws_ext_sales_price#450,... 10 more fields] parquet
+                     :     :     +- Project [d_date_sk#28745]
+                     :     :        +- Filter (((isnotnull(d_year#28751) AND isnotnull(d_moy#28753)) AND ((d_year#28751 = 2000) AND (d_moy#28753 = 6))) AND isnotnull(d_date_sk#28745))
+                     :     :           +- Relation spark_catalog.m.date_dim[d_date_sk#28745,d_date_id#28746,d_date#28747,d_month_seq#28748,d_week_seq#28749,d_quarter_seq#28750,d_year#28751,d_dow#28752,d_moy#28753,d_dom#28754,d_qoy#28755,d_fy_year#28756,d_fy_quarter_seq#28757,d_fy_week_seq#28758,d_day_name#28759,d_quarter_name#28760,d_holiday#28761,d_weekend#28762,d_following_holiday#28763,d_first_dom#28764,d_last_dom#28765,d_same_day_ly#28766,d_same_day_lq#28767,d_current_day#28768,... 4 more fields] parquet
+                     :     +- Project [ca_address_sk#28773]
+                     :        +- Filter ((isnotnull(ca_gmt_offset#28784) AND (ca_gmt_offset#28784 = -6.0)) AND isnotnull(ca_address_sk#28773))
+                     :           +- Relation spark_catalog.m.customer_address[ca_address_sk#28773,ca_address_id#28774,ca_street_number#28775,ca_street_name#28776,ca_street_type#28777,ca_suite_number#28778,ca_city#28779,ca_county#28780,ca_state#28781,ca_zip#28782,ca_country#28783,ca_gmt_offset#28784,ca_location_type#28785] parquet
+                     +- Join LeftSemi, (i_manufact_id#28799 = i_manufact_id#28871)
+                        :- Project [i_item_sk#28786, i_manufact_id#28799]
+                        :  +- Filter isnotnull(i_item_sk#28786)
+                        :     +- Relation spark_catalog.m.item[i_item_sk#28786,i_item_id#28787,i_rec_start_date#28788,i_rec_end_date#28789,i_item_desc#28790,i_current_price#28791,i_wholesale_cost#28792,i_brand_id#28793,i_brand#28794,i_class_id#28795,i_class#28796,i_category_id#28797,i_category#28798,i_manufact_id#28799,i_manufact#28800,i_size#28801,i_formulation#28802,i_color#28803,i_units#28804,i_container#28805,i_manager_id#28806,i_product_name#28807] parquet
+                        +- Project [i_manufact_id#28871]
+                           +- Filter (isnotnull(i_category#28870) AND (i_category#28870 = Jewelry))
+                              +- Relation spark_catalog.m.item[i_item_sk#28858,i_item_id#28859,i_rec_start_date#28860,i_rec_end_date#28861,i_item_desc#28862,i_current_price#28863,i_wholesale_cost#28864,i_brand_id#28865,i_brand#28866,i_class_id#28867,i_class#28868,i_category_id#28869,i_category#28870,i_manufact_id#28871,i_manufact#28872,i_size#28873,i_formulation#28874,i_color#28875,i_units#28876,i_container#28877,i_manager_id#28878,i_product_name#28879] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[total_sales#28675 ASC NULLS FIRST], output=[i_manufact_id#1284,total_sales#28675])
+   +- HashAggregate(keys=[i_manufact_id#1284], functions=[sum(total_sales#28676)], output=[i_manufact_id#1284, total_sales#28675])
+      +- Exchange hashpartitioning(i_manufact_id#1284, 200), ENSURE_REQUIREMENTS, [plan_id=82797]
+         +- HashAggregate(keys=[i_manufact_id#1284], functions=[partial_sum(total_sales#28676)], output=[i_manufact_id#1284, sum#28893])
+            +- Union
+               :- HashAggregate(keys=[i_manufact_id#1284], functions=[sum(ss_ext_sales_price#1263)], output=[i_manufact_id#1284, total_sales#28676])
+               :  +- Exchange hashpartitioning(i_manufact_id#1284, 200), ENSURE_REQUIREMENTS, [plan_id=82758]
+               :     +- HashAggregate(keys=[i_manufact_id#1284], functions=[partial_sum(ss_ext_sales_price#1263)], output=[i_manufact_id#1284, sum#28895])
+               :        +- Project [ss_ext_sales_price#1263, i_manufact_id#1284]
+               :           +- BroadcastHashJoin [ss_item_sk#1250], [i_item_sk#1271], Inner, BuildRight, false
+               :              :- Project [ss_item_sk#1250, ss_ext_sales_price#1263]
+               :              :  +- BroadcastHashJoin [ss_addr_sk#1254], [ca_address_sk#8171], Inner, BuildRight, false
+               :              :     :- Project [ss_item_sk#1250, ss_addr_sk#1254, ss_ext_sales_price#1263]
+               :              :     :  +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#24], Inner, BuildRight, false
+               :              :     :     :- Filter ((isnotnull(ss_sold_date_sk#1248) AND isnotnull(ss_addr_sk#1254)) AND isnotnull(ss_item_sk#1250))
+               :              :     :     :  +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_item_sk#1250,ss_addr_sk#1254,ss_ext_sales_price#1263] Batched: true, DataFilters: [isnotnull(ss_sold_date_sk#1248), isnotnull(ss_addr_sk#1254), isnotnull(ss_item_sk#1250)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_sold_date_sk), IsNotNull(ss_addr_sk), IsNotNull(ss_item_sk)], ReadSchema: struct<ss_sold_date_sk:int,ss_item_sk:int,ss_addr_sk:int,ss_ext_sales_price:double>
+               :              :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82743]
+               :              :     :        +- Project [d_date_sk#24]
+               :              :     :           +- Filter ((((isnotnull(d_year#30) AND isnotnull(d_moy#32)) AND (d_year#30 = 2000)) AND (d_moy#32 = 6)) AND isnotnull(d_date_sk#24))
+               :              :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_year#30,d_moy#32] Batched: true, DataFilters: [isnotnull(d_year#30), isnotnull(d_moy#32), (d_year#30 = 2000), (d_moy#32 = 6), isnotnull(d_date_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), IsNotNull(d_moy), EqualTo(d_year,2000), EqualTo(d_moy,6), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int,d_moy:int>
+               :              :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82747]
+               :              :        +- Project [ca_address_sk#8171]
+               :              :           +- Filter ((isnotnull(ca_gmt_offset#8182) AND (ca_gmt_offset#8182 = -6.0)) AND isnotnull(ca_address_sk#8171))
+               :              :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#8171,ca_gmt_offset#8182] Batched: true, DataFilters: [isnotnull(ca_gmt_offset#8182), (ca_gmt_offset#8182 = -6.0), isnotnull(ca_address_sk#8171)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_gmt_offset), EqualTo(ca_gmt_offset,-6.0), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_gmt_offset:double>
+               :              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=82753]
+               :                 +- BroadcastHashJoin [i_manufact_id#1284], [i_manufact_id#28827], LeftSemi, BuildRight, false
+               :                    :- Filter isnotnull(i_item_sk#1271)
+               :                    :  +- FileScan parquet spark_catalog.m.item[i_item_sk#1271,i_manufact_id#1284] Batched: true, DataFilters: [isnotnull(i_item_sk#1271)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_manufact_id:int>
+               :                    +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82750]
+               :                       +- Project [i_manufact_id#28827]
+               :                          +- Filter (isnotnull(i_category#28826) AND (i_category#28826 = Jewelry))
+               :                             +- FileScan parquet spark_catalog.m.item[i_category#28826,i_manufact_id#28827] Batched: true, DataFilters: [isnotnull(i_category#28826), (i_category#28826 = Jewelry)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_category), EqualTo(i_category,Jewelry)], ReadSchema: struct<i_category:string,i_manufact_id:int>
+               :- HashAggregate(keys=[i_manufact_id#28736], functions=[sum(cs_ext_sales_price#484)], output=[i_manufact_id#28736, total_sales#28678])
+               :  +- Exchange hashpartitioning(i_manufact_id#28736, 200), ENSURE_REQUIREMENTS, [plan_id=82775]
+               :     +- HashAggregate(keys=[i_manufact_id#28736], functions=[partial_sum(cs_ext_sales_price#484)], output=[i_manufact_id#28736, sum#28897])
+               :        +- Project [cs_ext_sales_price#484, i_manufact_id#28736]
+               :           +- BroadcastHashJoin [cs_item_sk#476], [i_item_sk#28723], Inner, BuildRight, false
+               :              :- Project [cs_item_sk#476, cs_ext_sales_price#484]
+               :              :  +- BroadcastHashJoin [cs_bill_addr_sk#467], [ca_address_sk#28710], Inner, BuildRight, false
+               :              :     :- Project [cs_bill_addr_sk#467, cs_item_sk#476, cs_ext_sales_price#484]
+               :              :     :  +- BroadcastHashJoin [cs_sold_date_sk#461], [d_date_sk#28682], Inner, BuildRight, false
+               :              :     :     :- Filter ((isnotnull(cs_sold_date_sk#461) AND isnotnull(cs_bill_addr_sk#467)) AND isnotnull(cs_item_sk#476))
+               :              :     :     :  +- FileScan parquet spark_catalog.m.catalog_sales[cs_sold_date_sk#461,cs_bill_addr_sk#467,cs_item_sk#476,cs_ext_sales_price#484] Batched: true, DataFilters: [isnotnull(cs_sold_date_sk#461), isnotnull(cs_bill_addr_sk#467), isnotnull(cs_item_sk#476)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/catalog_sales], PartitionFilters: [], PushedFilters: [IsNotNull(cs_sold_date_sk), IsNotNull(cs_bill_addr_sk), IsNotNull(cs_item_sk)], ReadSchema: struct<cs_sold_date_sk:int,cs_bill_addr_sk:int,cs_item_sk:int,cs_ext_sales_price:double>
+               :              :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82760]
+               :              :     :        +- Project [d_date_sk#28682]
+               :              :     :           +- Filter ((((isnotnull(d_year#28688) AND isnotnull(d_moy#28690)) AND (d_year#28688 = 2000)) AND (d_moy#28690 = 6)) AND isnotnull(d_date_sk#28682))
+               :              :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#28682,d_year#28688,d_moy#28690] Batched: true, DataFilters: [isnotnull(d_year#28688), isnotnull(d_moy#28690), (d_year#28688 = 2000), (d_moy#28690 = 6), isnot..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), IsNotNull(d_moy), EqualTo(d_year,2000), EqualTo(d_moy,6), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int,d_moy:int>
+               :              :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82764]
+               :              :        +- Project [ca_address_sk#28710]
+               :              :           +- Filter ((isnotnull(ca_gmt_offset#28721) AND (ca_gmt_offset#28721 = -6.0)) AND isnotnull(ca_address_sk#28710))
+               :              :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#28710,ca_gmt_offset#28721] Batched: true, DataFilters: [isnotnull(ca_gmt_offset#28721), (ca_gmt_offset#28721 = -6.0), isnotnull(ca_address_sk#28710)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_gmt_offset), EqualTo(ca_gmt_offset,-6.0), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_gmt_offset:double>
+               :              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=82770]
+               :                 +- BroadcastHashJoin [i_manufact_id#28736], [i_manufact_id#28849], LeftSemi, BuildRight, false
+               :                    :- Filter isnotnull(i_item_sk#28723)
+               :                    :  +- FileScan parquet spark_catalog.m.item[i_item_sk#28723,i_manufact_id#28736] Batched: true, DataFilters: [isnotnull(i_item_sk#28723)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_manufact_id:int>
+               :                    +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82767]
+               :                       +- Project [i_manufact_id#28849]
+               :                          +- Filter (isnotnull(i_category#28848) AND (i_category#28848 = Jewelry))
+               :                             +- FileScan parquet spark_catalog.m.item[i_category#28848,i_manufact_id#28849] Batched: true, DataFilters: [isnotnull(i_category#28848), (i_category#28848 = Jewelry)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_category), EqualTo(i_category,Jewelry)], ReadSchema: struct<i_category:string,i_manufact_id:int>
+               +- HashAggregate(keys=[i_manufact_id#28799], functions=[sum(ws_ext_sales_price#450)], output=[i_manufact_id#28799, total_sales#28680])
+                  +- Exchange hashpartitioning(i_manufact_id#28799, 200), ENSURE_REQUIREMENTS, [plan_id=82792]
+                     +- HashAggregate(keys=[i_manufact_id#28799], functions=[partial_sum(ws_ext_sales_price#450)], output=[i_manufact_id#28799, sum#28899])
+                        +- Project [ws_ext_sales_price#450, i_manufact_id#28799]
+                           +- BroadcastHashJoin [ws_item_sk#430], [i_item_sk#28786], Inner, BuildRight, false
+                              :- Project [ws_item_sk#430, ws_ext_sales_price#450]
+                              :  +- BroadcastHashJoin [ws_bill_addr_sk#434], [ca_address_sk#28773], Inner, BuildRight, false
+                              :     :- Project [ws_item_sk#430, ws_bill_addr_sk#434, ws_ext_sales_price#450]
+                              :     :  +- BroadcastHashJoin [ws_sold_date_sk#427], [d_date_sk#28745], Inner, BuildRight, false
+                              :     :     :- Filter ((isnotnull(ws_sold_date_sk#427) AND isnotnull(ws_bill_addr_sk#434)) AND isnotnull(ws_item_sk#430))
+                              :     :     :  +- FileScan parquet spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_item_sk#430,ws_bill_addr_sk#434,ws_ext_sales_price#450] Batched: true, DataFilters: [isnotnull(ws_sold_date_sk#427), isnotnull(ws_bill_addr_sk#434), isnotnull(ws_item_sk#430)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_sold_date_sk), IsNotNull(ws_bill_addr_sk), IsNotNull(ws_item_sk)], ReadSchema: struct<ws_sold_date_sk:int,ws_item_sk:int,ws_bill_addr_sk:int,ws_ext_sales_price:double>
+                              :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82777]
+                              :     :        +- Project [d_date_sk#28745]
+                              :     :           +- Filter ((((isnotnull(d_year#28751) AND isnotnull(d_moy#28753)) AND (d_year#28751 = 2000)) AND (d_moy#28753 = 6)) AND isnotnull(d_date_sk#28745))
+                              :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#28745,d_year#28751,d_moy#28753] Batched: true, DataFilters: [isnotnull(d_year#28751), isnotnull(d_moy#28753), (d_year#28751 = 2000), (d_moy#28753 = 6), isnot..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), IsNotNull(d_moy), EqualTo(d_year,2000), EqualTo(d_moy,6), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int,d_moy:int>
+                              :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82781]
+                              :        +- Project [ca_address_sk#28773]
+                              :           +- Filter ((isnotnull(ca_gmt_offset#28784) AND (ca_gmt_offset#28784 = -6.0)) AND isnotnull(ca_address_sk#28773))
+                              :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#28773,ca_gmt_offset#28784] Batched: true, DataFilters: [isnotnull(ca_gmt_offset#28784), (ca_gmt_offset#28784 = -6.0), isnotnull(ca_address_sk#28773)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_gmt_offset), EqualTo(ca_gmt_offset,-6.0), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_gmt_offset:double>
+                              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=82787]
+                                 +- BroadcastHashJoin [i_manufact_id#28799], [i_manufact_id#28871], LeftSemi, BuildRight, false
+                                    :- Filter isnotnull(i_item_sk#28786)
+                                    :  +- FileScan parquet spark_catalog.m.item[i_item_sk#28786,i_manufact_id#28799] Batched: true, DataFilters: [isnotnull(i_item_sk#28786)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_manufact_id:int>
+                                    +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=82784]
+                                       +- Project [i_manufact_id#28871]
+                                          +- Filter (isnotnull(i_category#28870) AND (i_category#28870 = Jewelry))
+                                             +- FileScan parquet spark_catalog.m.item[i_category#28870,i_manufact_id#28871] Batched: true, DataFilters: [isnotnull(i_category#28870), (i_category#28870 = Jewelry)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_category), EqualTo(i_category,Jewelry)], ReadSchema: struct<i_category:string,i_manufact_id:int>

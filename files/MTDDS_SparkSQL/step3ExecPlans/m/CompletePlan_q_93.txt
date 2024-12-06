@@ -1,0 +1,68 @@
+== Parsed Logical Plan ==
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['sumsales ASC NULLS FIRST, 'ss_customer_sk ASC NULLS FIRST], true
+      +- 'Aggregate ['ss_customer_sk], ['ss_customer_sk, 'sum('act_sales) AS sumsales#48712]
+         +- 'SubqueryAlias t
+            +- 'Project ['ss_item_sk, 'ss_ticket_number, 'ss_customer_sk, CASE WHEN isnotnull('sr_return_quantity) THEN (('ss_quantity - 'sr_return_quantity) * 'ss_sales_price) ELSE ('ss_quantity * 'ss_sales_price) END AS act_sales#48711]
+               +- 'Filter (('sr_reason_sk = 'r_reason_sk) AND ('r_reason_desc = reason 48))
+                  +- 'Join Inner
+                     :- 'Join LeftOuter, (('sr_item_sk = 'ss_item_sk) AND ('sr_ticket_number = 'ss_ticket_number))
+                     :  :- 'UnresolvedRelation [store_sales], [], false
+                     :  +- 'UnresolvedRelation [store_returns], [], false
+                     +- 'UnresolvedRelation [reason], [], false
+
+== Analyzed Logical Plan ==
+ss_customer_sk: int, sumsales: double
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [sumsales#48712 ASC NULLS FIRST, ss_customer_sk#1251 ASC NULLS FIRST], true
+      +- Aggregate [ss_customer_sk#1251], [ss_customer_sk#1251, sum(act_sales#48711) AS sumsales#48712]
+         +- SubqueryAlias t
+            +- Project [ss_item_sk#1250, ss_ticket_number#1257, ss_customer_sk#1251, CASE WHEN isnotnull(sr_return_quantity#14) THEN (cast((ss_quantity#1258 - sr_return_quantity#14) as double) * ss_sales_price#1261) ELSE (cast(ss_quantity#1258 as double) * ss_sales_price#1261) END AS act_sales#48711]
+               +- Filter ((sr_reason_sk#12 = r_reason_sk#8429) AND (r_reason_desc#8431 = reason 48))
+                  +- Join Inner
+                     :- Join LeftOuter, ((sr_item_sk#6 = ss_item_sk#1250) AND (sr_ticket_number#13 = ss_ticket_number#1257))
+                     :  :- SubqueryAlias spark_catalog.m.store_sales
+                     :  :  +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+                     :  +- SubqueryAlias spark_catalog.m.store_returns
+                     :     +- Relation spark_catalog.m.store_returns[sr_returned_date_sk#4,sr_return_time_sk#5,sr_item_sk#6,sr_customer_sk#7,sr_cdemo_sk#8,sr_hdemo_sk#9,sr_addr_sk#10,sr_store_sk#11,sr_reason_sk#12,sr_ticket_number#13,sr_return_quantity#14,sr_return_amt#15,sr_return_tax#16,sr_return_amt_inc_tax#17,sr_fee#18,sr_return_ship_cost#19,sr_refunded_cash#20,sr_reversed_charge#21,sr_store_credit#22,sr_net_loss#23] parquet
+                     +- SubqueryAlias spark_catalog.m.reason
+                        +- Relation spark_catalog.m.reason[r_reason_sk#8429,r_reason_id#8430,r_reason_desc#8431] parquet
+
+== Optimized Logical Plan ==
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [sumsales#48712 ASC NULLS FIRST, ss_customer_sk#1251 ASC NULLS FIRST], true
+      +- Aggregate [ss_customer_sk#1251], [ss_customer_sk#1251, sum(act_sales#48711) AS sumsales#48712]
+         +- Project [ss_customer_sk#1251, CASE WHEN isnotnull(sr_return_quantity#14) THEN (cast((ss_quantity#1258 - sr_return_quantity#14) as double) * ss_sales_price#1261) ELSE (cast(ss_quantity#1258 as double) * ss_sales_price#1261) END AS act_sales#48711]
+            +- Join Inner, (sr_reason_sk#12 = r_reason_sk#8429)
+               :- Project [ss_customer_sk#1251, ss_quantity#1258, ss_sales_price#1261, sr_reason_sk#12, sr_return_quantity#14]
+               :  +- Join Inner, ((sr_item_sk#6 = ss_item_sk#1250) AND (sr_ticket_number#13 = ss_ticket_number#1257))
+               :     :- Project [ss_item_sk#1250, ss_customer_sk#1251, ss_ticket_number#1257, ss_quantity#1258, ss_sales_price#1261]
+               :     :  +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+               :     +- Project [sr_item_sk#6, sr_reason_sk#12, sr_ticket_number#13, sr_return_quantity#14]
+               :        +- Filter ((isnotnull(sr_item_sk#6) AND isnotnull(sr_ticket_number#13)) AND isnotnull(sr_reason_sk#12))
+               :           +- Relation spark_catalog.m.store_returns[sr_returned_date_sk#4,sr_return_time_sk#5,sr_item_sk#6,sr_customer_sk#7,sr_cdemo_sk#8,sr_hdemo_sk#9,sr_addr_sk#10,sr_store_sk#11,sr_reason_sk#12,sr_ticket_number#13,sr_return_quantity#14,sr_return_amt#15,sr_return_tax#16,sr_return_amt_inc_tax#17,sr_fee#18,sr_return_ship_cost#19,sr_refunded_cash#20,sr_reversed_charge#21,sr_store_credit#22,sr_net_loss#23] parquet
+               +- Project [r_reason_sk#8429]
+                  +- Filter ((isnotnull(r_reason_desc#8431) AND (r_reason_desc#8431 = reason 48)) AND isnotnull(r_reason_sk#8429))
+                     +- Relation spark_catalog.m.reason[r_reason_sk#8429,r_reason_id#8430,r_reason_desc#8431] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[sumsales#48712 ASC NULLS FIRST,ss_customer_sk#1251 ASC NULLS FIRST], output=[ss_customer_sk#1251,sumsales#48712])
+   +- HashAggregate(keys=[ss_customer_sk#1251], functions=[sum(act_sales#48711)], output=[ss_customer_sk#1251, sumsales#48712])
+      +- Exchange hashpartitioning(ss_customer_sk#1251, 200), ENSURE_REQUIREMENTS, [plan_id=175002]
+         +- HashAggregate(keys=[ss_customer_sk#1251], functions=[partial_sum(act_sales#48711)], output=[ss_customer_sk#1251, sum#48723])
+            +- Project [ss_customer_sk#1251, CASE WHEN isnotnull(sr_return_quantity#14) THEN (cast((ss_quantity#1258 - sr_return_quantity#14) as double) * ss_sales_price#1261) ELSE (cast(ss_quantity#1258 as double) * ss_sales_price#1261) END AS act_sales#48711]
+               +- BroadcastHashJoin [sr_reason_sk#12], [r_reason_sk#8429], Inner, BuildRight, false
+                  :- Project [ss_customer_sk#1251, ss_quantity#1258, ss_sales_price#1261, sr_reason_sk#12, sr_return_quantity#14]
+                  :  +- BroadcastHashJoin [ss_item_sk#1250, ss_ticket_number#1257], [sr_item_sk#6, sr_ticket_number#13], Inner, BuildRight, false
+                  :     :- FileScan parquet spark_catalog.m.store_sales[ss_item_sk#1250,ss_customer_sk#1251,ss_ticket_number#1257,ss_quantity#1258,ss_sales_price#1261] Batched: true, DataFilters: [], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<ss_item_sk:int,ss_customer_sk:int,ss_ticket_number:int,ss_quantity:int,ss_sales_price:double>
+                  :     +- BroadcastExchange HashedRelationBroadcastMode(List((shiftleft(cast(input[0, int, false] as bigint), 32) | (cast(input[2, int, false] as bigint) & 4294967295))),false), [plan_id=174993]
+                  :        +- Filter ((isnotnull(sr_item_sk#6) AND isnotnull(sr_ticket_number#13)) AND isnotnull(sr_reason_sk#12))
+                  :           +- FileScan parquet spark_catalog.m.store_returns[sr_item_sk#6,sr_reason_sk#12,sr_ticket_number#13,sr_return_quantity#14] Batched: true, DataFilters: [isnotnull(sr_item_sk#6), isnotnull(sr_ticket_number#13), isnotnull(sr_reason_sk#12)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_returns], PartitionFilters: [], PushedFilters: [IsNotNull(sr_item_sk), IsNotNull(sr_ticket_number), IsNotNull(sr_reason_sk)], ReadSchema: struct<sr_item_sk:int,sr_reason_sk:int,sr_ticket_number:int,sr_return_quantity:int>
+                  +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=174997]
+                     +- Project [r_reason_sk#8429]
+                        +- Filter ((isnotnull(r_reason_desc#8431) AND (r_reason_desc#8431 = reason 48)) AND isnotnull(r_reason_sk#8429))
+                           +- FileScan parquet spark_catalog.m.reason[r_reason_sk#8429,r_reason_desc#8431] Batched: true, DataFilters: [isnotnull(r_reason_desc#8431), (r_reason_desc#8431 = reason 48), isnotnull(r_reason_sk#8429)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/reason], PartitionFilters: [], PushedFilters: [IsNotNull(r_reason_desc), EqualTo(r_reason_desc,reason 48), IsNotNull(r_reason_sk)], ReadSchema: struct<r_reason_sk:int,r_reason_desc:string>

@@ -1,0 +1,17 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['i_category ASC NULLS FIRST, 'i_class ASC NULLS FIRST, 'i_brand ASC NULLS FIRST, 'i_product_name ASC NULLS FIRST, 'd_year ASC NULLS FIRST, 'd_qoy ASC NULLS FIRST, 'd_moy ASC NULLS FIRST, 's_store_id ASC NULLS FIRST, 'sumsales ASC NULLS FIRST, 'rk ASC NULLS FIRST], true
+      +- 'Project [*]
+         +- 'Filter ('rk <= 100)
+            +- 'SubqueryAlias dw2
+               +- 'Project ['i_category, 'i_class, 'i_brand, 'i_product_name, 'd_year, 'd_qoy, 'd_moy, 's_store_id, 'sumsales, 'rank() windowspecdefinition('i_category, 'sumsales DESC NULLS LAST, unspecifiedframe$()) AS rk#40603]
+                  +- 'SubqueryAlias dw1
+                     +- 'Aggregate [rollup(Vector(0), Vector(1), Vector(2), Vector(3), Vector(4), Vector(5), Vector(6), Vector(7), 'i_category, 'i_class, 'i_brand, 'i_product_name, 'd_year, 'd_qoy, 'd_moy, 's_store_id)], ['i_category, 'i_class, 'i_brand, 'i_product_name, 'd_year, 'd_qoy, 'd_moy, 's_store_id, 'sum('coalesce(('ss_sales_price * 'ss_quantity), 0)) AS sumsales#40602]
+                        +- 'Filter ((('ss_sold_date_sk = 'd_date_sk) AND ('ss_item_sk = 'i_item_sk)) AND (('ss_store_sk = 's_store_sk) AND (('d_month_seq >= 1214) AND ('d_month_seq <= (1214 + 11)))))
+                           +- 'Join Inner
+                              :- 'Join Inner
+                              :  :- 'Join Inner
+                              :  :  :- 'UnresolvedRelation [store_sales], [], false
+                              :  :  +- 'UnresolvedRelation [date_dim], [], false
+                              :  +- 'UnresolvedRelation [store], [], false
+                              +- 'UnresolvedRelation [item], [], false

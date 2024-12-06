@@ -1,0 +1,172 @@
+== Parsed Logical Plan ==
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Project [*]
+      +- 'Join Inner
+         :- 'Join Inner
+         :  :- 'Join Inner
+         :  :  :- 'Join Inner
+         :  :  :  :- 'Join Inner
+         :  :  :  :  :- 'SubqueryAlias B1
+         :  :  :  :  :  +- 'Project ['avg('ss_list_price) AS B1_LP#25658, 'count('ss_list_price) AS B1_CNT#25659, 'count(distinct 'ss_list_price) AS B1_CNTD#25660]
+         :  :  :  :  :     +- 'Filter ((('ss_quantity >= 0) AND ('ss_quantity <= 5)) AND (((('ss_list_price >= 32) AND ('ss_list_price <= (32 + 10))) OR (('ss_coupon_amt >= 4429) AND ('ss_coupon_amt <= (4429 + 1000)))) OR (('ss_wholesale_cost >= 0) AND ('ss_wholesale_cost <= (0 + 20)))))
+         :  :  :  :  :        +- 'UnresolvedRelation [store_sales], [], false
+         :  :  :  :  +- 'SubqueryAlias B2
+         :  :  :  :     +- 'Project ['avg('ss_list_price) AS B2_LP#25661, 'count('ss_list_price) AS B2_CNT#25662, 'count(distinct 'ss_list_price) AS B2_CNTD#25663]
+         :  :  :  :        +- 'Filter ((('ss_quantity >= 6) AND ('ss_quantity <= 10)) AND (((('ss_list_price >= 170) AND ('ss_list_price <= (170 + 10))) OR (('ss_coupon_amt >= 4727) AND ('ss_coupon_amt <= (4727 + 1000)))) OR (('ss_wholesale_cost >= 8) AND ('ss_wholesale_cost <= (8 + 20)))))
+         :  :  :  :           +- 'UnresolvedRelation [store_sales], [], false
+         :  :  :  +- 'SubqueryAlias B3
+         :  :  :     +- 'Project ['avg('ss_list_price) AS B3_LP#25664, 'count('ss_list_price) AS B3_CNT#25665, 'count(distinct 'ss_list_price) AS B3_CNTD#25666]
+         :  :  :        +- 'Filter ((('ss_quantity >= 11) AND ('ss_quantity <= 15)) AND (((('ss_list_price >= 124) AND ('ss_list_price <= (124 + 10))) OR (('ss_coupon_amt >= 9657) AND ('ss_coupon_amt <= (9657 + 1000)))) OR (('ss_wholesale_cost >= 43) AND ('ss_wholesale_cost <= (43 + 20)))))
+         :  :  :           +- 'UnresolvedRelation [store_sales], [], false
+         :  :  +- 'SubqueryAlias B4
+         :  :     +- 'Project ['avg('ss_list_price) AS B4_LP#25667, 'count('ss_list_price) AS B4_CNT#25668, 'count(distinct 'ss_list_price) AS B4_CNTD#25669]
+         :  :        +- 'Filter ((('ss_quantity >= 16) AND ('ss_quantity <= 20)) AND (((('ss_list_price >= 104) AND ('ss_list_price <= (104 + 10))) OR (('ss_coupon_amt >= 17161) AND ('ss_coupon_amt <= (17161 + 1000)))) OR (('ss_wholesale_cost >= 34) AND ('ss_wholesale_cost <= (34 + 20)))))
+         :  :           +- 'UnresolvedRelation [store_sales], [], false
+         :  +- 'SubqueryAlias B5
+         :     +- 'Project ['avg('ss_list_price) AS B5_LP#25670, 'count('ss_list_price) AS B5_CNT#25671, 'count(distinct 'ss_list_price) AS B5_CNTD#25672]
+         :        +- 'Filter ((('ss_quantity >= 21) AND ('ss_quantity <= 25)) AND (((('ss_list_price >= 73) AND ('ss_list_price <= (73 + 10))) OR (('ss_coupon_amt >= 17064) AND ('ss_coupon_amt <= (17064 + 1000)))) OR (('ss_wholesale_cost >= 56) AND ('ss_wholesale_cost <= (56 + 20)))))
+         :           +- 'UnresolvedRelation [store_sales], [], false
+         +- 'SubqueryAlias B6
+            +- 'Project ['avg('ss_list_price) AS B6_LP#25673, 'count('ss_list_price) AS B6_CNT#25674, 'count(distinct 'ss_list_price) AS B6_CNTD#25675]
+               +- 'Filter ((('ss_quantity >= 26) AND ('ss_quantity <= 30)) AND (((('ss_list_price >= 65) AND ('ss_list_price <= (65 + 10))) OR (('ss_coupon_amt >= 10899) AND ('ss_coupon_amt <= (10899 + 1000)))) OR (('ss_wholesale_cost >= 54) AND ('ss_wholesale_cost <= (54 + 20)))))
+                  +- 'UnresolvedRelation [store_sales], [], false
+
+== Analyzed Logical Plan ==
+B1_LP: double, B1_CNT: bigint, B1_CNTD: bigint, B2_LP: double, B2_CNT: bigint, B2_CNTD: bigint, B3_LP: double, B3_CNT: bigint, B3_CNTD: bigint, B4_LP: double, B4_CNT: bigint, B4_CNTD: bigint, B5_LP: double, B5_CNT: bigint, B5_CNTD: bigint, B6_LP: double, B6_CNT: bigint, B6_CNTD: bigint
+GlobalLimit 100
++- LocalLimit 100
+   +- Project [B1_LP#25658, B1_CNT#25659L, B1_CNTD#25660L, B2_LP#25661, B2_CNT#25662L, B2_CNTD#25663L, B3_LP#25664, B3_CNT#25665L, B3_CNTD#25666L, B4_LP#25667, B4_CNT#25668L, B4_CNTD#25669L, B5_LP#25670, B5_CNT#25671L, B5_CNTD#25672L, B6_LP#25673, B6_CNT#25674L, B6_CNTD#25675L]
+      +- Join Inner
+         :- Join Inner
+         :  :- Join Inner
+         :  :  :- Join Inner
+         :  :  :  :- Join Inner
+         :  :  :  :  :- SubqueryAlias B1
+         :  :  :  :  :  +- Aggregate [avg(ss_list_price#1260) AS B1_LP#25658, count(ss_list_price#1260) AS B1_CNT#25659L, count(distinct ss_list_price#1260) AS B1_CNTD#25660L]
+         :  :  :  :  :     +- Filter (((ss_quantity#1258 >= 0) AND (ss_quantity#1258 <= 5)) AND ((((ss_list_price#1260 >= cast(32 as double)) AND (ss_list_price#1260 <= cast((32 + 10) as double))) OR ((ss_coupon_amt#1267 >= cast(4429 as double)) AND (ss_coupon_amt#1267 <= cast((4429 + 1000) as double)))) OR ((ss_wholesale_cost#1259 >= cast(0 as double)) AND (ss_wholesale_cost#1259 <= cast((0 + 20) as double)))))
+         :  :  :  :  :        +- SubqueryAlias spark_catalog.m.store_sales
+         :  :  :  :  :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+         :  :  :  :  +- SubqueryAlias B2
+         :  :  :  :     +- Aggregate [avg(ss_list_price#25688) AS B2_LP#25661, count(ss_list_price#25688) AS B2_CNT#25662L, count(distinct ss_list_price#25688) AS B2_CNTD#25663L]
+         :  :  :  :        +- Filter (((ss_quantity#25686 >= 6) AND (ss_quantity#25686 <= 10)) AND ((((ss_list_price#25688 >= cast(170 as double)) AND (ss_list_price#25688 <= cast((170 + 10) as double))) OR ((ss_coupon_amt#25695 >= cast(4727 as double)) AND (ss_coupon_amt#25695 <= cast((4727 + 1000) as double)))) OR ((ss_wholesale_cost#25687 >= cast(8 as double)) AND (ss_wholesale_cost#25687 <= cast((8 + 20) as double)))))
+         :  :  :  :           +- SubqueryAlias spark_catalog.m.store_sales
+         :  :  :  :              +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25676,ss_sold_time_sk#25677,ss_item_sk#25678,ss_customer_sk#25679,ss_cdemo_sk#25680,ss_hdemo_sk#25681,ss_addr_sk#25682,ss_store_sk#25683,ss_promo_sk#25684,ss_ticket_number#25685,ss_quantity#25686,ss_wholesale_cost#25687,ss_list_price#25688,ss_sales_price#25689,ss_ext_discount_amt#25690,ss_ext_sales_price#25691,ss_ext_wholesale_cost#25692,ss_ext_list_price#25693,ss_ext_tax#25694,ss_coupon_amt#25695,ss_net_paid#25696,ss_net_paid_inc_tax#25697,ss_net_profit#25698] parquet
+         :  :  :  +- SubqueryAlias B3
+         :  :  :     +- Aggregate [avg(ss_list_price#25711) AS B3_LP#25664, count(ss_list_price#25711) AS B3_CNT#25665L, count(distinct ss_list_price#25711) AS B3_CNTD#25666L]
+         :  :  :        +- Filter (((ss_quantity#25709 >= 11) AND (ss_quantity#25709 <= 15)) AND ((((ss_list_price#25711 >= cast(124 as double)) AND (ss_list_price#25711 <= cast((124 + 10) as double))) OR ((ss_coupon_amt#25718 >= cast(9657 as double)) AND (ss_coupon_amt#25718 <= cast((9657 + 1000) as double)))) OR ((ss_wholesale_cost#25710 >= cast(43 as double)) AND (ss_wholesale_cost#25710 <= cast((43 + 20) as double)))))
+         :  :  :           +- SubqueryAlias spark_catalog.m.store_sales
+         :  :  :              +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25699,ss_sold_time_sk#25700,ss_item_sk#25701,ss_customer_sk#25702,ss_cdemo_sk#25703,ss_hdemo_sk#25704,ss_addr_sk#25705,ss_store_sk#25706,ss_promo_sk#25707,ss_ticket_number#25708,ss_quantity#25709,ss_wholesale_cost#25710,ss_list_price#25711,ss_sales_price#25712,ss_ext_discount_amt#25713,ss_ext_sales_price#25714,ss_ext_wholesale_cost#25715,ss_ext_list_price#25716,ss_ext_tax#25717,ss_coupon_amt#25718,ss_net_paid#25719,ss_net_paid_inc_tax#25720,ss_net_profit#25721] parquet
+         :  :  +- SubqueryAlias B4
+         :  :     +- Aggregate [avg(ss_list_price#25734) AS B4_LP#25667, count(ss_list_price#25734) AS B4_CNT#25668L, count(distinct ss_list_price#25734) AS B4_CNTD#25669L]
+         :  :        +- Filter (((ss_quantity#25732 >= 16) AND (ss_quantity#25732 <= 20)) AND ((((ss_list_price#25734 >= cast(104 as double)) AND (ss_list_price#25734 <= cast((104 + 10) as double))) OR ((ss_coupon_amt#25741 >= cast(17161 as double)) AND (ss_coupon_amt#25741 <= cast((17161 + 1000) as double)))) OR ((ss_wholesale_cost#25733 >= cast(34 as double)) AND (ss_wholesale_cost#25733 <= cast((34 + 20) as double)))))
+         :  :           +- SubqueryAlias spark_catalog.m.store_sales
+         :  :              +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25722,ss_sold_time_sk#25723,ss_item_sk#25724,ss_customer_sk#25725,ss_cdemo_sk#25726,ss_hdemo_sk#25727,ss_addr_sk#25728,ss_store_sk#25729,ss_promo_sk#25730,ss_ticket_number#25731,ss_quantity#25732,ss_wholesale_cost#25733,ss_list_price#25734,ss_sales_price#25735,ss_ext_discount_amt#25736,ss_ext_sales_price#25737,ss_ext_wholesale_cost#25738,ss_ext_list_price#25739,ss_ext_tax#25740,ss_coupon_amt#25741,ss_net_paid#25742,ss_net_paid_inc_tax#25743,ss_net_profit#25744] parquet
+         :  +- SubqueryAlias B5
+         :     +- Aggregate [avg(ss_list_price#25757) AS B5_LP#25670, count(ss_list_price#25757) AS B5_CNT#25671L, count(distinct ss_list_price#25757) AS B5_CNTD#25672L]
+         :        +- Filter (((ss_quantity#25755 >= 21) AND (ss_quantity#25755 <= 25)) AND ((((ss_list_price#25757 >= cast(73 as double)) AND (ss_list_price#25757 <= cast((73 + 10) as double))) OR ((ss_coupon_amt#25764 >= cast(17064 as double)) AND (ss_coupon_amt#25764 <= cast((17064 + 1000) as double)))) OR ((ss_wholesale_cost#25756 >= cast(56 as double)) AND (ss_wholesale_cost#25756 <= cast((56 + 20) as double)))))
+         :           +- SubqueryAlias spark_catalog.m.store_sales
+         :              +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25745,ss_sold_time_sk#25746,ss_item_sk#25747,ss_customer_sk#25748,ss_cdemo_sk#25749,ss_hdemo_sk#25750,ss_addr_sk#25751,ss_store_sk#25752,ss_promo_sk#25753,ss_ticket_number#25754,ss_quantity#25755,ss_wholesale_cost#25756,ss_list_price#25757,ss_sales_price#25758,ss_ext_discount_amt#25759,ss_ext_sales_price#25760,ss_ext_wholesale_cost#25761,ss_ext_list_price#25762,ss_ext_tax#25763,ss_coupon_amt#25764,ss_net_paid#25765,ss_net_paid_inc_tax#25766,ss_net_profit#25767] parquet
+         +- SubqueryAlias B6
+            +- Aggregate [avg(ss_list_price#25780) AS B6_LP#25673, count(ss_list_price#25780) AS B6_CNT#25674L, count(distinct ss_list_price#25780) AS B6_CNTD#25675L]
+               +- Filter (((ss_quantity#25778 >= 26) AND (ss_quantity#25778 <= 30)) AND ((((ss_list_price#25780 >= cast(65 as double)) AND (ss_list_price#25780 <= cast((65 + 10) as double))) OR ((ss_coupon_amt#25787 >= cast(10899 as double)) AND (ss_coupon_amt#25787 <= cast((10899 + 1000) as double)))) OR ((ss_wholesale_cost#25779 >= cast(54 as double)) AND (ss_wholesale_cost#25779 <= cast((54 + 20) as double)))))
+                  +- SubqueryAlias spark_catalog.m.store_sales
+                     +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25768,ss_sold_time_sk#25769,ss_item_sk#25770,ss_customer_sk#25771,ss_cdemo_sk#25772,ss_hdemo_sk#25773,ss_addr_sk#25774,ss_store_sk#25775,ss_promo_sk#25776,ss_ticket_number#25777,ss_quantity#25778,ss_wholesale_cost#25779,ss_list_price#25780,ss_sales_price#25781,ss_ext_discount_amt#25782,ss_ext_sales_price#25783,ss_ext_wholesale_cost#25784,ss_ext_list_price#25785,ss_ext_tax#25786,ss_coupon_amt#25787,ss_net_paid#25788,ss_net_paid_inc_tax#25789,ss_net_profit#25790] parquet
+
+== Optimized Logical Plan ==
+Join Inner
+:- Join Inner
+:  :- Join Inner
+:  :  :- Join Inner
+:  :  :  :- Join Inner
+:  :  :  :  :- Aggregate [avg(ss_list_price#1260) AS B1_LP#25658, count(ss_list_price#1260) AS B1_CNT#25659L, count(distinct ss_list_price#1260) AS B1_CNTD#25660L]
+:  :  :  :  :  +- Project [ss_list_price#1260]
+:  :  :  :  :     +- Filter (isnotnull(ss_quantity#1258) AND (((ss_quantity#1258 >= 0) AND (ss_quantity#1258 <= 5)) AND ((((ss_list_price#1260 >= 32.0) AND (ss_list_price#1260 <= 42.0)) OR ((ss_coupon_amt#1267 >= 4429.0) AND (ss_coupon_amt#1267 <= 5429.0))) OR ((ss_wholesale_cost#1259 >= 0.0) AND (ss_wholesale_cost#1259 <= 20.0)))))
+:  :  :  :  :        +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+:  :  :  :  +- Aggregate [avg(ss_list_price#25688) AS B2_LP#25661, count(ss_list_price#25688) AS B2_CNT#25662L, count(distinct ss_list_price#25688) AS B2_CNTD#25663L]
+:  :  :  :     +- Project [ss_list_price#25688]
+:  :  :  :        +- Filter (isnotnull(ss_quantity#25686) AND (((ss_quantity#25686 >= 6) AND (ss_quantity#25686 <= 10)) AND ((((ss_list_price#25688 >= 170.0) AND (ss_list_price#25688 <= 180.0)) OR ((ss_coupon_amt#25695 >= 4727.0) AND (ss_coupon_amt#25695 <= 5727.0))) OR ((ss_wholesale_cost#25687 >= 8.0) AND (ss_wholesale_cost#25687 <= 28.0)))))
+:  :  :  :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25676,ss_sold_time_sk#25677,ss_item_sk#25678,ss_customer_sk#25679,ss_cdemo_sk#25680,ss_hdemo_sk#25681,ss_addr_sk#25682,ss_store_sk#25683,ss_promo_sk#25684,ss_ticket_number#25685,ss_quantity#25686,ss_wholesale_cost#25687,ss_list_price#25688,ss_sales_price#25689,ss_ext_discount_amt#25690,ss_ext_sales_price#25691,ss_ext_wholesale_cost#25692,ss_ext_list_price#25693,ss_ext_tax#25694,ss_coupon_amt#25695,ss_net_paid#25696,ss_net_paid_inc_tax#25697,ss_net_profit#25698] parquet
+:  :  :  +- Aggregate [avg(ss_list_price#25711) AS B3_LP#25664, count(ss_list_price#25711) AS B3_CNT#25665L, count(distinct ss_list_price#25711) AS B3_CNTD#25666L]
+:  :  :     +- Project [ss_list_price#25711]
+:  :  :        +- Filter (isnotnull(ss_quantity#25709) AND (((ss_quantity#25709 >= 11) AND (ss_quantity#25709 <= 15)) AND ((((ss_list_price#25711 >= 124.0) AND (ss_list_price#25711 <= 134.0)) OR ((ss_coupon_amt#25718 >= 9657.0) AND (ss_coupon_amt#25718 <= 10657.0))) OR ((ss_wholesale_cost#25710 >= 43.0) AND (ss_wholesale_cost#25710 <= 63.0)))))
+:  :  :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25699,ss_sold_time_sk#25700,ss_item_sk#25701,ss_customer_sk#25702,ss_cdemo_sk#25703,ss_hdemo_sk#25704,ss_addr_sk#25705,ss_store_sk#25706,ss_promo_sk#25707,ss_ticket_number#25708,ss_quantity#25709,ss_wholesale_cost#25710,ss_list_price#25711,ss_sales_price#25712,ss_ext_discount_amt#25713,ss_ext_sales_price#25714,ss_ext_wholesale_cost#25715,ss_ext_list_price#25716,ss_ext_tax#25717,ss_coupon_amt#25718,ss_net_paid#25719,ss_net_paid_inc_tax#25720,ss_net_profit#25721] parquet
+:  :  +- Aggregate [avg(ss_list_price#25734) AS B4_LP#25667, count(ss_list_price#25734) AS B4_CNT#25668L, count(distinct ss_list_price#25734) AS B4_CNTD#25669L]
+:  :     +- Project [ss_list_price#25734]
+:  :        +- Filter (isnotnull(ss_quantity#25732) AND (((ss_quantity#25732 >= 16) AND (ss_quantity#25732 <= 20)) AND ((((ss_list_price#25734 >= 104.0) AND (ss_list_price#25734 <= 114.0)) OR ((ss_coupon_amt#25741 >= 17161.0) AND (ss_coupon_amt#25741 <= 18161.0))) OR ((ss_wholesale_cost#25733 >= 34.0) AND (ss_wholesale_cost#25733 <= 54.0)))))
+:  :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25722,ss_sold_time_sk#25723,ss_item_sk#25724,ss_customer_sk#25725,ss_cdemo_sk#25726,ss_hdemo_sk#25727,ss_addr_sk#25728,ss_store_sk#25729,ss_promo_sk#25730,ss_ticket_number#25731,ss_quantity#25732,ss_wholesale_cost#25733,ss_list_price#25734,ss_sales_price#25735,ss_ext_discount_amt#25736,ss_ext_sales_price#25737,ss_ext_wholesale_cost#25738,ss_ext_list_price#25739,ss_ext_tax#25740,ss_coupon_amt#25741,ss_net_paid#25742,ss_net_paid_inc_tax#25743,ss_net_profit#25744] parquet
+:  +- Aggregate [avg(ss_list_price#25757) AS B5_LP#25670, count(ss_list_price#25757) AS B5_CNT#25671L, count(distinct ss_list_price#25757) AS B5_CNTD#25672L]
+:     +- Project [ss_list_price#25757]
+:        +- Filter (isnotnull(ss_quantity#25755) AND (((ss_quantity#25755 >= 21) AND (ss_quantity#25755 <= 25)) AND ((((ss_list_price#25757 >= 73.0) AND (ss_list_price#25757 <= 83.0)) OR ((ss_coupon_amt#25764 >= 17064.0) AND (ss_coupon_amt#25764 <= 18064.0))) OR ((ss_wholesale_cost#25756 >= 56.0) AND (ss_wholesale_cost#25756 <= 76.0)))))
+:           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25745,ss_sold_time_sk#25746,ss_item_sk#25747,ss_customer_sk#25748,ss_cdemo_sk#25749,ss_hdemo_sk#25750,ss_addr_sk#25751,ss_store_sk#25752,ss_promo_sk#25753,ss_ticket_number#25754,ss_quantity#25755,ss_wholesale_cost#25756,ss_list_price#25757,ss_sales_price#25758,ss_ext_discount_amt#25759,ss_ext_sales_price#25760,ss_ext_wholesale_cost#25761,ss_ext_list_price#25762,ss_ext_tax#25763,ss_coupon_amt#25764,ss_net_paid#25765,ss_net_paid_inc_tax#25766,ss_net_profit#25767] parquet
++- Aggregate [avg(ss_list_price#25780) AS B6_LP#25673, count(ss_list_price#25780) AS B6_CNT#25674L, count(distinct ss_list_price#25780) AS B6_CNTD#25675L]
+   +- Project [ss_list_price#25780]
+      +- Filter (isnotnull(ss_quantity#25778) AND (((ss_quantity#25778 >= 26) AND (ss_quantity#25778 <= 30)) AND ((((ss_list_price#25780 >= 65.0) AND (ss_list_price#25780 <= 75.0)) OR ((ss_coupon_amt#25787 >= 10899.0) AND (ss_coupon_amt#25787 <= 11899.0))) OR ((ss_wholesale_cost#25779 >= 54.0) AND (ss_wholesale_cost#25779 <= 74.0)))))
+         +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#25768,ss_sold_time_sk#25769,ss_item_sk#25770,ss_customer_sk#25771,ss_cdemo_sk#25772,ss_hdemo_sk#25773,ss_addr_sk#25774,ss_store_sk#25775,ss_promo_sk#25776,ss_ticket_number#25777,ss_quantity#25778,ss_wholesale_cost#25779,ss_list_price#25780,ss_sales_price#25781,ss_ext_discount_amt#25782,ss_ext_sales_price#25783,ss_ext_wholesale_cost#25784,ss_ext_list_price#25785,ss_ext_tax#25786,ss_coupon_amt#25787,ss_net_paid#25788,ss_net_paid_inc_tax#25789,ss_net_profit#25790] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- BroadcastNestedLoopJoin BuildRight, Inner
+   :- BroadcastNestedLoopJoin BuildRight, Inner
+   :  :- BroadcastNestedLoopJoin BuildRight, Inner
+   :  :  :- BroadcastNestedLoopJoin BuildRight, Inner
+   :  :  :  :- BroadcastNestedLoopJoin BuildRight, Inner
+   :  :  :  :  :- HashAggregate(keys=[], functions=[avg(ss_list_price#1260), count(ss_list_price#1260), count(distinct ss_list_price#26145)], output=[B1_LP#25658, B1_CNT#25659L, B1_CNTD#25660L])
+   :  :  :  :  :  +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=72857]
+   :  :  :  :  :     +- HashAggregate(keys=[], functions=[merge_avg(ss_list_price#1260), merge_count(ss_list_price#1260), partial_count(distinct ss_list_price#26145)], output=[sum#25889, count#25890L, count#25892L, count#26148L])
+   :  :  :  :  :        +- HashAggregate(keys=[ss_list_price#26145], functions=[merge_avg(ss_list_price#1260), merge_count(ss_list_price#1260)], output=[ss_list_price#26145, sum#25889, count#25890L, count#25892L])
+   :  :  :  :  :           +- Exchange hashpartitioning(ss_list_price#26145, 200), ENSURE_REQUIREMENTS, [plan_id=72853]
+   :  :  :  :  :              +- HashAggregate(keys=[knownfloatingpointnormalized(normalizenanandzero(ss_list_price#1260)) AS ss_list_price#26145], functions=[partial_avg(ss_list_price#1260), partial_count(ss_list_price#1260)], output=[ss_list_price#26145, sum#25889, count#25890L, count#25892L])
+   :  :  :  :  :                 +- Project [ss_list_price#1260]
+   :  :  :  :  :                    +- Filter (((isnotnull(ss_quantity#1258) AND (ss_quantity#1258 >= 0)) AND (ss_quantity#1258 <= 5)) AND ((((ss_list_price#1260 >= 32.0) AND (ss_list_price#1260 <= 42.0)) OR ((ss_coupon_amt#1267 >= 4429.0) AND (ss_coupon_amt#1267 <= 5429.0))) OR ((ss_wholesale_cost#1259 >= 0.0) AND (ss_wholesale_cost#1259 <= 20.0))))
+   :  :  :  :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_coupon_amt#1267] Batched: true, DataFilters: [isnotnull(ss_quantity#1258), (ss_quantity#1258 >= 0), (ss_quantity#1258 <= 5), ((((ss_list_price..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,0), LessThanOrEqual(ss_quantity,5), Or(Or..., ReadSchema: struct<ss_quantity:int,ss_wholesale_cost:double,ss_list_price:double,ss_coupon_amt:double>
+   :  :  :  :  +- BroadcastExchange IdentityBroadcastMode, [plan_id=72866]
+   :  :  :  :     +- HashAggregate(keys=[], functions=[avg(ss_list_price#25688), count(ss_list_price#25688), count(distinct ss_list_price#26150)], output=[B2_LP#25661, B2_CNT#25662L, B2_CNTD#25663L])
+   :  :  :  :        +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=72863]
+   :  :  :  :           +- HashAggregate(keys=[], functions=[merge_avg(ss_list_price#25688), merge_count(ss_list_price#25688), partial_count(distinct ss_list_price#26150)], output=[sum#25900, count#25901L, count#25903L, count#26153L])
+   :  :  :  :              +- HashAggregate(keys=[ss_list_price#26150], functions=[merge_avg(ss_list_price#25688), merge_count(ss_list_price#25688)], output=[ss_list_price#26150, sum#25900, count#25901L, count#25903L])
+   :  :  :  :                 +- Exchange hashpartitioning(ss_list_price#26150, 200), ENSURE_REQUIREMENTS, [plan_id=72859]
+   :  :  :  :                    +- HashAggregate(keys=[knownfloatingpointnormalized(normalizenanandzero(ss_list_price#25688)) AS ss_list_price#26150], functions=[partial_avg(ss_list_price#25688), partial_count(ss_list_price#25688)], output=[ss_list_price#26150, sum#25900, count#25901L, count#25903L])
+   :  :  :  :                       +- Project [ss_list_price#25688]
+   :  :  :  :                          +- Filter (((isnotnull(ss_quantity#25686) AND (ss_quantity#25686 >= 6)) AND (ss_quantity#25686 <= 10)) AND ((((ss_list_price#25688 >= 170.0) AND (ss_list_price#25688 <= 180.0)) OR ((ss_coupon_amt#25695 >= 4727.0) AND (ss_coupon_amt#25695 <= 5727.0))) OR ((ss_wholesale_cost#25687 >= 8.0) AND (ss_wholesale_cost#25687 <= 28.0))))
+   :  :  :  :                             +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#25686,ss_wholesale_cost#25687,ss_list_price#25688,ss_coupon_amt#25695] Batched: true, DataFilters: [isnotnull(ss_quantity#25686), (ss_quantity#25686 >= 6), (ss_quantity#25686 <= 10), ((((ss_list_p..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,6), LessThanOrEqual(ss_quantity,10), Or(O..., ReadSchema: struct<ss_quantity:int,ss_wholesale_cost:double,ss_list_price:double,ss_coupon_amt:double>
+   :  :  :  +- BroadcastExchange IdentityBroadcastMode, [plan_id=72875]
+   :  :  :     +- HashAggregate(keys=[], functions=[avg(ss_list_price#25711), count(ss_list_price#25711), count(distinct ss_list_price#26155)], output=[B3_LP#25664, B3_CNT#25665L, B3_CNTD#25666L])
+   :  :  :        +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=72872]
+   :  :  :           +- HashAggregate(keys=[], functions=[merge_avg(ss_list_price#25711), merge_count(ss_list_price#25711), partial_count(distinct ss_list_price#26155)], output=[sum#25911, count#25912L, count#25914L, count#26158L])
+   :  :  :              +- HashAggregate(keys=[ss_list_price#26155], functions=[merge_avg(ss_list_price#25711), merge_count(ss_list_price#25711)], output=[ss_list_price#26155, sum#25911, count#25912L, count#25914L])
+   :  :  :                 +- Exchange hashpartitioning(ss_list_price#26155, 200), ENSURE_REQUIREMENTS, [plan_id=72868]
+   :  :  :                    +- HashAggregate(keys=[knownfloatingpointnormalized(normalizenanandzero(ss_list_price#25711)) AS ss_list_price#26155], functions=[partial_avg(ss_list_price#25711), partial_count(ss_list_price#25711)], output=[ss_list_price#26155, sum#25911, count#25912L, count#25914L])
+   :  :  :                       +- Project [ss_list_price#25711]
+   :  :  :                          +- Filter (((isnotnull(ss_quantity#25709) AND (ss_quantity#25709 >= 11)) AND (ss_quantity#25709 <= 15)) AND ((((ss_list_price#25711 >= 124.0) AND (ss_list_price#25711 <= 134.0)) OR ((ss_coupon_amt#25718 >= 9657.0) AND (ss_coupon_amt#25718 <= 10657.0))) OR ((ss_wholesale_cost#25710 >= 43.0) AND (ss_wholesale_cost#25710 <= 63.0))))
+   :  :  :                             +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#25709,ss_wholesale_cost#25710,ss_list_price#25711,ss_coupon_amt#25718] Batched: true, DataFilters: [isnotnull(ss_quantity#25709), (ss_quantity#25709 >= 11), (ss_quantity#25709 <= 15), ((((ss_list_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,11), LessThanOrEqual(ss_quantity,15), Or(..., ReadSchema: struct<ss_quantity:int,ss_wholesale_cost:double,ss_list_price:double,ss_coupon_amt:double>
+   :  :  +- BroadcastExchange IdentityBroadcastMode, [plan_id=72884]
+   :  :     +- HashAggregate(keys=[], functions=[avg(ss_list_price#25734), count(ss_list_price#25734), count(distinct ss_list_price#26160)], output=[B4_LP#25667, B4_CNT#25668L, B4_CNTD#25669L])
+   :  :        +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=72881]
+   :  :           +- HashAggregate(keys=[], functions=[merge_avg(ss_list_price#25734), merge_count(ss_list_price#25734), partial_count(distinct ss_list_price#26160)], output=[sum#25922, count#25923L, count#25925L, count#26163L])
+   :  :              +- HashAggregate(keys=[ss_list_price#26160], functions=[merge_avg(ss_list_price#25734), merge_count(ss_list_price#25734)], output=[ss_list_price#26160, sum#25922, count#25923L, count#25925L])
+   :  :                 +- Exchange hashpartitioning(ss_list_price#26160, 200), ENSURE_REQUIREMENTS, [plan_id=72877]
+   :  :                    +- HashAggregate(keys=[knownfloatingpointnormalized(normalizenanandzero(ss_list_price#25734)) AS ss_list_price#26160], functions=[partial_avg(ss_list_price#25734), partial_count(ss_list_price#25734)], output=[ss_list_price#26160, sum#25922, count#25923L, count#25925L])
+   :  :                       +- Project [ss_list_price#25734]
+   :  :                          +- Filter (((isnotnull(ss_quantity#25732) AND (ss_quantity#25732 >= 16)) AND (ss_quantity#25732 <= 20)) AND ((((ss_list_price#25734 >= 104.0) AND (ss_list_price#25734 <= 114.0)) OR ((ss_coupon_amt#25741 >= 17161.0) AND (ss_coupon_amt#25741 <= 18161.0))) OR ((ss_wholesale_cost#25733 >= 34.0) AND (ss_wholesale_cost#25733 <= 54.0))))
+   :  :                             +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#25732,ss_wholesale_cost#25733,ss_list_price#25734,ss_coupon_amt#25741] Batched: true, DataFilters: [isnotnull(ss_quantity#25732), (ss_quantity#25732 >= 16), (ss_quantity#25732 <= 20), ((((ss_list_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,16), LessThanOrEqual(ss_quantity,20), Or(..., ReadSchema: struct<ss_quantity:int,ss_wholesale_cost:double,ss_list_price:double,ss_coupon_amt:double>
+   :  +- BroadcastExchange IdentityBroadcastMode, [plan_id=72893]
+   :     +- HashAggregate(keys=[], functions=[avg(ss_list_price#25757), count(ss_list_price#25757), count(distinct ss_list_price#26165)], output=[B5_LP#25670, B5_CNT#25671L, B5_CNTD#25672L])
+   :        +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=72890]
+   :           +- HashAggregate(keys=[], functions=[merge_avg(ss_list_price#25757), merge_count(ss_list_price#25757), partial_count(distinct ss_list_price#26165)], output=[sum#25933, count#25934L, count#25936L, count#26168L])
+   :              +- HashAggregate(keys=[ss_list_price#26165], functions=[merge_avg(ss_list_price#25757), merge_count(ss_list_price#25757)], output=[ss_list_price#26165, sum#25933, count#25934L, count#25936L])
+   :                 +- Exchange hashpartitioning(ss_list_price#26165, 200), ENSURE_REQUIREMENTS, [plan_id=72886]
+   :                    +- HashAggregate(keys=[knownfloatingpointnormalized(normalizenanandzero(ss_list_price#25757)) AS ss_list_price#26165], functions=[partial_avg(ss_list_price#25757), partial_count(ss_list_price#25757)], output=[ss_list_price#26165, sum#25933, count#25934L, count#25936L])
+   :                       +- Project [ss_list_price#25757]
+   :                          +- Filter (((isnotnull(ss_quantity#25755) AND (ss_quantity#25755 >= 21)) AND (ss_quantity#25755 <= 25)) AND ((((ss_list_price#25757 >= 73.0) AND (ss_list_price#25757 <= 83.0)) OR ((ss_coupon_amt#25764 >= 17064.0) AND (ss_coupon_amt#25764 <= 18064.0))) OR ((ss_wholesale_cost#25756 >= 56.0) AND (ss_wholesale_cost#25756 <= 76.0))))
+   :                             +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#25755,ss_wholesale_cost#25756,ss_list_price#25757,ss_coupon_amt#25764] Batched: true, DataFilters: [isnotnull(ss_quantity#25755), (ss_quantity#25755 >= 21), (ss_quantity#25755 <= 25), ((((ss_list_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,21), LessThanOrEqual(ss_quantity,25), Or(..., ReadSchema: struct<ss_quantity:int,ss_wholesale_cost:double,ss_list_price:double,ss_coupon_amt:double>
+   +- BroadcastExchange IdentityBroadcastMode, [plan_id=72902]
+      +- HashAggregate(keys=[], functions=[avg(ss_list_price#25780), count(ss_list_price#25780), count(distinct ss_list_price#26170)], output=[B6_LP#25673, B6_CNT#25674L, B6_CNTD#25675L])
+         +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=72899]
+            +- HashAggregate(keys=[], functions=[merge_avg(ss_list_price#25780), merge_count(ss_list_price#25780), partial_count(distinct ss_list_price#26170)], output=[sum#25944, count#25945L, count#25947L, count#26173L])
+               +- HashAggregate(keys=[ss_list_price#26170], functions=[merge_avg(ss_list_price#25780), merge_count(ss_list_price#25780)], output=[ss_list_price#26170, sum#25944, count#25945L, count#25947L])
+                  +- Exchange hashpartitioning(ss_list_price#26170, 200), ENSURE_REQUIREMENTS, [plan_id=72895]
+                     +- HashAggregate(keys=[knownfloatingpointnormalized(normalizenanandzero(ss_list_price#25780)) AS ss_list_price#26170], functions=[partial_avg(ss_list_price#25780), partial_count(ss_list_price#25780)], output=[ss_list_price#26170, sum#25944, count#25945L, count#25947L])
+                        +- Project [ss_list_price#25780]
+                           +- Filter (((isnotnull(ss_quantity#25778) AND (ss_quantity#25778 >= 26)) AND (ss_quantity#25778 <= 30)) AND ((((ss_list_price#25780 >= 65.0) AND (ss_list_price#25780 <= 75.0)) OR ((ss_coupon_amt#25787 >= 10899.0) AND (ss_coupon_amt#25787 <= 11899.0))) OR ((ss_wholesale_cost#25779 >= 54.0) AND (ss_wholesale_cost#25779 <= 74.0))))
+                              +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#25778,ss_wholesale_cost#25779,ss_list_price#25780,ss_coupon_amt#25787] Batched: true, DataFilters: [isnotnull(ss_quantity#25778), (ss_quantity#25778 >= 26), (ss_quantity#25778 <= 30), ((((ss_list_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,26), LessThanOrEqual(ss_quantity,30), Or(..., ReadSchema: struct<ss_quantity:int,ss_wholesale_cost:double,ss_list_price:double,ss_coupon_amt:double>

@@ -1,0 +1,16 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['s_store_name ASC NULLS FIRST, 's_company_id ASC NULLS FIRST, 's_street_number ASC NULLS FIRST, 's_street_name ASC NULLS FIRST, 's_street_type ASC NULLS FIRST, 's_suite_number ASC NULLS FIRST, 's_city ASC NULLS FIRST, 's_county ASC NULLS FIRST, 's_state ASC NULLS FIRST, 's_zip ASC NULLS FIRST], true
+      +- 'Aggregate ['s_store_name, 's_company_id, 's_street_number, 's_street_name, 's_street_type, 's_suite_number, 's_city, 's_county, 's_state, 's_zip], ['s_store_name, 's_company_id, 's_street_number, 's_street_name, 's_street_type, 's_suite_number, 's_city, 's_county, 's_state, 's_zip, 'sum(CASE WHEN (('sr_returned_date_sk - 'ss_sold_date_sk) <= 30) THEN 1 ELSE 0 END) AS 30_days#33638, 'sum(CASE WHEN ((('sr_returned_date_sk - 'ss_sold_date_sk) > 30) AND (('sr_returned_date_sk - 'ss_sold_date_sk) <= 60)) THEN 1 ELSE 0 END) AS 31_60_days#33639, 'sum(CASE WHEN ((('sr_returned_date_sk - 'ss_sold_date_sk) > 60) AND (('sr_returned_date_sk - 'ss_sold_date_sk) <= 90)) THEN 1 ELSE 0 END) AS 61_90_days#33640, 'sum(CASE WHEN ((('sr_returned_date_sk - 'ss_sold_date_sk) > 90) AND (('sr_returned_date_sk - 'ss_sold_date_sk) <= 120)) THEN 1 ELSE 0 END) AS 91_120_days#33641, 'sum(CASE WHEN (('sr_returned_date_sk - 'ss_sold_date_sk) > 120) THEN 1 ELSE 0 END) AS above120_days#33642]
+         +- 'Filter (((('d2.d_year = 2000) AND ('d2.d_moy = 10)) AND (('ss_ticket_number = 'sr_ticket_number) AND ('ss_item_sk = 'sr_item_sk))) AND ((('ss_sold_date_sk = 'd1.d_date_sk) AND ('sr_returned_date_sk = 'd2.d_date_sk)) AND (('ss_customer_sk = 'sr_customer_sk) AND ('ss_store_sk = 's_store_sk))))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'Join Inner
+               :  :  :  :- 'UnresolvedRelation [store_sales], [], false
+               :  :  :  +- 'UnresolvedRelation [store_returns], [], false
+               :  :  +- 'UnresolvedRelation [store], [], false
+               :  +- 'SubqueryAlias d1
+               :     +- 'UnresolvedRelation [date_dim], [], false
+               +- 'SubqueryAlias d2
+                  +- 'UnresolvedRelation [date_dim], [], false

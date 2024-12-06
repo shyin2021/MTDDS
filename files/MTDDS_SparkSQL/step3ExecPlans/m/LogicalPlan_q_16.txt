@@ -1,0 +1,21 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['count(distinct 'cs_order_number) ASC NULLS FIRST], true
+      +- 'Project ['count(distinct 'cs_order_number) AS order_count#20242, 'sum('cs_ext_ship_cost) AS total_shipping_cost#20243, 'sum('cs_net_profit) AS total_net_profit#20244]
+         +- 'Filter ((((('d_date >= 2002-2-01) AND ('d_date <= (cast(2002-2-01 as date) + 60))) AND ('cs1.cs_ship_date_sk = 'd_date_sk)) AND (('cs1.cs_ship_addr_sk = 'ca_address_sk) AND ('ca_state = WA))) AND ((('cs1.cs_call_center_sk = 'cc_call_center_sk) AND 'cc_county IN (Ziebach County,Walker County,Williamson County,Williamson County,Ziebach County)) AND (exists#20245 [] AND NOT exists#20246 [])))
+            :  :- 'Project [*]
+            :  :  +- 'Filter (('cs1.cs_order_number = 'cs2.cs_order_number) AND NOT ('cs1.cs_warehouse_sk = 'cs2.cs_warehouse_sk))
+            :  :     +- 'SubqueryAlias cs2
+            :  :        +- 'UnresolvedRelation [catalog_sales], [], false
+            :  +- 'Project [*]
+            :     +- 'Filter ('cs1.cs_order_number = 'cr1.cr_order_number)
+            :        +- 'SubqueryAlias cr1
+            :           +- 'UnresolvedRelation [catalog_returns], [], false
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'SubqueryAlias cs1
+               :  :  :  +- 'UnresolvedRelation [catalog_sales], [], false
+               :  :  +- 'UnresolvedRelation [date_dim], [], false
+               :  +- 'UnresolvedRelation [customer_address], [], false
+               +- 'UnresolvedRelation [call_center], [], false

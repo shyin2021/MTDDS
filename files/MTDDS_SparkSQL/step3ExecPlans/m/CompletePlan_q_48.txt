@@ -1,0 +1,87 @@
+== Parsed Logical Plan ==
+'Project [unresolvedalias('sum('ss_quantity), None)]
++- 'Filter (((('s_store_sk = 'ss_store_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND ('d_year = 1998)) AND (((((('cd_demo_sk = 'ss_cdemo_sk) AND ('cd_marital_status = M)) AND (('cd_education_status = Unknown) AND (('ss_sales_price >= 100.00) AND ('ss_sales_price <= 150.00)))) OR ((('cd_demo_sk = 'ss_cdemo_sk) AND ('cd_marital_status = S)) AND (('cd_education_status = 4 yr Degree) AND (('ss_sales_price >= 50.00) AND ('ss_sales_price <= 100.00))))) OR ((('cd_demo_sk = 'ss_cdemo_sk) AND ('cd_marital_status = D)) AND (('cd_education_status = 2 yr Degree) AND (('ss_sales_price >= 150.00) AND ('ss_sales_price <= 200.00))))) AND ((((('ss_addr_sk = 'ca_address_sk) AND ('ca_country = United States)) AND ('ca_state IN (ID,IA,CA) AND (('ss_net_profit >= 0) AND ('ss_net_profit <= 2000)))) OR ((('ss_addr_sk = 'ca_address_sk) AND ('ca_country = United States)) AND ('ca_state IN (IN,WI,IL) AND (('ss_net_profit >= 150) AND ('ss_net_profit <= 3000))))) OR ((('ss_addr_sk = 'ca_address_sk) AND ('ca_country = United States)) AND ('ca_state IN (TX,WA,MN) AND (('ss_net_profit >= 50) AND ('ss_net_profit <= 25000)))))))
+   +- 'Join Inner
+      :- 'Join Inner
+      :  :- 'Join Inner
+      :  :  :- 'Join Inner
+      :  :  :  :- 'UnresolvedRelation [store_sales], [], false
+      :  :  :  +- 'UnresolvedRelation [store], [], false
+      :  :  +- 'UnresolvedRelation [customer_demographics], [], false
+      :  +- 'UnresolvedRelation [customer_address], [], false
+      +- 'UnresolvedRelation [date_dim], [], false
+
+== Analyzed Logical Plan ==
+sum(ss_quantity): bigint
+Aggregate [sum(ss_quantity#1258) AS sum(ss_quantity)#33116L]
++- Filter ((((s_store_sk#52 = ss_store_sk#1255) AND (ss_sold_date_sk#1248 = d_date_sk#24)) AND (d_year#30 = 1998)) AND ((((((cd_demo_sk#8266 = ss_cdemo_sk#1252) AND (cd_marital_status#8268 = M)) AND ((cd_education_status#8269 = Unknown) AND ((ss_sales_price#1261 >= cast(100.00 as double)) AND (ss_sales_price#1261 <= cast(150.00 as double))))) OR (((cd_demo_sk#8266 = ss_cdemo_sk#1252) AND (cd_marital_status#8268 = S)) AND ((cd_education_status#8269 = 4 yr Degree) AND ((ss_sales_price#1261 >= cast(50.00 as double)) AND (ss_sales_price#1261 <= cast(100.00 as double)))))) OR (((cd_demo_sk#8266 = ss_cdemo_sk#1252) AND (cd_marital_status#8268 = D)) AND ((cd_education_status#8269 = 2 yr Degree) AND ((ss_sales_price#1261 >= cast(150.00 as double)) AND (ss_sales_price#1261 <= cast(200.00 as double)))))) AND (((((ss_addr_sk#1254 = ca_address_sk#8171) AND (ca_country#8181 = United States)) AND (ca_state#8179 IN (ID,IA,CA) AND ((ss_net_profit#1270 >= cast(0 as double)) AND (ss_net_profit#1270 <= cast(2000 as double))))) OR (((ss_addr_sk#1254 = ca_address_sk#8171) AND (ca_country#8181 = United States)) AND (ca_state#8179 IN (IN,WI,IL) AND ((ss_net_profit#1270 >= cast(150 as double)) AND (ss_net_profit#1270 <= cast(3000 as double)))))) OR (((ss_addr_sk#1254 = ca_address_sk#8171) AND (ca_country#8181 = United States)) AND (ca_state#8179 IN (TX,WA,MN) AND ((ss_net_profit#1270 >= cast(50 as double)) AND (ss_net_profit#1270 <= cast(25000 as double))))))))
+   +- Join Inner
+      :- Join Inner
+      :  :- Join Inner
+      :  :  :- Join Inner
+      :  :  :  :- SubqueryAlias spark_catalog.m.store_sales
+      :  :  :  :  +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+      :  :  :  +- SubqueryAlias spark_catalog.m.store
+      :  :  :     +- Relation spark_catalog.m.store[s_store_sk#52,s_store_id#53,s_rec_start_date#54,s_rec_end_date#55,s_closed_date_sk#56,s_store_name#57,s_number_employees#58,s_floor_space#59,s_hours#60,s_manager#61,s_market_id#62,s_geography_class#63,s_market_desc#64,s_market_manager#65,s_division_id#66,s_division_name#67,s_company_id#68,s_company_name#69,s_street_number#70,s_street_name#71,s_street_type#72,s_suite_number#73,s_city#74,s_county#75,... 5 more fields] parquet
+      :  :  +- SubqueryAlias spark_catalog.m.customer_demographics
+      :  :     +- Relation spark_catalog.m.customer_demographics[cd_demo_sk#8266,cd_gender#8267,cd_marital_status#8268,cd_education_status#8269,cd_purchase_estimate#8270,cd_credit_rating#8271,cd_dep_count#8272,cd_dep_employed_count#8273,cd_dep_college_count#8274] parquet
+      :  +- SubqueryAlias spark_catalog.m.customer_address
+      :     +- Relation spark_catalog.m.customer_address[ca_address_sk#8171,ca_address_id#8172,ca_street_number#8173,ca_street_name#8174,ca_street_type#8175,ca_suite_number#8176,ca_city#8177,ca_county#8178,ca_state#8179,ca_zip#8180,ca_country#8181,ca_gmt_offset#8182,ca_location_type#8183] parquet
+      +- SubqueryAlias spark_catalog.m.date_dim
+         +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+
+== Optimized Logical Plan ==
+Aggregate [sum(ss_quantity#1258) AS sum(ss_quantity)#33116L]
++- Project [ss_quantity#1258]
+   +- Join Inner, (ss_sold_date_sk#1248 = d_date_sk#24)
+      :- Project [ss_sold_date_sk#1248, ss_quantity#1258]
+      :  +- Join Inner, ((ss_addr_sk#1254 = ca_address_sk#8171) AND ((((ca_state#8179 IN (ID,IA,CA) AND (ss_net_profit#1270 >= 0.0)) AND (ss_net_profit#1270 <= 2000.0)) OR ((ca_state#8179 IN (IN,WI,IL) AND (ss_net_profit#1270 >= 150.0)) AND (ss_net_profit#1270 <= 3000.0))) OR ((ca_state#8179 IN (TX,WA,MN) AND (ss_net_profit#1270 >= 50.0)) AND (ss_net_profit#1270 <= 25000.0))))
+      :     :- Project [ss_sold_date_sk#1248, ss_addr_sk#1254, ss_quantity#1258, ss_net_profit#1270]
+      :     :  +- Join Inner, ((cd_demo_sk#8266 = ss_cdemo_sk#1252) AND ((((((cd_marital_status#8268 = M) AND (cd_education_status#8269 = Unknown)) AND (ss_sales_price#1261 >= 100.0)) AND (ss_sales_price#1261 <= 150.0)) OR ((((cd_marital_status#8268 = S) AND (cd_education_status#8269 = 4 yr Degree)) AND (ss_sales_price#1261 >= 50.0)) AND (ss_sales_price#1261 <= 100.0))) OR ((((cd_marital_status#8268 = D) AND (cd_education_status#8269 = 2 yr Degree)) AND (ss_sales_price#1261 >= 150.0)) AND (ss_sales_price#1261 <= 200.0))))
+      :     :     :- Project [ss_sold_date_sk#1248, ss_cdemo_sk#1252, ss_addr_sk#1254, ss_quantity#1258, ss_sales_price#1261, ss_net_profit#1270]
+      :     :     :  +- Join Inner, (s_store_sk#52 = ss_store_sk#1255)
+      :     :     :     :- Project [ss_sold_date_sk#1248, ss_cdemo_sk#1252, ss_addr_sk#1254, ss_store_sk#1255, ss_quantity#1258, ss_sales_price#1261, ss_net_profit#1270]
+      :     :     :     :  +- Filter (((isnotnull(ss_store_sk#1255) AND isnotnull(ss_cdemo_sk#1252)) AND (isnotnull(ss_addr_sk#1254) AND isnotnull(ss_sold_date_sk#1248))) AND (((((ss_sales_price#1261 >= 100.0) AND (ss_sales_price#1261 <= 150.0)) OR ((ss_sales_price#1261 >= 50.0) AND (ss_sales_price#1261 <= 100.0))) OR ((ss_sales_price#1261 >= 150.0) AND (ss_sales_price#1261 <= 200.0))) AND ((((ss_net_profit#1270 >= 0.0) AND (ss_net_profit#1270 <= 2000.0)) OR ((ss_net_profit#1270 >= 150.0) AND (ss_net_profit#1270 <= 3000.0))) OR ((ss_net_profit#1270 >= 50.0) AND (ss_net_profit#1270 <= 25000.0)))))
+      :     :     :     :     +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+      :     :     :     +- Project [s_store_sk#52]
+      :     :     :        +- Filter isnotnull(s_store_sk#52)
+      :     :     :           +- Relation spark_catalog.m.store[s_store_sk#52,s_store_id#53,s_rec_start_date#54,s_rec_end_date#55,s_closed_date_sk#56,s_store_name#57,s_number_employees#58,s_floor_space#59,s_hours#60,s_manager#61,s_market_id#62,s_geography_class#63,s_market_desc#64,s_market_manager#65,s_division_id#66,s_division_name#67,s_company_id#68,s_company_name#69,s_street_number#70,s_street_name#71,s_street_type#72,s_suite_number#73,s_city#74,s_county#75,... 5 more fields] parquet
+      :     :     +- Project [cd_demo_sk#8266, cd_marital_status#8268, cd_education_status#8269]
+      :     :        +- Filter (isnotnull(cd_demo_sk#8266) AND ((((cd_marital_status#8268 = M) AND (cd_education_status#8269 = Unknown)) OR ((cd_marital_status#8268 = S) AND (cd_education_status#8269 = 4 yr Degree))) OR ((cd_marital_status#8268 = D) AND (cd_education_status#8269 = 2 yr Degree))))
+      :     :           +- Relation spark_catalog.m.customer_demographics[cd_demo_sk#8266,cd_gender#8267,cd_marital_status#8268,cd_education_status#8269,cd_purchase_estimate#8270,cd_credit_rating#8271,cd_dep_count#8272,cd_dep_employed_count#8273,cd_dep_college_count#8274] parquet
+      :     +- Project [ca_address_sk#8171, ca_state#8179]
+      :        +- Filter (((isnotnull(ca_country#8181) AND (ca_country#8181 = United States)) AND isnotnull(ca_address_sk#8171)) AND ((ca_state#8179 IN (ID,IA,CA) OR ca_state#8179 IN (IN,WI,IL)) OR ca_state#8179 IN (TX,WA,MN)))
+      :           +- Relation spark_catalog.m.customer_address[ca_address_sk#8171,ca_address_id#8172,ca_street_number#8173,ca_street_name#8174,ca_street_type#8175,ca_suite_number#8176,ca_city#8177,ca_county#8178,ca_state#8179,ca_zip#8180,ca_country#8181,ca_gmt_offset#8182,ca_location_type#8183] parquet
+      +- Project [d_date_sk#24]
+         +- Filter ((isnotnull(d_year#30) AND (d_year#30 = 1998)) AND isnotnull(d_date_sk#24))
+            +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- HashAggregate(keys=[], functions=[sum(ss_quantity#1258)], output=[sum(ss_quantity)#33116L])
+   +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=98454]
+      +- HashAggregate(keys=[], functions=[partial_sum(ss_quantity#1258)], output=[sum#33122L])
+         +- Project [ss_quantity#1258]
+            +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#24], Inner, BuildRight, false
+               :- Project [ss_sold_date_sk#1248, ss_quantity#1258]
+               :  +- BroadcastHashJoin [ss_addr_sk#1254], [ca_address_sk#8171], Inner, BuildRight, ((((ca_state#8179 IN (ID,IA,CA) AND (ss_net_profit#1270 >= 0.0)) AND (ss_net_profit#1270 <= 2000.0)) OR ((ca_state#8179 IN (IN,WI,IL) AND (ss_net_profit#1270 >= 150.0)) AND (ss_net_profit#1270 <= 3000.0))) OR ((ca_state#8179 IN (TX,WA,MN) AND (ss_net_profit#1270 >= 50.0)) AND (ss_net_profit#1270 <= 25000.0))), false
+               :     :- Project [ss_sold_date_sk#1248, ss_addr_sk#1254, ss_quantity#1258, ss_net_profit#1270]
+               :     :  +- BroadcastHashJoin [ss_cdemo_sk#1252], [cd_demo_sk#8266], Inner, BuildRight, ((((((cd_marital_status#8268 = M) AND (cd_education_status#8269 = Unknown)) AND (ss_sales_price#1261 >= 100.0)) AND (ss_sales_price#1261 <= 150.0)) OR ((((cd_marital_status#8268 = S) AND (cd_education_status#8269 = 4 yr Degree)) AND (ss_sales_price#1261 >= 50.0)) AND (ss_sales_price#1261 <= 100.0))) OR ((((cd_marital_status#8268 = D) AND (cd_education_status#8269 = 2 yr Degree)) AND (ss_sales_price#1261 >= 150.0)) AND (ss_sales_price#1261 <= 200.0))), false
+               :     :     :- Project [ss_sold_date_sk#1248, ss_cdemo_sk#1252, ss_addr_sk#1254, ss_quantity#1258, ss_sales_price#1261, ss_net_profit#1270]
+               :     :     :  +- BroadcastHashJoin [ss_store_sk#1255], [s_store_sk#52], Inner, BuildRight, false
+               :     :     :     :- Filter (((((isnotnull(ss_store_sk#1255) AND isnotnull(ss_cdemo_sk#1252)) AND isnotnull(ss_addr_sk#1254)) AND isnotnull(ss_sold_date_sk#1248)) AND ((((ss_sales_price#1261 >= 100.0) AND (ss_sales_price#1261 <= 150.0)) OR ((ss_sales_price#1261 >= 50.0) AND (ss_sales_price#1261 <= 100.0))) OR ((ss_sales_price#1261 >= 150.0) AND (ss_sales_price#1261 <= 200.0)))) AND ((((ss_net_profit#1270 >= 0.0) AND (ss_net_profit#1270 <= 2000.0)) OR ((ss_net_profit#1270 >= 150.0) AND (ss_net_profit#1270 <= 3000.0))) OR ((ss_net_profit#1270 >= 50.0) AND (ss_net_profit#1270 <= 25000.0))))
+               :     :     :     :  +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_cdemo_sk#1252,ss_addr_sk#1254,ss_store_sk#1255,ss_quantity#1258,ss_sales_price#1261,ss_net_profit#1270] Batched: true, DataFilters: [isnotnull(ss_store_sk#1255), isnotnull(ss_cdemo_sk#1252), isnotnull(ss_addr_sk#1254), isnotnull(..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_store_sk), IsNotNull(ss_cdemo_sk), IsNotNull(ss_addr_sk), IsNotNull(ss_sold_date_sk..., ReadSchema: struct<ss_sold_date_sk:int,ss_cdemo_sk:int,ss_addr_sk:int,ss_store_sk:int,ss_quantity:int,ss_sale...
+               :     :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=98437]
+               :     :     :        +- Filter isnotnull(s_store_sk#52)
+               :     :     :           +- FileScan parquet spark_catalog.m.store[s_store_sk#52] Batched: true, DataFilters: [isnotnull(s_store_sk#52)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store], PartitionFilters: [], PushedFilters: [IsNotNull(s_store_sk)], ReadSchema: struct<s_store_sk:int>
+               :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=98441]
+               :     :        +- Filter (isnotnull(cd_demo_sk#8266) AND ((((cd_marital_status#8268 = M) AND (cd_education_status#8269 = Unknown)) OR ((cd_marital_status#8268 = S) AND (cd_education_status#8269 = 4 yr Degree))) OR ((cd_marital_status#8268 = D) AND (cd_education_status#8269 = 2 yr Degree))))
+               :     :           +- FileScan parquet spark_catalog.m.customer_demographics[cd_demo_sk#8266,cd_marital_status#8268,cd_education_status#8269] Batched: true, DataFilters: [isnotnull(cd_demo_sk#8266), ((((cd_marital_status#8268 = M) AND (cd_education_status#8269 = Unkn..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_demograph..., PartitionFilters: [], PushedFilters: [IsNotNull(cd_demo_sk), Or(Or(And(EqualTo(cd_marital_status,M),EqualTo(cd_education_status,Unknow..., ReadSchema: struct<cd_demo_sk:int,cd_marital_status:string,cd_education_status:string>
+               :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=98445]
+               :        +- Project [ca_address_sk#8171, ca_state#8179]
+               :           +- Filter (((isnotnull(ca_country#8181) AND (ca_country#8181 = United States)) AND isnotnull(ca_address_sk#8171)) AND ((ca_state#8179 IN (ID,IA,CA) OR ca_state#8179 IN (IN,WI,IL)) OR ca_state#8179 IN (TX,WA,MN)))
+               :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#8171,ca_state#8179,ca_country#8181] Batched: true, DataFilters: [isnotnull(ca_country#8181), (ca_country#8181 = United States), isnotnull(ca_address_sk#8171), ((..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_country), EqualTo(ca_country,United States), IsNotNull(ca_address_sk), Or(Or(In(ca_..., ReadSchema: struct<ca_address_sk:int,ca_state:string,ca_country:string>
+               +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=98449]
+                  +- Project [d_date_sk#24]
+                     +- Filter ((isnotnull(d_year#30) AND (d_year#30 = 1998)) AND isnotnull(d_date_sk#24))
+                        +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_year#30] Batched: true, DataFilters: [isnotnull(d_year#30), (d_year#30 = 1998), isnotnull(d_date_sk#24)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), EqualTo(d_year,1998), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int>

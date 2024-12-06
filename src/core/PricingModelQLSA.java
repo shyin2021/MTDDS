@@ -11,7 +11,7 @@ public class PricingModelQLSA {
 		// Empty the Price_per_query relation
 		String deleteBills = "DELETE FROM Price_per_query";
 		// compute the expected price for each query
-		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, nbNodes*(SELECT price FROM RSPrices WHERE resourceType='VM')*expectedExecTime*1.0/3600*(SELECT MAX(TRT) FROM PriorityTRT)/TRT*"+ gainFactor + " "
+		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, nbNodes*(SELECT price FROM RSPrices WHERE resourceType='node')*expectedExecTime*1.0/3600*(SELECT MAX(TRT) FROM PriorityTRT)/TRT*"+ gainFactor + " "
 				+ " FROM FormatedTraces FT, PerfSLOs_per_Tenant PPT, Tenants TN, PriorityTRT PTRT, DBSizesSF DS WHERE FT.tenantName=PPT.tenantId AND FT.queryName=PPT.queryId AND PPT.tenantId=TN.TenantID AND TN.Priority=PTRT.Priority AND TN.DBSize=DS.DBSize";
 		// update the prices of the queries that are delayed but terminated before the threshold
 		String updateBills1 = "UPDATE Price_per_query SET price_millicents = price_millicents * expectedExecTime/ realQCT WHERE (SUTNumber, clusterSize, arrivalRateFactor, tenantId, queryId, timerId)"

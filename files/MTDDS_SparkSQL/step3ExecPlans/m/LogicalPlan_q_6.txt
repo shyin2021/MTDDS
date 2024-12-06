@@ -1,0 +1,28 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['cnt ASC NULLS FIRST, 'a.ca_state ASC NULLS FIRST], true
+      +- 'UnresolvedHaving ('count(1) >= 10)
+         +- 'Aggregate ['a.ca_state], ['a.ca_state AS state#8165, 'count(1) AS cnt#8166]
+            +- 'Filter (((('a.ca_address_sk = 'c.c_current_addr_sk) AND ('c.c_customer_sk = 's.ss_customer_sk)) AND ('s.ss_sold_date_sk = 'd.d_date_sk)) AND ((('s.ss_item_sk = 'i.i_item_sk) AND ('d.d_month_seq = scalar-subquery#8167 [])) AND ('i.i_current_price > (1.2 * scalar-subquery#8168 []))))
+               :  :- 'Distinct
+               :  :  +- 'Project ['d_month_seq]
+               :  :     +- 'Filter (('d_year = 2002) AND ('d_moy = 3))
+               :  :        +- 'UnresolvedRelation [date_dim], [], false
+               :  +- 'Project [unresolvedalias('avg('j.i_current_price), None)]
+               :     +- 'Filter ('j.i_category = 'i.i_category)
+               :        +- 'SubqueryAlias j
+               :           +- 'UnresolvedRelation [item], [], false
+               +- 'Join Inner
+                  :- 'Join Inner
+                  :  :- 'Join Inner
+                  :  :  :- 'Join Inner
+                  :  :  :  :- 'SubqueryAlias a
+                  :  :  :  :  +- 'UnresolvedRelation [customer_address], [], false
+                  :  :  :  +- 'SubqueryAlias c
+                  :  :  :     +- 'UnresolvedRelation [customer], [], false
+                  :  :  +- 'SubqueryAlias s
+                  :  :     +- 'UnresolvedRelation [store_sales], [], false
+                  :  +- 'SubqueryAlias d
+                  :     +- 'UnresolvedRelation [date_dim], [], false
+                  +- 'SubqueryAlias i
+                     +- 'UnresolvedRelation [item], [], false

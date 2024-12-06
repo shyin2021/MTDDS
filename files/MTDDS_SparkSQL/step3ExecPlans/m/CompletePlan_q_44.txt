@@ -1,0 +1,203 @@
+== Parsed Logical Plan ==
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['asceding.rnk ASC NULLS FIRST], true
+      +- 'Project ['asceding.rnk, 'i1.i_product_name AS best_performing#31484, 'i2.i_product_name AS worst_performing#31485]
+         +- 'Filter ((('asceding.rnk = 'descending.rnk) AND ('i1.i_item_sk = 'asceding.item_sk)) AND ('i2.i_item_sk = 'descending.item_sk))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'SubqueryAlias asceding
+               :  :  :  +- 'Project [*]
+               :  :  :     +- 'Filter ('rnk < 11)
+               :  :  :        +- 'SubqueryAlias V11
+               :  :  :           +- 'Project ['item_sk, 'rank() windowspecdefinition('rank_col ASC NULLS FIRST, unspecifiedframe$()) AS rnk#31478]
+               :  :  :              +- 'SubqueryAlias V1
+               :  :  :                 +- 'UnresolvedHaving ('avg('ss_net_profit) > (0.9 * scalar-subquery#31477 []))
+               :  :  :                    :  +- 'Aggregate ['ss_store_sk], ['avg('ss_net_profit) AS rank_col#31476]
+               :  :  :                    :     +- 'Filter (('ss_store_sk = 29) AND isnull('ss_cdemo_sk))
+               :  :  :                    :        +- 'UnresolvedRelation [store_sales], [], false
+               :  :  :                    +- 'Aggregate ['ss_item_sk], ['ss_item_sk AS item_sk#31474, 'avg('ss_net_profit) AS rank_col#31475]
+               :  :  :                       +- 'Filter ('ss_store_sk = 29)
+               :  :  :                          +- 'SubqueryAlias ss1
+               :  :  :                             +- 'UnresolvedRelation [store_sales], [], false
+               :  :  +- 'SubqueryAlias descending
+               :  :     +- 'Project [*]
+               :  :        +- 'Filter ('rnk < 11)
+               :  :           +- 'SubqueryAlias V21
+               :  :              +- 'Project ['item_sk, 'rank() windowspecdefinition('rank_col DESC NULLS LAST, unspecifiedframe$()) AS rnk#31483]
+               :  :                 +- 'SubqueryAlias V2
+               :  :                    +- 'UnresolvedHaving ('avg('ss_net_profit) > (0.9 * scalar-subquery#31482 []))
+               :  :                       :  +- 'Aggregate ['ss_store_sk], ['avg('ss_net_profit) AS rank_col#31481]
+               :  :                       :     +- 'Filter (('ss_store_sk = 29) AND isnull('ss_cdemo_sk))
+               :  :                       :        +- 'UnresolvedRelation [store_sales], [], false
+               :  :                       +- 'Aggregate ['ss_item_sk], ['ss_item_sk AS item_sk#31479, 'avg('ss_net_profit) AS rank_col#31480]
+               :  :                          +- 'Filter ('ss_store_sk = 29)
+               :  :                             +- 'SubqueryAlias ss1
+               :  :                                +- 'UnresolvedRelation [store_sales], [], false
+               :  +- 'SubqueryAlias i1
+               :     +- 'UnresolvedRelation [item], [], false
+               +- 'SubqueryAlias i2
+                  +- 'UnresolvedRelation [item], [], false
+
+== Analyzed Logical Plan ==
+rnk: int, best_performing: string, worst_performing: string
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [rnk#31478 ASC NULLS FIRST], true
+      +- Project [rnk#31478, i_product_name#1292 AS best_performing#31484, i_product_name#31534 AS worst_performing#31485]
+         +- Filter (((rnk#31478 = rnk#31483) AND (i_item_sk#1271 = item_sk#31474)) AND (i_item_sk#31513 = item_sk#31479))
+            +- Join Inner
+               :- Join Inner
+               :  :- Join Inner
+               :  :  :- SubqueryAlias asceding
+               :  :  :  +- Project [item_sk#31474, rnk#31478]
+               :  :  :     +- Filter (rnk#31478 < 11)
+               :  :  :        +- SubqueryAlias V11
+               :  :  :           +- Project [item_sk#31474, rnk#31478]
+               :  :  :              +- Project [item_sk#31474, rank_col#31475, rnk#31478, rnk#31478]
+               :  :  :                 +- Window [rank(rank_col#31475) windowspecdefinition(rank_col#31475 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rnk#31478], [rank_col#31475 ASC NULLS FIRST]
+               :  :  :                    +- Project [item_sk#31474, rank_col#31475]
+               :  :  :                       +- SubqueryAlias V1
+               :  :  :                          +- Filter (rank_col#31475 > (cast(0.9 as double) * scalar-subquery#31477 []))
+               :  :  :                             :  +- Aggregate [ss_store_sk#31547], [avg(ss_net_profit#31562) AS rank_col#31476]
+               :  :  :                             :     +- Filter ((ss_store_sk#31547 = 29) AND isnull(ss_cdemo_sk#31544))
+               :  :  :                             :        +- SubqueryAlias spark_catalog.m.store_sales
+               :  :  :                             :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#31540,ss_sold_time_sk#31541,ss_item_sk#31542,ss_customer_sk#31543,ss_cdemo_sk#31544,ss_hdemo_sk#31545,ss_addr_sk#31546,ss_store_sk#31547,ss_promo_sk#31548,ss_ticket_number#31549,ss_quantity#31550,ss_wholesale_cost#31551,ss_list_price#31552,ss_sales_price#31553,ss_ext_discount_amt#31554,ss_ext_sales_price#31555,ss_ext_wholesale_cost#31556,ss_ext_list_price#31557,ss_ext_tax#31558,ss_coupon_amt#31559,ss_net_paid#31560,ss_net_paid_inc_tax#31561,ss_net_profit#31562] parquet
+               :  :  :                             +- Aggregate [ss_item_sk#1250], [ss_item_sk#1250 AS item_sk#31474, avg(ss_net_profit#1270) AS rank_col#31475]
+               :  :  :                                +- Filter (ss_store_sk#1255 = 29)
+               :  :  :                                   +- SubqueryAlias ss1
+               :  :  :                                      +- SubqueryAlias spark_catalog.m.store_sales
+               :  :  :                                         +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+               :  :  +- SubqueryAlias descending
+               :  :     +- Project [item_sk#31479, rnk#31483]
+               :  :        +- Filter (rnk#31483 < 11)
+               :  :           +- SubqueryAlias V21
+               :  :              +- Project [item_sk#31479, rnk#31483]
+               :  :                 +- Project [item_sk#31479, rank_col#31480, rnk#31483, rnk#31483]
+               :  :                    +- Window [rank(rank_col#31480) windowspecdefinition(rank_col#31480 DESC NULLS LAST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rnk#31483], [rank_col#31480 DESC NULLS LAST]
+               :  :                       +- Project [item_sk#31479, rank_col#31480]
+               :  :                          +- SubqueryAlias V2
+               :  :                             +- Filter (rank_col#31480 > (cast(0.9 as double) * scalar-subquery#31482 []))
+               :  :                                :  +- Aggregate [ss_store_sk#31570], [avg(ss_net_profit#31585) AS rank_col#31481]
+               :  :                                :     +- Filter ((ss_store_sk#31570 = 29) AND isnull(ss_cdemo_sk#31567))
+               :  :                                :        +- SubqueryAlias spark_catalog.m.store_sales
+               :  :                                :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#31563,ss_sold_time_sk#31564,ss_item_sk#31565,ss_customer_sk#31566,ss_cdemo_sk#31567,ss_hdemo_sk#31568,ss_addr_sk#31569,ss_store_sk#31570,ss_promo_sk#31571,ss_ticket_number#31572,ss_quantity#31573,ss_wholesale_cost#31574,ss_list_price#31575,ss_sales_price#31576,ss_ext_discount_amt#31577,ss_ext_sales_price#31578,ss_ext_wholesale_cost#31579,ss_ext_list_price#31580,ss_ext_tax#31581,ss_coupon_amt#31582,ss_net_paid#31583,ss_net_paid_inc_tax#31584,ss_net_profit#31585] parquet
+               :  :                                +- Aggregate [ss_item_sk#31492], [ss_item_sk#31492 AS item_sk#31479, avg(ss_net_profit#31512) AS rank_col#31480]
+               :  :                                   +- Filter (ss_store_sk#31497 = 29)
+               :  :                                      +- SubqueryAlias ss1
+               :  :                                         +- SubqueryAlias spark_catalog.m.store_sales
+               :  :                                            +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#31490,ss_sold_time_sk#31491,ss_item_sk#31492,ss_customer_sk#31493,ss_cdemo_sk#31494,ss_hdemo_sk#31495,ss_addr_sk#31496,ss_store_sk#31497,ss_promo_sk#31498,ss_ticket_number#31499,ss_quantity#31500,ss_wholesale_cost#31501,ss_list_price#31502,ss_sales_price#31503,ss_ext_discount_amt#31504,ss_ext_sales_price#31505,ss_ext_wholesale_cost#31506,ss_ext_list_price#31507,ss_ext_tax#31508,ss_coupon_amt#31509,ss_net_paid#31510,ss_net_paid_inc_tax#31511,ss_net_profit#31512] parquet
+               :  +- SubqueryAlias i1
+               :     +- SubqueryAlias spark_catalog.m.item
+               :        +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+               +- SubqueryAlias i2
+                  +- SubqueryAlias spark_catalog.m.item
+                     +- Relation spark_catalog.m.item[i_item_sk#31513,i_item_id#31514,i_rec_start_date#31515,i_rec_end_date#31516,i_item_desc#31517,i_current_price#31518,i_wholesale_cost#31519,i_brand_id#31520,i_brand#31521,i_class_id#31522,i_class#31523,i_category_id#31524,i_category#31525,i_manufact_id#31526,i_manufact#31527,i_size#31528,i_formulation#31529,i_color#31530,i_units#31531,i_container#31532,i_manager_id#31533,i_product_name#31534] parquet
+
+== Optimized Logical Plan ==
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [rnk#31478 ASC NULLS FIRST], true
+      +- Project [rnk#31478, i_product_name#1292 AS best_performing#31484, i_product_name#31534 AS worst_performing#31485]
+         +- Join Inner, (i_item_sk#31513 = item_sk#31479)
+            :- Project [rnk#31478, item_sk#31479, i_product_name#1292]
+            :  +- Join Inner, (i_item_sk#1271 = item_sk#31474)
+            :     :- Project [item_sk#31474, rnk#31478, item_sk#31479]
+            :     :  +- Join Inner, (rnk#31478 = rnk#31483)
+            :     :     :- Project [item_sk#31474, rnk#31478]
+            :     :     :  +- Filter ((rnk#31478 < 11) AND isnotnull(item_sk#31474))
+            :     :     :     +- Window [rank(rank_col#31475) windowspecdefinition(rank_col#31475 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rnk#31478], [rank_col#31475 ASC NULLS FIRST]
+            :     :     :        +- WindowGroupLimit [rank_col#31475 ASC NULLS FIRST], rank(rank_col#31475), 10
+            :     :     :           +- Filter (isnotnull(rank_col#31475) AND (rank_col#31475 > (0.9 * scalar-subquery#31477 [])))
+            :     :     :              :  +- Aggregate [ss_store_sk#31547], [avg(ss_net_profit#31562) AS rank_col#31476]
+            :     :     :              :     +- Project [ss_store_sk#31547, ss_net_profit#31562]
+            :     :     :              :        +- Filter (isnotnull(ss_store_sk#31547) AND ((ss_store_sk#31547 = 29) AND isnull(ss_cdemo_sk#31544)))
+            :     :     :              :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#31540,ss_sold_time_sk#31541,ss_item_sk#31542,ss_customer_sk#31543,ss_cdemo_sk#31544,ss_hdemo_sk#31545,ss_addr_sk#31546,ss_store_sk#31547,ss_promo_sk#31548,ss_ticket_number#31549,ss_quantity#31550,ss_wholesale_cost#31551,ss_list_price#31552,ss_sales_price#31553,ss_ext_discount_amt#31554,ss_ext_sales_price#31555,ss_ext_wholesale_cost#31556,ss_ext_list_price#31557,ss_ext_tax#31558,ss_coupon_amt#31559,ss_net_paid#31560,ss_net_paid_inc_tax#31561,ss_net_profit#31562] parquet
+            :     :     :              +- Aggregate [ss_item_sk#1250], [ss_item_sk#1250 AS item_sk#31474, avg(ss_net_profit#1270) AS rank_col#31475]
+            :     :     :                 +- Project [ss_item_sk#1250, ss_net_profit#1270]
+            :     :     :                    +- Filter (isnotnull(ss_store_sk#1255) AND (ss_store_sk#1255 = 29))
+            :     :     :                       +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+            :     :     +- Project [item_sk#31479, rnk#31483]
+            :     :        +- Filter ((rnk#31483 < 11) AND isnotnull(item_sk#31479))
+            :     :           +- Window [rank(rank_col#31480) windowspecdefinition(rank_col#31480 DESC NULLS LAST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rnk#31483], [rank_col#31480 DESC NULLS LAST]
+            :     :              +- WindowGroupLimit [rank_col#31480 DESC NULLS LAST], rank(rank_col#31480), 10
+            :     :                 +- Filter (isnotnull(rank_col#31480) AND (rank_col#31480 > (0.9 * scalar-subquery#31482 [])))
+            :     :                    :  +- Aggregate [ss_store_sk#31547], [avg(ss_net_profit#31562) AS rank_col#31476]
+            :     :                    :     +- Project [ss_store_sk#31547, ss_net_profit#31562]
+            :     :                    :        +- Filter (isnotnull(ss_store_sk#31547) AND ((ss_store_sk#31547 = 29) AND isnull(ss_cdemo_sk#31544)))
+            :     :                    :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#31540,ss_sold_time_sk#31541,ss_item_sk#31542,ss_customer_sk#31543,ss_cdemo_sk#31544,ss_hdemo_sk#31545,ss_addr_sk#31546,ss_store_sk#31547,ss_promo_sk#31548,ss_ticket_number#31549,ss_quantity#31550,ss_wholesale_cost#31551,ss_list_price#31552,ss_sales_price#31553,ss_ext_discount_amt#31554,ss_ext_sales_price#31555,ss_ext_wholesale_cost#31556,ss_ext_list_price#31557,ss_ext_tax#31558,ss_coupon_amt#31559,ss_net_paid#31560,ss_net_paid_inc_tax#31561,ss_net_profit#31562] parquet
+            :     :                    +- Aggregate [ss_item_sk#31492], [ss_item_sk#31492 AS item_sk#31479, avg(ss_net_profit#31512) AS rank_col#31480]
+            :     :                       +- Project [ss_item_sk#31492, ss_net_profit#31512]
+            :     :                          +- Filter (isnotnull(ss_store_sk#31497) AND (ss_store_sk#31497 = 29))
+            :     :                             +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#31490,ss_sold_time_sk#31491,ss_item_sk#31492,ss_customer_sk#31493,ss_cdemo_sk#31494,ss_hdemo_sk#31495,ss_addr_sk#31496,ss_store_sk#31497,ss_promo_sk#31498,ss_ticket_number#31499,ss_quantity#31500,ss_wholesale_cost#31501,ss_list_price#31502,ss_sales_price#31503,ss_ext_discount_amt#31504,ss_ext_sales_price#31505,ss_ext_wholesale_cost#31506,ss_ext_list_price#31507,ss_ext_tax#31508,ss_coupon_amt#31509,ss_net_paid#31510,ss_net_paid_inc_tax#31511,ss_net_profit#31512] parquet
+            :     +- Project [i_item_sk#1271, i_product_name#1292]
+            :        +- Filter isnotnull(i_item_sk#1271)
+            :           +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+            +- Project [i_item_sk#31513, i_product_name#31534]
+               +- Filter isnotnull(i_item_sk#31513)
+                  +- Relation spark_catalog.m.item[i_item_sk#31513,i_item_id#31514,i_rec_start_date#31515,i_rec_end_date#31516,i_item_desc#31517,i_current_price#31518,i_wholesale_cost#31519,i_brand_id#31520,i_brand#31521,i_class_id#31522,i_class#31523,i_category_id#31524,i_category#31525,i_manufact_id#31526,i_manufact#31527,i_size#31528,i_formulation#31529,i_color#31530,i_units#31531,i_container#31532,i_manager_id#31533,i_product_name#31534] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[rnk#31478 ASC NULLS FIRST], output=[rnk#31478,best_performing#31484,worst_performing#31485])
+   +- Project [rnk#31478, i_product_name#1292 AS best_performing#31484, i_product_name#31534 AS worst_performing#31485]
+      +- BroadcastHashJoin [item_sk#31479], [i_item_sk#31513], Inner, BuildRight, false
+         :- Project [rnk#31478, item_sk#31479, i_product_name#1292]
+         :  +- BroadcastHashJoin [item_sk#31474], [i_item_sk#1271], Inner, BuildRight, false
+         :     :- Project [item_sk#31474, rnk#31478, item_sk#31479]
+         :     :  +- SortMergeJoin [rnk#31478], [rnk#31483], Inner
+         :     :     :- Sort [rnk#31478 ASC NULLS FIRST], false, 0
+         :     :     :  +- Project [item_sk#31474, rnk#31478]
+         :     :     :     +- Filter ((rnk#31478 < 11) AND isnotnull(item_sk#31474))
+         :     :     :        +- Window [rank(rank_col#31475) windowspecdefinition(rank_col#31475 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rnk#31478], [rank_col#31475 ASC NULLS FIRST]
+         :     :     :           +- WindowGroupLimit [rank_col#31475 ASC NULLS FIRST], rank(rank_col#31475), 10, Final
+         :     :     :              +- Sort [rank_col#31475 ASC NULLS FIRST], false, 0
+         :     :     :                 +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=93440]
+         :     :     :                    +- WindowGroupLimit [rank_col#31475 ASC NULLS FIRST], rank(rank_col#31475), 10, Partial
+         :     :     :                       +- Sort [rank_col#31475 ASC NULLS FIRST], false, 0
+         :     :     :                          +- Filter (isnotnull(rank_col#31475) AND (rank_col#31475 > (0.9 * Subquery subquery#31477, [id=#93406])))
+         :     :     :                             :  +- Subquery subquery#31477, [id=#93406]
+         :     :     :                             :     +- AdaptiveSparkPlan isFinalPlan=false
+         :     :     :                             :        +- HashAggregate(keys=[ss_store_sk#31547], functions=[avg(ss_net_profit#31562)], output=[rank_col#31476])
+         :     :     :                             :           +- Exchange hashpartitioning(ss_store_sk#31547, 200), ENSURE_REQUIREMENTS, [plan_id=93392]
+         :     :     :                             :              +- HashAggregate(keys=[ss_store_sk#31547], functions=[partial_avg(ss_net_profit#31562)], output=[ss_store_sk#31547, sum#31623, count#31624L])
+         :     :     :                             :                 +- Project [ss_store_sk#31547, ss_net_profit#31562]
+         :     :     :                             :                    +- Filter ((isnotnull(ss_store_sk#31547) AND (ss_store_sk#31547 = 29)) AND isnull(ss_cdemo_sk#31544))
+         :     :     :                             :                       +- FileScan parquet spark_catalog.m.store_sales[ss_cdemo_sk#31544,ss_store_sk#31547,ss_net_profit#31562] Batched: true, DataFilters: [isnotnull(ss_store_sk#31547), (ss_store_sk#31547 = 29), isnull(ss_cdemo_sk#31544)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_store_sk), EqualTo(ss_store_sk,29), IsNull(ss_cdemo_sk)], ReadSchema: struct<ss_cdemo_sk:int,ss_store_sk:int,ss_net_profit:double>
+         :     :     :                             +- HashAggregate(keys=[ss_item_sk#1250], functions=[avg(ss_net_profit#1270)], output=[item_sk#31474, rank_col#31475])
+         :     :     :                                +- Exchange hashpartitioning(ss_item_sk#1250, 200), ENSURE_REQUIREMENTS, [plan_id=93433]
+         :     :     :                                   +- HashAggregate(keys=[ss_item_sk#1250], functions=[partial_avg(ss_net_profit#1270)], output=[ss_item_sk#1250, sum#31615, count#31616L])
+         :     :     :                                      +- Project [ss_item_sk#1250, ss_net_profit#1270]
+         :     :     :                                         +- Filter (isnotnull(ss_store_sk#1255) AND (ss_store_sk#1255 = 29))
+         :     :     :                                            +- FileScan parquet spark_catalog.m.store_sales[ss_item_sk#1250,ss_store_sk#1255,ss_net_profit#1270] Batched: true, DataFilters: [isnotnull(ss_store_sk#1255), (ss_store_sk#1255 = 29)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_store_sk), EqualTo(ss_store_sk,29)], ReadSchema: struct<ss_item_sk:int,ss_store_sk:int,ss_net_profit:double>
+         :     :     +- Sort [rnk#31483 ASC NULLS FIRST], false, 0
+         :     :        +- Project [item_sk#31479, rnk#31483]
+         :     :           +- Filter ((rnk#31483 < 11) AND isnotnull(item_sk#31479))
+         :     :              +- Window [rank(rank_col#31480) windowspecdefinition(rank_col#31480 DESC NULLS LAST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rnk#31483], [rank_col#31480 DESC NULLS LAST]
+         :     :                 +- WindowGroupLimit [rank_col#31480 DESC NULLS LAST], rank(rank_col#31480), 10, Final
+         :     :                    +- Sort [rank_col#31480 DESC NULLS LAST], false, 0
+         :     :                       +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=93453]
+         :     :                          +- WindowGroupLimit [rank_col#31480 DESC NULLS LAST], rank(rank_col#31480), 10, Partial
+         :     :                             +- Sort [rank_col#31480 DESC NULLS LAST], false, 0
+         :     :                                +- Filter (isnotnull(rank_col#31480) AND (rank_col#31480 > (0.9 * Subquery subquery#31482, [id=#93413])))
+         :     :                                   :  +- Subquery subquery#31482, [id=#93413]
+         :     :                                   :     +- AdaptiveSparkPlan isFinalPlan=false
+         :     :                                   :        +- HashAggregate(keys=[ss_store_sk#31547], functions=[avg(ss_net_profit#31562)], output=[rank_col#31476])
+         :     :                                   :           +- Exchange hashpartitioning(ss_store_sk#31547, 200), ENSURE_REQUIREMENTS, [plan_id=93404]
+         :     :                                   :              +- HashAggregate(keys=[ss_store_sk#31547], functions=[partial_avg(ss_net_profit#31562)], output=[ss_store_sk#31547, sum#31623, count#31624L])
+         :     :                                   :                 +- Project [ss_store_sk#31547, ss_net_profit#31562]
+         :     :                                   :                    +- Filter ((isnotnull(ss_store_sk#31547) AND (ss_store_sk#31547 = 29)) AND isnull(ss_cdemo_sk#31544))
+         :     :                                   :                       +- FileScan parquet spark_catalog.m.store_sales[ss_cdemo_sk#31544,ss_store_sk#31547,ss_net_profit#31562] Batched: true, DataFilters: [isnotnull(ss_store_sk#31547), (ss_store_sk#31547 = 29), isnull(ss_cdemo_sk#31544)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_store_sk), EqualTo(ss_store_sk,29), IsNull(ss_cdemo_sk)], ReadSchema: struct<ss_cdemo_sk:int,ss_store_sk:int,ss_net_profit:double>
+         :     :                                   +- HashAggregate(keys=[ss_item_sk#31492], functions=[avg(ss_net_profit#31512)], output=[item_sk#31479, rank_col#31480])
+         :     :                                      +- Exchange hashpartitioning(ss_item_sk#31492, 200), ENSURE_REQUIREMENTS, [plan_id=93446]
+         :     :                                         +- HashAggregate(keys=[ss_item_sk#31492], functions=[partial_avg(ss_net_profit#31512)], output=[ss_item_sk#31492, sum#31619, count#31620L])
+         :     :                                            +- Project [ss_item_sk#31492, ss_net_profit#31512]
+         :     :                                               +- Filter (isnotnull(ss_store_sk#31497) AND (ss_store_sk#31497 = 29))
+         :     :                                                  +- FileScan parquet spark_catalog.m.store_sales[ss_item_sk#31492,ss_store_sk#31497,ss_net_profit#31512] Batched: true, DataFilters: [isnotnull(ss_store_sk#31497), (ss_store_sk#31497 = 29)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_store_sk), EqualTo(ss_store_sk,29)], ReadSchema: struct<ss_item_sk:int,ss_store_sk:int,ss_net_profit:double>
+         :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=93466]
+         :        +- Filter isnotnull(i_item_sk#1271)
+         :           +- FileScan parquet spark_catalog.m.item[i_item_sk#1271,i_product_name#1292] Batched: true, DataFilters: [isnotnull(i_item_sk#1271)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_product_name:string>
+         +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=93470]
+            +- Filter isnotnull(i_item_sk#31513)
+               +- FileScan parquet spark_catalog.m.item[i_item_sk#31513,i_product_name#31534] Batched: true, DataFilters: [isnotnull(i_item_sk#31513)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_product_name:string>

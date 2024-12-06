@@ -1,0 +1,27 @@
+CTE [v1, v2]
+:  :- 'SubqueryAlias v1
+:  :  +- 'Aggregate ['i_category, 'i_brand, 'cc_name, 'd_year, 'd_moy], ['i_category, 'i_brand, 'cc_name, 'd_year, 'd_moy, 'sum('cs_sales_price) AS sum_sales#34336, 'avg('sum('cs_sales_price)) windowspecdefinition('i_category, 'i_brand, 'cc_name, 'd_year, unspecifiedframe$()) AS avg_monthly_sales#34337, 'rank() windowspecdefinition('i_category, 'i_brand, 'cc_name, 'd_year ASC NULLS FIRST, 'd_moy ASC NULLS FIRST, unspecifiedframe$()) AS rn#34338]
+:  :     +- 'Filter ((('cs_item_sk = 'i_item_sk) AND ('cs_sold_date_sk = 'd_date_sk)) AND (('cc_call_center_sk = 'cs_call_center_sk) AND ((('d_year = 2000) OR (('d_year = (2000 - 1)) AND ('d_moy = 12))) OR (('d_year = (2000 + 1)) AND ('d_moy = 1)))))
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'UnresolvedRelation [item], [], false
+:  :           :  :  +- 'UnresolvedRelation [catalog_sales], [], false
+:  :           :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           +- 'UnresolvedRelation [call_center], [], false
+:  +- 'SubqueryAlias v2
+:     +- 'Project ['v1.i_category, 'v1.d_year, 'v1.d_moy, 'v1.avg_monthly_sales, 'v1.sum_sales, 'v1_lag.sum_sales AS psum#34339, 'v1_lead.sum_sales AS nsum#34340]
+:        +- 'Filter (((('v1.i_category = 'v1_lag.i_category) AND ('v1.i_category = 'v1_lead.i_category)) AND (('v1.i_brand = 'v1_lag.i_brand) AND ('v1.i_brand = 'v1_lead.i_brand))) AND ((('v1.cc_name = 'v1_lag.cc_name) AND ('v1.cc_name = 'v1_lead.cc_name)) AND (('v1.rn = ('v1_lag.rn + 1)) AND ('v1.rn = ('v1_lead.rn - 1)))))
+:           +- 'Join Inner
+:              :- 'Join Inner
+:              :  :- 'UnresolvedRelation [v1], [], false
+:              :  +- 'SubqueryAlias v1_lag
+:              :     +- 'UnresolvedRelation [v1], [], false
+:              +- 'SubqueryAlias v1_lead
+:                 +- 'UnresolvedRelation [v1], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort [('sum_sales - 'avg_monthly_sales) ASC NULLS FIRST, 'avg_monthly_sales ASC NULLS FIRST], true
+         +- 'Project [*]
+            +- 'Filter ((('d_year = 2000) AND ('avg_monthly_sales > 0)) AND (CASE WHEN ('avg_monthly_sales > 0) THEN ('abs(('sum_sales - 'avg_monthly_sales)) / 'avg_monthly_sales) ELSE null END > 0.1))
+               +- 'UnresolvedRelation [v2], [], false

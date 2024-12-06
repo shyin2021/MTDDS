@@ -10,9 +10,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.*;
 
@@ -191,8 +189,8 @@ public class CABDriver_SUT4_s {
         int currentId = Integer.parseInt(args[0]);
         SparkSession sparkSession = SparkSQLPool_s.createSparkSession();
         ExecutorService executorService = Executors.newFixedThreadPool(20); // Adjust the number of threads as needed
-    
-            executorService.submit(() -> {
+            
+            Future<String> future = executorService.submit(() -> {
                 try {
                     System.out.println("query_stream_id: " + currentId);
                     QueryStreamExecutor executor = new QueryStreamExecutor(sparkSession, SparkSQLPool_s.getConfig(), currentId);
@@ -207,6 +205,20 @@ System.out.println("BEFORE...");
                 } catch (Exception e) {
                     System.err.println("Error running query stream " + currentId + ": " + e.getMessage());
                 }
+                sparkSession.stop();
+                return("Completed query stream: " + currentId);
             });
+           
+            try{
+               String result = future.get();
+               System.out.println(result);
+               executorService.shutdown();
+           } catch(InterruptedException | ExecutionException e) {
+               e.printStackTrace();
+           } finally {
+               if(!executorService.isShutdown()) {
+                   executorService.shutdown();
+               }
+           }
    }
 }

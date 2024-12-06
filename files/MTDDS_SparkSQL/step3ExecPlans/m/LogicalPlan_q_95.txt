@@ -1,0 +1,29 @@
+CTE [ws_wh]
+:  +- 'SubqueryAlias ws_wh
+:     +- 'Project ['ws1.ws_order_number, 'ws1.ws_warehouse_sk AS wh1#48842, 'ws2.ws_warehouse_sk AS wh2#48843]
+:        +- 'Filter (('ws1.ws_order_number = 'ws2.ws_order_number) AND NOT ('ws1.ws_warehouse_sk = 'ws2.ws_warehouse_sk))
+:           +- 'Join Inner
+:              :- 'SubqueryAlias ws1
+:              :  +- 'UnresolvedRelation [web_sales], [], false
+:              +- 'SubqueryAlias ws2
+:                 +- 'UnresolvedRelation [web_sales], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['count(distinct 'ws_order_number) ASC NULLS FIRST], true
+         +- 'Project ['count(distinct 'ws_order_number) AS order_count#48837, 'sum('ws_ext_ship_cost) AS total_shipping_cost#48838, 'sum('ws_net_profit) AS total_net_profit#48839]
+            +- 'Filter ((((('d_date >= 2001-2-01) AND ('d_date <= (cast(2001-2-01 as date) + 60))) AND ('ws1.ws_ship_date_sk = 'd_date_sk)) AND (('ws1.ws_ship_addr_sk = 'ca_address_sk) AND ('ca_state = KY))) AND ((('ws1.ws_web_site_sk = 'web_site_sk) AND ('web_company_name = pri)) AND ('ws1.ws_order_number IN (list#48840 []) AND 'ws1.ws_order_number IN (list#48841 []))))
+               :  :- 'Project ['ws_order_number]
+               :  :  +- 'UnresolvedRelation [ws_wh], [], false
+               :  +- 'Project ['wr_order_number]
+               :     +- 'Filter ('wr_order_number = 'ws_wh.ws_order_number)
+               :        +- 'Join Inner
+               :           :- 'UnresolvedRelation [web_returns], [], false
+               :           +- 'UnresolvedRelation [ws_wh], [], false
+               +- 'Join Inner
+                  :- 'Join Inner
+                  :  :- 'Join Inner
+                  :  :  :- 'SubqueryAlias ws1
+                  :  :  :  +- 'UnresolvedRelation [web_sales], [], false
+                  :  :  +- 'UnresolvedRelation [date_dim], [], false
+                  :  +- 'UnresolvedRelation [customer_address], [], false
+                  +- 'UnresolvedRelation [web_site], [], false

@@ -1,0 +1,150 @@
+== Parsed Logical Plan ==
+CTE [web_v1, store_v1]
+:  :- 'SubqueryAlias web_v1
+:  :  +- 'Aggregate ['ws_item_sk, 'd_date], ['ws_item_sk AS item_sk#33784, 'd_date, 'sum('sum('ws_sales_price)) windowspecdefinition('ws_item_sk, 'd_date ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33785]
+:  :     +- 'Filter ((('ws_sold_date_sk = 'd_date_sk) AND (('d_month_seq >= 1202) AND ('d_month_seq <= (1202 + 11)))) AND isnotnull('ws_item_sk))
+:  :        +- 'Join Inner
+:  :           :- 'UnresolvedRelation [web_sales], [], false
+:  :           +- 'UnresolvedRelation [date_dim], [], false
+:  +- 'SubqueryAlias store_v1
+:     +- 'Aggregate ['ss_item_sk, 'd_date], ['ss_item_sk AS item_sk#33786, 'd_date, 'sum('sum('ss_sales_price)) windowspecdefinition('ss_item_sk, 'd_date ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33787]
+:        +- 'Filter ((('ss_sold_date_sk = 'd_date_sk) AND (('d_month_seq >= 1202) AND ('d_month_seq <= (1202 + 11)))) AND isnotnull('ss_item_sk))
+:           +- 'Join Inner
+:              :- 'UnresolvedRelation [store_sales], [], false
+:              +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['item_sk ASC NULLS FIRST, 'd_date ASC NULLS FIRST], true
+         +- 'Project [*]
+            +- 'Filter ('web_cumulative > 'store_cumulative)
+               +- 'SubqueryAlias y
+                  +- 'Project ['item_sk, 'd_date, 'web_sales, 'store_sales, 'max('web_sales) windowspecdefinition('item_sk, 'd_date ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS web_cumulative#33782, 'max('store_sales) windowspecdefinition('item_sk, 'd_date ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS store_cumulative#33783]
+                     +- 'SubqueryAlias x
+                        +- 'Project [CASE WHEN isnotnull('web.item_sk) THEN 'web.item_sk ELSE 'store.item_sk END AS item_sk#33778, CASE WHEN isnotnull('web.d_date) THEN 'web.d_date ELSE 'store.d_date END AS d_date#33779, 'web.cume_sales AS web_sales#33780, 'store.cume_sales AS store_sales#33781]
+                           +- 'Join FullOuter, (('web.item_sk = 'store.item_sk) AND ('web.d_date = 'store.d_date))
+                              :- 'SubqueryAlias web
+                              :  +- 'UnresolvedRelation [web_v1], [], false
+                              +- 'SubqueryAlias store
+                                 +- 'UnresolvedRelation [store_v1], [], false
+
+== Analyzed Logical Plan ==
+item_sk: int, d_date: string, web_sales: double, store_sales: double, web_cumulative: double, store_cumulative: double
+WithCTE
+:- CTERelationDef 40, false
+:  +- SubqueryAlias web_v1
+:     +- Project [item_sk#33784, d_date#26, cume_sales#33785]
+:        +- Project [item_sk#33784, d_date#26, _w0#33821, ws_item_sk#430, cume_sales#33785, cume_sales#33785]
+:           +- Window [sum(_w0#33821) windowspecdefinition(ws_item_sk#430, d_date#26 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33785], [ws_item_sk#430], [d_date#26 ASC NULLS FIRST]
+:              +- Aggregate [ws_item_sk#430, d_date#26], [ws_item_sk#430 AS item_sk#33784, d_date#26, sum(ws_sales_price#448) AS _w0#33821, ws_item_sk#430]
+:                 +- Filter (((ws_sold_date_sk#427 = d_date_sk#24) AND ((d_month_seq#27 >= 1202) AND (d_month_seq#27 <= (1202 + 11)))) AND isnotnull(ws_item_sk#430))
+:                    +- Join Inner
+:                       :- SubqueryAlias spark_catalog.m.web_sales
+:                       :  +- Relation spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_sold_time_sk#428,ws_ship_date_sk#429,ws_item_sk#430,ws_bill_customer_sk#431,ws_bill_cdemo_sk#432,ws_bill_hdemo_sk#433,ws_bill_addr_sk#434,ws_ship_customer_sk#435,ws_ship_cdemo_sk#436,ws_ship_hdemo_sk#437,ws_ship_addr_sk#438,ws_web_page_sk#439,ws_web_site_sk#440,ws_ship_mode_sk#441,ws_warehouse_sk#442,ws_promo_sk#443,ws_order_number#444,ws_quantity#445,ws_wholesale_cost#446,ws_list_price#447,ws_sales_price#448,ws_ext_discount_amt#449,ws_ext_sales_price#450,... 10 more fields] parquet
+:                       +- SubqueryAlias spark_catalog.m.date_dim
+:                          +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+:- CTERelationDef 41, false
+:  +- SubqueryAlias store_v1
+:     +- Project [item_sk#33786, d_date#33790, cume_sales#33787]
+:        +- Project [item_sk#33786, d_date#33790, _w0#33822, ss_item_sk#1250, cume_sales#33787, cume_sales#33787]
+:           +- Window [sum(_w0#33822) windowspecdefinition(ss_item_sk#1250, d_date#33790 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33787], [ss_item_sk#1250], [d_date#33790 ASC NULLS FIRST]
+:              +- Aggregate [ss_item_sk#1250, d_date#33790], [ss_item_sk#1250 AS item_sk#33786, d_date#33790, sum(ss_sales_price#1261) AS _w0#33822, ss_item_sk#1250]
+:                 +- Filter (((ss_sold_date_sk#1248 = d_date_sk#33788) AND ((d_month_seq#33791 >= 1202) AND (d_month_seq#33791 <= (1202 + 11)))) AND isnotnull(ss_item_sk#1250))
+:                    +- Join Inner
+:                       :- SubqueryAlias spark_catalog.m.store_sales
+:                       :  +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+:                       +- SubqueryAlias spark_catalog.m.date_dim
+:                          +- Relation spark_catalog.m.date_dim[d_date_sk#33788,d_date_id#33789,d_date#33790,d_month_seq#33791,d_week_seq#33792,d_quarter_seq#33793,d_year#33794,d_dow#33795,d_moy#33796,d_dom#33797,d_qoy#33798,d_fy_year#33799,d_fy_quarter_seq#33800,d_fy_week_seq#33801,d_day_name#33802,d_quarter_name#33803,d_holiday#33804,d_weekend#33805,d_following_holiday#33806,d_first_dom#33807,d_last_dom#33808,d_same_day_ly#33809,d_same_day_lq#33810,d_current_day#33811,... 4 more fields] parquet
++- GlobalLimit 100
+   +- LocalLimit 100
+      +- Sort [item_sk#33778 ASC NULLS FIRST, d_date#33779 ASC NULLS FIRST], true
+         +- Project [item_sk#33778, d_date#33779, web_sales#33780, store_sales#33781, web_cumulative#33782, store_cumulative#33783]
+            +- Filter (web_cumulative#33782 > store_cumulative#33783)
+               +- SubqueryAlias y
+                  +- Project [item_sk#33778, d_date#33779, web_sales#33780, store_sales#33781, web_cumulative#33782, store_cumulative#33783]
+                     +- Project [item_sk#33778, d_date#33779, web_sales#33780, store_sales#33781, web_cumulative#33782, store_cumulative#33783, web_cumulative#33782, store_cumulative#33783]
+                        +- Window [max(web_sales#33780) windowspecdefinition(item_sk#33778, d_date#33779 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS web_cumulative#33782, max(store_sales#33781) windowspecdefinition(item_sk#33778, d_date#33779 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS store_cumulative#33783], [item_sk#33778], [d_date#33779 ASC NULLS FIRST]
+                           +- Project [item_sk#33778, d_date#33779, web_sales#33780, store_sales#33781]
+                              +- SubqueryAlias x
+                                 +- Project [CASE WHEN isnotnull(item_sk#33784) THEN item_sk#33784 ELSE item_sk#33786 END AS item_sk#33778, CASE WHEN isnotnull(d_date#26) THEN d_date#26 ELSE d_date#33790 END AS d_date#33779, cume_sales#33785 AS web_sales#33780, cume_sales#33787 AS store_sales#33781]
+                                    +- Join FullOuter, ((item_sk#33784 = item_sk#33786) AND (d_date#26 = d_date#33790))
+                                       :- SubqueryAlias web
+                                       :  +- SubqueryAlias web_v1
+                                       :     +- CTERelationRef 40, true, [item_sk#33784, d_date#26, cume_sales#33785], false
+                                       +- SubqueryAlias store
+                                          +- SubqueryAlias store_v1
+                                             +- CTERelationRef 41, true, [item_sk#33786, d_date#33790, cume_sales#33787], false
+
+== Optimized Logical Plan ==
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [item_sk#33778 ASC NULLS FIRST, d_date#33779 ASC NULLS FIRST], true
+      +- Filter ((isnotnull(web_cumulative#33782) AND isnotnull(store_cumulative#33783)) AND (web_cumulative#33782 > store_cumulative#33783))
+         +- Window [max(web_sales#33780) windowspecdefinition(item_sk#33778, d_date#33779 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS web_cumulative#33782, max(store_sales#33781) windowspecdefinition(item_sk#33778, d_date#33779 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS store_cumulative#33783], [item_sk#33778], [d_date#33779 ASC NULLS FIRST]
+            +- Project [CASE WHEN isnotnull(item_sk#33784) THEN item_sk#33784 ELSE item_sk#33786 END AS item_sk#33778, CASE WHEN isnotnull(d_date#26) THEN d_date#26 ELSE d_date#33790 END AS d_date#33779, cume_sales#33785 AS web_sales#33780, cume_sales#33787 AS store_sales#33781]
+               +- Join FullOuter, ((item_sk#33784 = item_sk#33786) AND (d_date#26 = d_date#33790))
+                  :- Project [item_sk#33784, d_date#26, cume_sales#33785]
+                  :  +- Window [sum(_w0#33821) windowspecdefinition(ws_item_sk#430, d_date#26 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33785], [ws_item_sk#430], [d_date#26 ASC NULLS FIRST]
+                  :     +- Aggregate [ws_item_sk#430, d_date#26], [ws_item_sk#430 AS item_sk#33784, d_date#26, sum(ws_sales_price#448) AS _w0#33821, ws_item_sk#430]
+                  :        +- Project [ws_item_sk#430, ws_sales_price#448, d_date#26]
+                  :           +- Join Inner, (ws_sold_date_sk#427 = d_date_sk#24)
+                  :              :- Project [ws_sold_date_sk#427, ws_item_sk#430, ws_sales_price#448]
+                  :              :  +- Filter (isnotnull(ws_item_sk#430) AND isnotnull(ws_sold_date_sk#427))
+                  :              :     +- Relation spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_sold_time_sk#428,ws_ship_date_sk#429,ws_item_sk#430,ws_bill_customer_sk#431,ws_bill_cdemo_sk#432,ws_bill_hdemo_sk#433,ws_bill_addr_sk#434,ws_ship_customer_sk#435,ws_ship_cdemo_sk#436,ws_ship_hdemo_sk#437,ws_ship_addr_sk#438,ws_web_page_sk#439,ws_web_site_sk#440,ws_ship_mode_sk#441,ws_warehouse_sk#442,ws_promo_sk#443,ws_order_number#444,ws_quantity#445,ws_wholesale_cost#446,ws_list_price#447,ws_sales_price#448,ws_ext_discount_amt#449,ws_ext_sales_price#450,... 10 more fields] parquet
+                  :              +- Project [d_date_sk#24, d_date#26]
+                  :                 +- Filter ((isnotnull(d_month_seq#27) AND ((d_month_seq#27 >= 1202) AND (d_month_seq#27 <= 1213))) AND isnotnull(d_date_sk#24))
+                  :                    +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+                  +- Project [item_sk#33786, d_date#33790, cume_sales#33787]
+                     +- Window [sum(_w0#33822) windowspecdefinition(ss_item_sk#1250, d_date#33790 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33787], [ss_item_sk#1250], [d_date#33790 ASC NULLS FIRST]
+                        +- Aggregate [ss_item_sk#1250, d_date#33790], [ss_item_sk#1250 AS item_sk#33786, d_date#33790, sum(ss_sales_price#1261) AS _w0#33822, ss_item_sk#1250]
+                           +- Project [ss_item_sk#1250, ss_sales_price#1261, d_date#33790]
+                              +- Join Inner, (ss_sold_date_sk#1248 = d_date_sk#33788)
+                                 :- Project [ss_sold_date_sk#1248, ss_item_sk#1250, ss_sales_price#1261]
+                                 :  +- Filter (isnotnull(ss_item_sk#1250) AND isnotnull(ss_sold_date_sk#1248))
+                                 :     +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+                                 +- Project [d_date_sk#33788, d_date#33790]
+                                    +- Filter ((isnotnull(d_month_seq#33791) AND ((d_month_seq#33791 >= 1202) AND (d_month_seq#33791 <= 1213))) AND isnotnull(d_date_sk#33788))
+                                       +- Relation spark_catalog.m.date_dim[d_date_sk#33788,d_date_id#33789,d_date#33790,d_month_seq#33791,d_week_seq#33792,d_quarter_seq#33793,d_year#33794,d_dow#33795,d_moy#33796,d_dom#33797,d_qoy#33798,d_fy_year#33799,d_fy_quarter_seq#33800,d_fy_week_seq#33801,d_day_name#33802,d_quarter_name#33803,d_holiday#33804,d_weekend#33805,d_following_holiday#33806,d_first_dom#33807,d_last_dom#33808,d_same_day_ly#33809,d_same_day_lq#33810,d_current_day#33811,... 4 more fields] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[item_sk#33778 ASC NULLS FIRST,d_date#33779 ASC NULLS FIRST], output=[item_sk#33778,d_date#33779,web_sales#33780,store_sales#33781,web_cumulative#33782,store_cumulative#33783])
+   +- Filter ((isnotnull(web_cumulative#33782) AND isnotnull(store_cumulative#33783)) AND (web_cumulative#33782 > store_cumulative#33783))
+      +- Window [max(web_sales#33780) windowspecdefinition(item_sk#33778, d_date#33779 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS web_cumulative#33782, max(store_sales#33781) windowspecdefinition(item_sk#33778, d_date#33779 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS store_cumulative#33783], [item_sk#33778], [d_date#33779 ASC NULLS FIRST]
+         +- Sort [item_sk#33778 ASC NULLS FIRST, d_date#33779 ASC NULLS FIRST], false, 0
+            +- Exchange hashpartitioning(item_sk#33778, 200), ENSURE_REQUIREMENTS, [plan_id=102867]
+               +- Project [CASE WHEN isnotnull(item_sk#33784) THEN item_sk#33784 ELSE item_sk#33786 END AS item_sk#33778, CASE WHEN isnotnull(d_date#26) THEN d_date#26 ELSE d_date#33790 END AS d_date#33779, cume_sales#33785 AS web_sales#33780, cume_sales#33787 AS store_sales#33781]
+                  +- SortMergeJoin [item_sk#33784, d_date#26], [item_sk#33786, d_date#33790], FullOuter
+                     :- Sort [item_sk#33784 ASC NULLS FIRST, d_date#26 ASC NULLS FIRST], false, 0
+                     :  +- Exchange hashpartitioning(item_sk#33784, d_date#26, 200), ENSURE_REQUIREMENTS, [plan_id=102860]
+                     :     +- Project [item_sk#33784, d_date#26, cume_sales#33785]
+                     :        +- Window [sum(_w0#33821) windowspecdefinition(ws_item_sk#430, d_date#26 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33785], [ws_item_sk#430], [d_date#26 ASC NULLS FIRST]
+                     :           +- Sort [ws_item_sk#430 ASC NULLS FIRST, d_date#26 ASC NULLS FIRST], false, 0
+                     :              +- Exchange hashpartitioning(ws_item_sk#430, 200), ENSURE_REQUIREMENTS, [plan_id=102842]
+                     :                 +- HashAggregate(keys=[ws_item_sk#430, d_date#26], functions=[sum(ws_sales_price#448)], output=[item_sk#33784, d_date#26, _w0#33821, ws_item_sk#430])
+                     :                    +- Exchange hashpartitioning(ws_item_sk#430, d_date#26, 200), ENSURE_REQUIREMENTS, [plan_id=102839]
+                     :                       +- HashAggregate(keys=[ws_item_sk#430, d_date#26], functions=[partial_sum(ws_sales_price#448)], output=[ws_item_sk#430, d_date#26, sum#33850])
+                     :                          +- Project [ws_item_sk#430, ws_sales_price#448, d_date#26]
+                     :                             +- BroadcastHashJoin [ws_sold_date_sk#427], [d_date_sk#24], Inner, BuildRight, false
+                     :                                :- Filter (isnotnull(ws_item_sk#430) AND isnotnull(ws_sold_date_sk#427))
+                     :                                :  +- FileScan parquet spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_item_sk#430,ws_sales_price#448] Batched: true, DataFilters: [isnotnull(ws_item_sk#430), isnotnull(ws_sold_date_sk#427)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_item_sk), IsNotNull(ws_sold_date_sk)], ReadSchema: struct<ws_sold_date_sk:int,ws_item_sk:int,ws_sales_price:double>
+                     :                                +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=102834]
+                     :                                   +- Project [d_date_sk#24, d_date#26]
+                     :                                      +- Filter (((isnotnull(d_month_seq#27) AND (d_month_seq#27 >= 1202)) AND (d_month_seq#27 <= 1213)) AND isnotnull(d_date_sk#24))
+                     :                                         +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_date#26,d_month_seq#27] Batched: true, DataFilters: [isnotnull(d_month_seq#27), (d_month_seq#27 >= 1202), (d_month_seq#27 <= 1213), isnotnull(d_date_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_month_seq), GreaterThanOrEqual(d_month_seq,1202), LessThanOrEqual(d_month_seq,1213),..., ReadSchema: struct<d_date_sk:int,d_date:string,d_month_seq:int>
+                     +- Sort [item_sk#33786 ASC NULLS FIRST, d_date#33790 ASC NULLS FIRST], false, 0
+                        +- Exchange hashpartitioning(item_sk#33786, d_date#33790, 200), ENSURE_REQUIREMENTS, [plan_id=102861]
+                           +- Project [item_sk#33786, d_date#33790, cume_sales#33787]
+                              +- Window [sum(_w0#33822) windowspecdefinition(ss_item_sk#1250, d_date#33790 ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33787], [ss_item_sk#1250], [d_date#33790 ASC NULLS FIRST]
+                                 +- Sort [ss_item_sk#1250 ASC NULLS FIRST, d_date#33790 ASC NULLS FIRST], false, 0
+                                    +- Exchange hashpartitioning(ss_item_sk#1250, 200), ENSURE_REQUIREMENTS, [plan_id=102854]
+                                       +- HashAggregate(keys=[ss_item_sk#1250, d_date#33790], functions=[sum(ss_sales_price#1261)], output=[item_sk#33786, d_date#33790, _w0#33822, ss_item_sk#1250])
+                                          +- Exchange hashpartitioning(ss_item_sk#1250, d_date#33790, 200), ENSURE_REQUIREMENTS, [plan_id=102851]
+                                             +- HashAggregate(keys=[ss_item_sk#1250, d_date#33790], functions=[partial_sum(ss_sales_price#1261)], output=[ss_item_sk#1250, d_date#33790, sum#33852])
+                                                +- Project [ss_item_sk#1250, ss_sales_price#1261, d_date#33790]
+                                                   +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#33788], Inner, BuildRight, false
+                                                      :- Filter (isnotnull(ss_item_sk#1250) AND isnotnull(ss_sold_date_sk#1248))
+                                                      :  +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_item_sk#1250,ss_sales_price#1261] Batched: true, DataFilters: [isnotnull(ss_item_sk#1250), isnotnull(ss_sold_date_sk#1248)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_item_sk), IsNotNull(ss_sold_date_sk)], ReadSchema: struct<ss_sold_date_sk:int,ss_item_sk:int,ss_sales_price:double>
+                                                      +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=102846]
+                                                         +- Project [d_date_sk#33788, d_date#33790]
+                                                            +- Filter (((isnotnull(d_month_seq#33791) AND (d_month_seq#33791 >= 1202)) AND (d_month_seq#33791 <= 1213)) AND isnotnull(d_date_sk#33788))
+                                                               +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#33788,d_date#33790,d_month_seq#33791] Batched: true, DataFilters: [isnotnull(d_month_seq#33791), (d_month_seq#33791 >= 1202), (d_month_seq#33791 <= 1213), isnotnul..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_month_seq), GreaterThanOrEqual(d_month_seq,1202), LessThanOrEqual(d_month_seq,1213),..., ReadSchema: struct<d_date_sk:int,d_date:string,d_month_seq:int>

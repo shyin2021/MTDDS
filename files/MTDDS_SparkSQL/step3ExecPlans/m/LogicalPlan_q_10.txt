@@ -1,0 +1,27 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['cd_gender ASC NULLS FIRST, 'cd_marital_status ASC NULLS FIRST, 'cd_education_status ASC NULLS FIRST, 'cd_purchase_estimate ASC NULLS FIRST, 'cd_credit_rating ASC NULLS FIRST, 'cd_dep_count ASC NULLS FIRST, 'cd_dep_employed_count ASC NULLS FIRST, 'cd_dep_college_count ASC NULLS FIRST], true
+      +- 'Aggregate ['cd_gender, 'cd_marital_status, 'cd_education_status, 'cd_purchase_estimate, 'cd_credit_rating, 'cd_dep_count, 'cd_dep_employed_count, 'cd_dep_college_count], ['cd_gender, 'cd_marital_status, 'cd_education_status, 'count(1) AS cnt1#9311, 'cd_purchase_estimate, 'count(1) AS cnt2#9312, 'cd_credit_rating, 'count(1) AS cnt3#9313, 'cd_dep_count, 'count(1) AS cnt4#9314, 'cd_dep_employed_count, 'count(1) AS cnt5#9315, 'cd_dep_college_count, 'count(1) AS cnt6#9316]
+         +- 'Filter (((('c.c_current_addr_sk = 'ca.ca_address_sk) AND 'ca_county IN (Vermilion County,Park County,Dorchester County,Republic County,Hayes County)) AND ('cd_demo_sk = 'c.c_current_cdemo_sk)) AND (exists#9317 [] AND (exists#9318 [] OR exists#9319 [])))
+            :  :- 'Project [*]
+            :  :  +- 'Filter ((('c.c_customer_sk = 'ss_customer_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND (('d_year = 2000) AND (('d_moy >= 4) AND ('d_moy <= (4 + 3)))))
+            :  :     +- 'Join Inner
+            :  :        :- 'UnresolvedRelation [store_sales], [], false
+            :  :        +- 'UnresolvedRelation [date_dim], [], false
+            :  :- 'Project [*]
+            :  :  +- 'Filter ((('c.c_customer_sk = 'ws_bill_customer_sk) AND ('ws_sold_date_sk = 'd_date_sk)) AND (('d_year = 2000) AND (('d_moy >= 4) AND ('d_moy <= (4 + 3)))))
+            :  :     +- 'Join Inner
+            :  :        :- 'UnresolvedRelation [web_sales], [], false
+            :  :        +- 'UnresolvedRelation [date_dim], [], false
+            :  +- 'Project [*]
+            :     +- 'Filter ((('c.c_customer_sk = 'cs_ship_customer_sk) AND ('cs_sold_date_sk = 'd_date_sk)) AND (('d_year = 2000) AND (('d_moy >= 4) AND ('d_moy <= (4 + 3)))))
+            :        +- 'Join Inner
+            :           :- 'UnresolvedRelation [catalog_sales], [], false
+            :           +- 'UnresolvedRelation [date_dim], [], false
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'SubqueryAlias c
+               :  :  +- 'UnresolvedRelation [customer], [], false
+               :  +- 'SubqueryAlias ca
+               :     +- 'UnresolvedRelation [customer_address], [], false
+               +- 'UnresolvedRelation [customer_demographics], [], false

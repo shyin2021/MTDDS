@@ -11,7 +11,7 @@ public class PricingModelRCB {
 		// Empty the Price_per_query relation
 		String deleteBills = "DELETE FROM Price_per_query";
 		// compute the price for each query
-		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, nbNodes * (SELECT price FROM RSPrices WHERE resourceType='VM')*executionTime*" + gainFactor + "*1.0/3600"
+		String insertBills = "INSERT INTO Price_per_query SELECT SUTNumber, clusterSize, arrivalRateFactor, tenantName, queryName, timerName, expectedExecTime, FinishTime-LaunchTime, nbNodes * (SELECT price FROM RSPrices WHERE resourceType='node')*executionTime*" + gainFactor + "*1.0/3600"
 				+ " FROM FormatedTraces FT, tenants TN, DBSizesSF DS, PerfSLOs_per_Tenant PPT WHERE FT.tenantName=TN.tenantId AND TN.DBSize=DS.DBSize AND FT.queryName=PPT.queryId AND PPT.tenantId=TN.TenantID";
 		Statement stm = null;
 		Connection conn = null;

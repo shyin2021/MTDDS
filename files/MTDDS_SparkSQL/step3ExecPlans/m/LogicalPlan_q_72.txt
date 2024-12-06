@@ -1,0 +1,29 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['total_cnt DESC NULLS LAST, 'i_item_desc ASC NULLS FIRST, 'w_warehouse_name ASC NULLS FIRST, 'd_week_seq ASC NULLS FIRST], true
+      +- 'Aggregate ['i_item_desc, 'w_warehouse_name, 'd1.d_week_seq], ['i_item_desc, 'w_warehouse_name, 'd1.d_week_seq, 'sum(CASE WHEN isnull('p_promo_sk) THEN 1 ELSE 0 END) AS no_promo#41248, 'sum(CASE WHEN isnotnull('p_promo_sk) THEN 1 ELSE 0 END) AS promo#41249, 'count(1) AS total_cnt#41250]
+         +- 'Filter (((('d1.d_week_seq = 'd2.d_week_seq) AND ('inv_quantity_on_hand < 'cs_quantity)) AND ('d3.d_date > ('d1.d_date + 5))) AND ((('hd_buy_potential = 501-1000) AND ('d1.d_year = 2001)) AND ('cd_marital_status = M)))
+            +- 'Join LeftOuter, (('cr_item_sk = 'cs_item_sk) AND ('cr_order_number = 'cs_order_number))
+               :- 'Join LeftOuter, ('cs_promo_sk = 'p_promo_sk)
+               :  :- 'Join Inner, ('cs_ship_date_sk = 'd3.d_date_sk)
+               :  :  :- 'Join Inner, ('inv_date_sk = 'd2.d_date_sk)
+               :  :  :  :- 'Join Inner, ('cs_sold_date_sk = 'd1.d_date_sk)
+               :  :  :  :  :- 'Join Inner, ('cs_bill_hdemo_sk = 'hd_demo_sk)
+               :  :  :  :  :  :- 'Join Inner, ('cs_bill_cdemo_sk = 'cd_demo_sk)
+               :  :  :  :  :  :  :- 'Join Inner, ('i_item_sk = 'cs_item_sk)
+               :  :  :  :  :  :  :  :- 'Join Inner, ('w_warehouse_sk = 'inv_warehouse_sk)
+               :  :  :  :  :  :  :  :  :- 'Join Inner, ('cs_item_sk = 'inv_item_sk)
+               :  :  :  :  :  :  :  :  :  :- 'UnresolvedRelation [catalog_sales], [], false
+               :  :  :  :  :  :  :  :  :  +- 'UnresolvedRelation [inventory], [], false
+               :  :  :  :  :  :  :  :  +- 'UnresolvedRelation [warehouse], [], false
+               :  :  :  :  :  :  :  +- 'UnresolvedRelation [item], [], false
+               :  :  :  :  :  :  +- 'UnresolvedRelation [customer_demographics], [], false
+               :  :  :  :  :  +- 'UnresolvedRelation [household_demographics], [], false
+               :  :  :  :  +- 'SubqueryAlias d1
+               :  :  :  :     +- 'UnresolvedRelation [date_dim], [], false
+               :  :  :  +- 'SubqueryAlias d2
+               :  :  :     +- 'UnresolvedRelation [date_dim], [], false
+               :  :  +- 'SubqueryAlias d3
+               :  :     +- 'UnresolvedRelation [date_dim], [], false
+               :  +- 'UnresolvedRelation [promotion], [], false
+               +- 'UnresolvedRelation [catalog_returns], [], false

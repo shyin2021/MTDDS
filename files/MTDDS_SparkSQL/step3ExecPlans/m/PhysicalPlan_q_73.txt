@@ -1,0 +1,32 @@
+AdaptiveSparkPlan isFinalPlan=false
++- Sort [cnt#41355L DESC NULLS LAST, c_last_name#90 ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(cnt#41355L DESC NULLS LAST, c_last_name#90 ASC NULLS FIRST, 200), ENSURE_REQUIREMENTS, [plan_id=141595]
+      +- Project [c_last_name#90, c_first_name#89, c_salutation#88, c_preferred_cust_flag#91, ss_ticket_number#1257, cnt#41355L]
+         +- BroadcastHashJoin [ss_customer_sk#1251], [c_customer_sk#81], Inner, BuildRight, false
+            :- Filter ((cnt#41355L >= 1) AND (cnt#41355L <= 5))
+            :  +- HashAggregate(keys=[ss_ticket_number#1257, ss_customer_sk#1251], functions=[count(1)], output=[ss_ticket_number#1257, ss_customer_sk#1251, cnt#41355L])
+            :     +- Exchange hashpartitioning(ss_ticket_number#1257, ss_customer_sk#1251, 200), ENSURE_REQUIREMENTS, [plan_id=141587]
+            :        +- HashAggregate(keys=[ss_ticket_number#1257, ss_customer_sk#1251], functions=[partial_count(1)], output=[ss_ticket_number#1257, ss_customer_sk#1251, count#41382L])
+            :           +- Project [ss_customer_sk#1251, ss_ticket_number#1257]
+            :              +- BroadcastHashJoin [ss_hdemo_sk#1253], [hd_demo_sk#12110], Inner, BuildRight, false
+            :                 :- Project [ss_customer_sk#1251, ss_hdemo_sk#1253, ss_ticket_number#1257]
+            :                 :  +- BroadcastHashJoin [ss_store_sk#1255], [s_store_sk#52], Inner, BuildRight, false
+            :                 :     :- Project [ss_customer_sk#1251, ss_hdemo_sk#1253, ss_store_sk#1255, ss_ticket_number#1257]
+            :                 :     :  +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#24], Inner, BuildRight, false
+            :                 :     :     :- Filter (((isnotnull(ss_sold_date_sk#1248) AND isnotnull(ss_store_sk#1255)) AND isnotnull(ss_hdemo_sk#1253)) AND isnotnull(ss_customer_sk#1251))
+            :                 :     :     :  +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_customer_sk#1251,ss_hdemo_sk#1253,ss_store_sk#1255,ss_ticket_number#1257] Batched: true, DataFilters: [isnotnull(ss_sold_date_sk#1248), isnotnull(ss_store_sk#1255), isnotnull(ss_hdemo_sk#1253), isnot..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_sold_date_sk), IsNotNull(ss_store_sk), IsNotNull(ss_hdemo_sk), IsNotNull(ss_custome..., ReadSchema: struct<ss_sold_date_sk:int,ss_customer_sk:int,ss_hdemo_sk:int,ss_store_sk:int,ss_ticket_number:int>
+            :                 :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=141574]
+            :                 :     :        +- Project [d_date_sk#24]
+            :                 :     :           +- Filter ((((isnotnull(d_dom#33) AND (d_dom#33 >= 1)) AND (d_dom#33 <= 2)) AND d_year#30 IN (1998,1999,2000)) AND isnotnull(d_date_sk#24))
+            :                 :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_year#30,d_dom#33] Batched: true, DataFilters: [isnotnull(d_dom#33), (d_dom#33 >= 1), (d_dom#33 <= 2), d_year#30 IN (1998,1999,2000), isnotnull(..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_dom), GreaterThanOrEqual(d_dom,1), LessThanOrEqual(d_dom,2), In(d_year, [1998,1999,2..., ReadSchema: struct<d_date_sk:int,d_year:int,d_dom:int>
+            :                 :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=141578]
+            :                 :        +- Project [s_store_sk#52]
+            :                 :           +- Filter (s_county#75 IN (Walker County,Ziebach County,Williamson County) AND isnotnull(s_store_sk#52))
+            :                 :              +- FileScan parquet spark_catalog.m.store[s_store_sk#52,s_county#75] Batched: true, DataFilters: [s_county#75 IN (Walker County,Ziebach County,Williamson County), isnotnull(s_store_sk#52)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store], PartitionFilters: [], PushedFilters: [In(s_county, [Walker County,Williamson County,Ziebach County]), IsNotNull(s_store_sk)], ReadSchema: struct<s_store_sk:int,s_county:string>
+            :                 +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=141582]
+            :                    +- Project [hd_demo_sk#12110]
+            :                       +- Filter ((((isnotnull(hd_vehicle_count#12114) AND ((hd_buy_potential#12112 = 501-1000) OR (hd_buy_potential#12112 = Unknown))) AND (hd_vehicle_count#12114 > 0)) AND CASE WHEN (hd_vehicle_count#12114 > 0) THEN ((cast(hd_dep_count#12113 as double) / cast(hd_vehicle_count#12114 as double)) > 1.0) END) AND isnotnull(hd_demo_sk#12110))
+            :                          +- FileScan parquet spark_catalog.m.household_demographics[hd_demo_sk#12110,hd_buy_potential#12112,hd_dep_count#12113,hd_vehicle_count#12114] Batched: true, DataFilters: [isnotnull(hd_vehicle_count#12114), ((hd_buy_potential#12112 = 501-1000) OR (hd_buy_potential#121..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/household_demograp..., PartitionFilters: [], PushedFilters: [IsNotNull(hd_vehicle_count), Or(EqualTo(hd_buy_potential,501-1000),EqualTo(hd_buy_potential,Unkn..., ReadSchema: struct<hd_demo_sk:int,hd_buy_potential:string,hd_dep_count:int,hd_vehicle_count:int>
+            +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=141591]
+               +- Filter isnotnull(c_customer_sk#81)
+                  +- FileScan parquet spark_catalog.m.customer[c_customer_sk#81,c_salutation#88,c_first_name#89,c_last_name#90,c_preferred_cust_flag#91] Batched: true, DataFilters: [isnotnull(c_customer_sk#81)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer], PartitionFilters: [], PushedFilters: [IsNotNull(c_customer_sk)], ReadSchema: struct<c_customer_sk:int,c_salutation:string,c_first_name:string,c_last_name:string,c_preferred_c...

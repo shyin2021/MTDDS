@@ -1,0 +1,228 @@
+== Parsed Logical Plan ==
+CTE [year_total]
+:  +- 'SubqueryAlias year_total
+:     +- 'Union false, false
+:        :- 'Aggregate ['c_customer_id, 'c_first_name, 'c_last_name, 'c_preferred_cust_flag, 'c_birth_country, 'c_login, 'c_email_address, 'd_year], ['c_customer_id AS customer_id#9459, 'c_first_name AS customer_first_name#9460, 'c_last_name AS customer_last_name#9461, 'c_preferred_cust_flag AS customer_preferred_cust_flag#9462, 'c_birth_country AS customer_birth_country#9463, 'c_login AS customer_login#9464, 'c_email_address AS customer_email_address#9465, 'd_year AS dyear#9466, 'sum(('ss_ext_list_price - 'ss_ext_discount_amt)) AS year_total#9467, s AS sale_type#9468]
+:        :  +- 'Filter (('c_customer_sk = 'ss_customer_sk) AND ('ss_sold_date_sk = 'd_date_sk))
+:        :     +- 'Join Inner
+:        :        :- 'Join Inner
+:        :        :  :- 'UnresolvedRelation [customer], [], false
+:        :        :  +- 'UnresolvedRelation [store_sales], [], false
+:        :        +- 'UnresolvedRelation [date_dim], [], false
+:        +- 'Aggregate ['c_customer_id, 'c_first_name, 'c_last_name, 'c_preferred_cust_flag, 'c_birth_country, 'c_login, 'c_email_address, 'd_year], ['c_customer_id AS customer_id#9469, 'c_first_name AS customer_first_name#9470, 'c_last_name AS customer_last_name#9471, 'c_preferred_cust_flag AS customer_preferred_cust_flag#9472, 'c_birth_country AS customer_birth_country#9473, 'c_login AS customer_login#9474, 'c_email_address AS customer_email_address#9475, 'd_year AS dyear#9476, 'sum(('ws_ext_list_price - 'ws_ext_discount_amt)) AS year_total#9477, w AS sale_type#9478]
+:           +- 'Filter (('c_customer_sk = 'ws_bill_customer_sk) AND ('ws_sold_date_sk = 'd_date_sk))
+:              +- 'Join Inner
+:                 :- 'Join Inner
+:                 :  :- 'UnresolvedRelation [customer], [], false
+:                 :  +- 'UnresolvedRelation [web_sales], [], false
+:                 +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['t_s_secyear.customer_id ASC NULLS FIRST, 't_s_secyear.customer_first_name ASC NULLS FIRST, 't_s_secyear.customer_last_name ASC NULLS FIRST, 't_s_secyear.customer_login ASC NULLS FIRST], true
+         +- 'Project ['t_s_secyear.customer_id, 't_s_secyear.customer_first_name, 't_s_secyear.customer_last_name, 't_s_secyear.customer_login]
+            +- 'Filter ((((('t_s_secyear.customer_id = 't_s_firstyear.customer_id) AND ('t_s_firstyear.customer_id = 't_w_secyear.customer_id)) AND (('t_s_firstyear.customer_id = 't_w_firstyear.customer_id) AND ('t_s_firstyear.sale_type = s))) AND ((('t_w_firstyear.sale_type = w) AND ('t_s_secyear.sale_type = s)) AND ('t_w_secyear.sale_type = w))) AND (((('t_s_firstyear.dyear = 2001) AND ('t_s_secyear.dyear = (2001 + 1))) AND (('t_w_firstyear.dyear = 2001) AND ('t_w_secyear.dyear = (2001 + 1)))) AND ((('t_s_firstyear.year_total > 0) AND ('t_w_firstyear.year_total > 0)) AND (CASE WHEN ('t_w_firstyear.year_total > 0) THEN ('t_w_secyear.year_total / 't_w_firstyear.year_total) ELSE 0.0 END > CASE WHEN ('t_s_firstyear.year_total > 0) THEN ('t_s_secyear.year_total / 't_s_firstyear.year_total) ELSE 0.0 END))))
+               +- 'Join Inner
+                  :- 'Join Inner
+                  :  :- 'Join Inner
+                  :  :  :- 'SubqueryAlias t_s_firstyear
+                  :  :  :  +- 'UnresolvedRelation [year_total], [], false
+                  :  :  +- 'SubqueryAlias t_s_secyear
+                  :  :     +- 'UnresolvedRelation [year_total], [], false
+                  :  +- 'SubqueryAlias t_w_firstyear
+                  :     +- 'UnresolvedRelation [year_total], [], false
+                  +- 'SubqueryAlias t_w_secyear
+                     +- 'UnresolvedRelation [year_total], [], false
+
+== Analyzed Logical Plan ==
+customer_id: string, customer_first_name: string, customer_last_name: string, customer_login: string
+WithCTE
+:- CTERelationDef 17, false
+:  +- SubqueryAlias year_total
+:     +- Union false, false
+:        :- Aggregate [c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, d_year#30], [c_customer_id#82 AS customer_id#9459, c_first_name#89 AS customer_first_name#9460, c_last_name#90 AS customer_last_name#9461, c_preferred_cust_flag#91 AS customer_preferred_cust_flag#9462, c_birth_country#95 AS customer_birth_country#9463, c_login#96 AS customer_login#9464, c_email_address#97 AS customer_email_address#9465, d_year#30 AS dyear#9466, sum((ss_ext_list_price#1265 - ss_ext_discount_amt#1262)) AS year_total#9467, s AS sale_type#9468]
+:        :  +- Filter ((c_customer_sk#81 = ss_customer_sk#1251) AND (ss_sold_date_sk#1248 = d_date_sk#24))
+:        :     +- Join Inner
+:        :        :- Join Inner
+:        :        :  :- SubqueryAlias spark_catalog.m.customer
+:        :        :  :  +- Relation spark_catalog.m.customer[c_customer_sk#81,c_customer_id#82,c_current_cdemo_sk#83,c_current_hdemo_sk#84,c_current_addr_sk#85,c_first_shipto_date_sk#86,c_first_sales_date_sk#87,c_salutation#88,c_first_name#89,c_last_name#90,c_preferred_cust_flag#91,c_birth_day#92,c_birth_month#93,c_birth_year#94,c_birth_country#95,c_login#96,c_email_address#97,c_last_review_date#98] parquet
+:        :        :  +- SubqueryAlias spark_catalog.m.store_sales
+:        :        :     +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+:        :        +- SubqueryAlias spark_catalog.m.date_dim
+:        :           +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+:        +- Aggregate [c_customer_id#9480, c_first_name#9487, c_last_name#9488, c_preferred_cust_flag#9489, c_birth_country#9493, c_login#9494, c_email_address#9495, d_year#9503], [c_customer_id#9480 AS customer_id#9469, c_first_name#9487 AS customer_first_name#9470, c_last_name#9488 AS customer_last_name#9471, c_preferred_cust_flag#9489 AS customer_preferred_cust_flag#9472, c_birth_country#9493 AS customer_birth_country#9473, c_login#9494 AS customer_login#9474, c_email_address#9495 AS customer_email_address#9475, d_year#9503 AS dyear#9476, sum((ws_ext_list_price#452 - ws_ext_discount_amt#449)) AS year_total#9477, w AS sale_type#9478]
+:           +- Filter ((c_customer_sk#9479 = ws_bill_customer_sk#431) AND (ws_sold_date_sk#427 = d_date_sk#9497))
+:              +- Join Inner
+:                 :- Join Inner
+:                 :  :- SubqueryAlias spark_catalog.m.customer
+:                 :  :  +- Relation spark_catalog.m.customer[c_customer_sk#9479,c_customer_id#9480,c_current_cdemo_sk#9481,c_current_hdemo_sk#9482,c_current_addr_sk#9483,c_first_shipto_date_sk#9484,c_first_sales_date_sk#9485,c_salutation#9486,c_first_name#9487,c_last_name#9488,c_preferred_cust_flag#9489,c_birth_day#9490,c_birth_month#9491,c_birth_year#9492,c_birth_country#9493,c_login#9494,c_email_address#9495,c_last_review_date#9496] parquet
+:                 :  +- SubqueryAlias spark_catalog.m.web_sales
+:                 :     +- Relation spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_sold_time_sk#428,ws_ship_date_sk#429,ws_item_sk#430,ws_bill_customer_sk#431,ws_bill_cdemo_sk#432,ws_bill_hdemo_sk#433,ws_bill_addr_sk#434,ws_ship_customer_sk#435,ws_ship_cdemo_sk#436,ws_ship_hdemo_sk#437,ws_ship_addr_sk#438,ws_web_page_sk#439,ws_web_site_sk#440,ws_ship_mode_sk#441,ws_warehouse_sk#442,ws_promo_sk#443,ws_order_number#444,ws_quantity#445,ws_wholesale_cost#446,ws_list_price#447,ws_sales_price#448,ws_ext_discount_amt#449,ws_ext_sales_price#450,... 10 more fields] parquet
+:                 +- SubqueryAlias spark_catalog.m.date_dim
+:                    +- Relation spark_catalog.m.date_dim[d_date_sk#9497,d_date_id#9498,d_date#9499,d_month_seq#9500,d_week_seq#9501,d_quarter_seq#9502,d_year#9503,d_dow#9504,d_moy#9505,d_dom#9506,d_qoy#9507,d_fy_year#9508,d_fy_quarter_seq#9509,d_fy_week_seq#9510,d_day_name#9511,d_quarter_name#9512,d_holiday#9513,d_weekend#9514,d_following_holiday#9515,d_first_dom#9516,d_last_dom#9517,d_same_day_ly#9518,d_same_day_lq#9519,d_current_day#9520,... 4 more fields] parquet
++- GlobalLimit 100
+   +- LocalLimit 100
+      +- Sort [customer_id#9529 ASC NULLS FIRST, customer_first_name#9530 ASC NULLS FIRST, customer_last_name#9531 ASC NULLS FIRST, customer_login#9534 ASC NULLS FIRST], true
+         +- Project [customer_id#9529, customer_first_name#9530, customer_last_name#9531, customer_login#9534]
+            +- Filter (((((customer_id#9529 = customer_id#9459) AND (customer_id#9459 = customer_id#9549)) AND ((customer_id#9459 = customer_id#9539) AND (sale_type#9468 = s))) AND (((sale_type#9548 = w) AND (sale_type#9538 = s)) AND (sale_type#9558 = w))) AND ((((dyear#9466 = 2001) AND (dyear#9536 = (2001 + 1))) AND ((dyear#9546 = 2001) AND (dyear#9556 = (2001 + 1)))) AND (((year_total#9467 > cast(0 as double)) AND (year_total#9547 > cast(0 as double))) AND (CASE WHEN (year_total#9547 > cast(0 as double)) THEN (year_total#9557 / year_total#9547) ELSE cast(0.0 as double) END > CASE WHEN (year_total#9467 > cast(0 as double)) THEN (year_total#9537 / year_total#9467) ELSE cast(0.0 as double) END))))
+               +- Join Inner
+                  :- Join Inner
+                  :  :- Join Inner
+                  :  :  :- SubqueryAlias t_s_firstyear
+                  :  :  :  +- SubqueryAlias year_total
+                  :  :  :     +- CTERelationRef 17, true, [customer_id#9459, customer_first_name#9460, customer_last_name#9461, customer_preferred_cust_flag#9462, customer_birth_country#9463, customer_login#9464, customer_email_address#9465, dyear#9466, year_total#9467, sale_type#9468], false
+                  :  :  +- SubqueryAlias t_s_secyear
+                  :  :     +- SubqueryAlias year_total
+                  :  :        +- CTERelationRef 17, true, [customer_id#9529, customer_first_name#9530, customer_last_name#9531, customer_preferred_cust_flag#9532, customer_birth_country#9533, customer_login#9534, customer_email_address#9535, dyear#9536, year_total#9537, sale_type#9538], false
+                  :  +- SubqueryAlias t_w_firstyear
+                  :     +- SubqueryAlias year_total
+                  :        +- CTERelationRef 17, true, [customer_id#9539, customer_first_name#9540, customer_last_name#9541, customer_preferred_cust_flag#9542, customer_birth_country#9543, customer_login#9544, customer_email_address#9545, dyear#9546, year_total#9547, sale_type#9548], false
+                  +- SubqueryAlias t_w_secyear
+                     +- SubqueryAlias year_total
+                        +- CTERelationRef 17, true, [customer_id#9549, customer_first_name#9550, customer_last_name#9551, customer_preferred_cust_flag#9552, customer_birth_country#9553, customer_login#9554, customer_email_address#9555, dyear#9556, year_total#9557, sale_type#9558], false
+
+== Optimized Logical Plan ==
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [customer_id#9529 ASC NULLS FIRST, customer_first_name#9530 ASC NULLS FIRST, customer_last_name#9531 ASC NULLS FIRST, customer_login#9534 ASC NULLS FIRST], true
+      +- Project [customer_id#9529, customer_first_name#9530, customer_last_name#9531, customer_login#9534]
+         +- Join Inner, ((customer_id#9459 = customer_id#9549) AND (CASE WHEN (year_total#9477 > 0.0) THEN (year_total#9557 / year_total#9477) ELSE 0.0 END > CASE WHEN (year_total#9467 > 0.0) THEN (year_total#9537 / year_total#9467) ELSE 0.0 END))
+            :- Project [customer_id#9459, year_total#9467, customer_id#9529, customer_first_name#9530, customer_last_name#9531, customer_login#9534, year_total#9537, year_total#9477]
+            :  +- Join Inner, (customer_id#9459 = customer_id#9469)
+            :     :- Join Inner, (customer_id#9529 = customer_id#9459)
+            :     :  :- Filter (isnotnull(year_total#9467) AND (year_total#9467 > 0.0))
+            :     :  :  +- Aggregate [c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, d_year#30], [c_customer_id#82 AS customer_id#9459, sum((ss_ext_list_price#1265 - ss_ext_discount_amt#1262)) AS year_total#9467]
+            :     :  :     +- Project [c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, ss_ext_discount_amt#1262, ss_ext_list_price#1265, d_year#30]
+            :     :  :        +- Join Inner, (ss_sold_date_sk#1248 = d_date_sk#24)
+            :     :  :           :- Project [c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, ss_sold_date_sk#1248, ss_ext_discount_amt#1262, ss_ext_list_price#1265]
+            :     :  :           :  +- Join Inner, (c_customer_sk#81 = ss_customer_sk#1251)
+            :     :  :           :     :- Project [c_customer_sk#81, c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97]
+            :     :  :           :     :  +- Filter (isnotnull(c_customer_sk#81) AND isnotnull(c_customer_id#82))
+            :     :  :           :     :     +- Relation spark_catalog.m.customer[c_customer_sk#81,c_customer_id#82,c_current_cdemo_sk#83,c_current_hdemo_sk#84,c_current_addr_sk#85,c_first_shipto_date_sk#86,c_first_sales_date_sk#87,c_salutation#88,c_first_name#89,c_last_name#90,c_preferred_cust_flag#91,c_birth_day#92,c_birth_month#93,c_birth_year#94,c_birth_country#95,c_login#96,c_email_address#97,c_last_review_date#98] parquet
+            :     :  :           :     +- Project [ss_sold_date_sk#1248, ss_customer_sk#1251, ss_ext_discount_amt#1262, ss_ext_list_price#1265]
+            :     :  :           :        +- Filter (isnotnull(ss_customer_sk#1251) AND isnotnull(ss_sold_date_sk#1248))
+            :     :  :           :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+            :     :  :           +- Project [d_date_sk#24, d_year#30]
+            :     :  :              +- Filter ((isnotnull(d_year#30) AND (d_year#30 = 2001)) AND isnotnull(d_date_sk#24))
+            :     :  :                 +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+            :     :  +- Aggregate [c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, d_year#11593], [c_customer_id#11547 AS customer_id#9529, c_first_name#11554 AS customer_first_name#9530, c_last_name#11555 AS customer_last_name#9531, c_login#11561 AS customer_login#9534, sum((ss_ext_list_price#11581 - ss_ext_discount_amt#11578)) AS year_total#9537]
+            :     :     +- Project [c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, ss_ext_discount_amt#11578, ss_ext_list_price#11581, d_year#11593]
+            :     :        +- Join Inner, (ss_sold_date_sk#11564 = d_date_sk#11587)
+            :     :           :- Project [c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, ss_sold_date_sk#11564, ss_ext_discount_amt#11578, ss_ext_list_price#11581]
+            :     :           :  +- Join Inner, (c_customer_sk#11546 = ss_customer_sk#11567)
+            :     :           :     :- Project [c_customer_sk#11546, c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562]
+            :     :           :     :  +- Filter (isnotnull(c_customer_sk#11546) AND isnotnull(c_customer_id#11547))
+            :     :           :     :     +- Relation spark_catalog.m.customer[c_customer_sk#11546,c_customer_id#11547,c_current_cdemo_sk#11548,c_current_hdemo_sk#11549,c_current_addr_sk#11550,c_first_shipto_date_sk#11551,c_first_sales_date_sk#11552,c_salutation#11553,c_first_name#11554,c_last_name#11555,c_preferred_cust_flag#11556,c_birth_day#11557,c_birth_month#11558,c_birth_year#11559,c_birth_country#11560,c_login#11561,c_email_address#11562,c_last_review_date#11563] parquet
+            :     :           :     +- Project [ss_sold_date_sk#11564, ss_customer_sk#11567, ss_ext_discount_amt#11578, ss_ext_list_price#11581]
+            :     :           :        +- Filter (isnotnull(ss_customer_sk#11567) AND isnotnull(ss_sold_date_sk#11564))
+            :     :           :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#11564,ss_sold_time_sk#11565,ss_item_sk#11566,ss_customer_sk#11567,ss_cdemo_sk#11568,ss_hdemo_sk#11569,ss_addr_sk#11570,ss_store_sk#11571,ss_promo_sk#11572,ss_ticket_number#11573,ss_quantity#11574,ss_wholesale_cost#11575,ss_list_price#11576,ss_sales_price#11577,ss_ext_discount_amt#11578,ss_ext_sales_price#11579,ss_ext_wholesale_cost#11580,ss_ext_list_price#11581,ss_ext_tax#11582,ss_coupon_amt#11583,ss_net_paid#11584,ss_net_paid_inc_tax#11585,ss_net_profit#11586] parquet
+            :     :           +- Project [d_date_sk#11587, d_year#11593]
+            :     :              +- Filter ((isnotnull(d_year#11593) AND (d_year#11593 = 2002)) AND isnotnull(d_date_sk#11587))
+            :     :                 +- Relation spark_catalog.m.date_dim[d_date_sk#11587,d_date_id#11588,d_date#11589,d_month_seq#11590,d_week_seq#11591,d_quarter_seq#11592,d_year#11593,d_dow#11594,d_moy#11595,d_dom#11596,d_qoy#11597,d_fy_year#11598,d_fy_quarter_seq#11599,d_fy_week_seq#11600,d_day_name#11601,d_quarter_name#11602,d_holiday#11603,d_weekend#11604,d_following_holiday#11605,d_first_dom#11606,d_last_dom#11607,d_same_day_ly#11608,d_same_day_lq#11609,d_current_day#11610,... 4 more fields] parquet
+            :     +- Filter (isnotnull(year_total#9477) AND (year_total#9477 > 0.0))
+            :        +- Aggregate [c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, d_year#11832], [c_customer_id#11775 AS customer_id#9469, sum((ws_ext_list_price#11817 - ws_ext_discount_amt#11814)) AS year_total#9477]
+            :           +- Project [c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, ws_ext_discount_amt#11814, ws_ext_list_price#11817, d_year#11832]
+            :              +- Join Inner, (ws_sold_date_sk#11792 = d_date_sk#11826)
+            :                 :- Project [c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, ws_sold_date_sk#11792, ws_ext_discount_amt#11814, ws_ext_list_price#11817]
+            :                 :  +- Join Inner, (c_customer_sk#11774 = ws_bill_customer_sk#11796)
+            :                 :     :- Project [c_customer_sk#11774, c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790]
+            :                 :     :  +- Filter (isnotnull(c_customer_sk#11774) AND isnotnull(c_customer_id#11775))
+            :                 :     :     +- Relation spark_catalog.m.customer[c_customer_sk#11774,c_customer_id#11775,c_current_cdemo_sk#11776,c_current_hdemo_sk#11777,c_current_addr_sk#11778,c_first_shipto_date_sk#11779,c_first_sales_date_sk#11780,c_salutation#11781,c_first_name#11782,c_last_name#11783,c_preferred_cust_flag#11784,c_birth_day#11785,c_birth_month#11786,c_birth_year#11787,c_birth_country#11788,c_login#11789,c_email_address#11790,c_last_review_date#11791] parquet
+            :                 :     +- Project [ws_sold_date_sk#11792, ws_bill_customer_sk#11796, ws_ext_discount_amt#11814, ws_ext_list_price#11817]
+            :                 :        +- Filter (isnotnull(ws_bill_customer_sk#11796) AND isnotnull(ws_sold_date_sk#11792))
+            :                 :           +- Relation spark_catalog.m.web_sales[ws_sold_date_sk#11792,ws_sold_time_sk#11793,ws_ship_date_sk#11794,ws_item_sk#11795,ws_bill_customer_sk#11796,ws_bill_cdemo_sk#11797,ws_bill_hdemo_sk#11798,ws_bill_addr_sk#11799,ws_ship_customer_sk#11800,ws_ship_cdemo_sk#11801,ws_ship_hdemo_sk#11802,ws_ship_addr_sk#11803,ws_web_page_sk#11804,ws_web_site_sk#11805,ws_ship_mode_sk#11806,ws_warehouse_sk#11807,ws_promo_sk#11808,ws_order_number#11809,ws_quantity#11810,ws_wholesale_cost#11811,ws_list_price#11812,ws_sales_price#11813,ws_ext_discount_amt#11814,ws_ext_sales_price#11815,... 10 more fields] parquet
+            :                 +- Project [d_date_sk#11826, d_year#11832]
+            :                    +- Filter ((isnotnull(d_year#11832) AND (d_year#11832 = 2001)) AND isnotnull(d_date_sk#11826))
+            :                       +- Relation spark_catalog.m.date_dim[d_date_sk#11826,d_date_id#11827,d_date#11828,d_month_seq#11829,d_week_seq#11830,d_quarter_seq#11831,d_year#11832,d_dow#11833,d_moy#11834,d_dom#11835,d_qoy#11836,d_fy_year#11837,d_fy_quarter_seq#11838,d_fy_week_seq#11839,d_day_name#11840,d_quarter_name#11841,d_holiday#11842,d_weekend#11843,d_following_holiday#11844,d_first_dom#11845,d_last_dom#11846,d_same_day_ly#11847,d_same_day_lq#11848,d_current_day#11849,... 4 more fields] parquet
+            +- Aggregate [c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, d_year#11991], [c_customer_id#11934 AS customer_id#9549, sum((ws_ext_list_price#11976 - ws_ext_discount_amt#11973)) AS year_total#9557]
+               +- Project [c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, ws_ext_discount_amt#11973, ws_ext_list_price#11976, d_year#11991]
+                  +- Join Inner, (ws_sold_date_sk#11951 = d_date_sk#11985)
+                     :- Project [c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, ws_sold_date_sk#11951, ws_ext_discount_amt#11973, ws_ext_list_price#11976]
+                     :  +- Join Inner, (c_customer_sk#11933 = ws_bill_customer_sk#11955)
+                     :     :- Project [c_customer_sk#11933, c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949]
+                     :     :  +- Filter (isnotnull(c_customer_sk#11933) AND isnotnull(c_customer_id#11934))
+                     :     :     +- Relation spark_catalog.m.customer[c_customer_sk#11933,c_customer_id#11934,c_current_cdemo_sk#11935,c_current_hdemo_sk#11936,c_current_addr_sk#11937,c_first_shipto_date_sk#11938,c_first_sales_date_sk#11939,c_salutation#11940,c_first_name#11941,c_last_name#11942,c_preferred_cust_flag#11943,c_birth_day#11944,c_birth_month#11945,c_birth_year#11946,c_birth_country#11947,c_login#11948,c_email_address#11949,c_last_review_date#11950] parquet
+                     :     +- Project [ws_sold_date_sk#11951, ws_bill_customer_sk#11955, ws_ext_discount_amt#11973, ws_ext_list_price#11976]
+                     :        +- Filter (isnotnull(ws_bill_customer_sk#11955) AND isnotnull(ws_sold_date_sk#11951))
+                     :           +- Relation spark_catalog.m.web_sales[ws_sold_date_sk#11951,ws_sold_time_sk#11952,ws_ship_date_sk#11953,ws_item_sk#11954,ws_bill_customer_sk#11955,ws_bill_cdemo_sk#11956,ws_bill_hdemo_sk#11957,ws_bill_addr_sk#11958,ws_ship_customer_sk#11959,ws_ship_cdemo_sk#11960,ws_ship_hdemo_sk#11961,ws_ship_addr_sk#11962,ws_web_page_sk#11963,ws_web_site_sk#11964,ws_ship_mode_sk#11965,ws_warehouse_sk#11966,ws_promo_sk#11967,ws_order_number#11968,ws_quantity#11969,ws_wholesale_cost#11970,ws_list_price#11971,ws_sales_price#11972,ws_ext_discount_amt#11973,ws_ext_sales_price#11974,... 10 more fields] parquet
+                     +- Project [d_date_sk#11985, d_year#11991]
+                        +- Filter ((isnotnull(d_year#11991) AND (d_year#11991 = 2002)) AND isnotnull(d_date_sk#11985))
+                           +- Relation spark_catalog.m.date_dim[d_date_sk#11985,d_date_id#11986,d_date#11987,d_month_seq#11988,d_week_seq#11989,d_quarter_seq#11990,d_year#11991,d_dow#11992,d_moy#11993,d_dom#11994,d_qoy#11995,d_fy_year#11996,d_fy_quarter_seq#11997,d_fy_week_seq#11998,d_day_name#11999,d_quarter_name#12000,d_holiday#12001,d_weekend#12002,d_following_holiday#12003,d_first_dom#12004,d_last_dom#12005,d_same_day_ly#12006,d_same_day_lq#12007,d_current_day#12008,... 4 more fields] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[customer_id#9529 ASC NULLS FIRST,customer_first_name#9530 ASC NULLS FIRST,customer_last_name#9531 ASC NULLS FIRST,customer_login#9534 ASC NULLS FIRST], output=[customer_id#9529,customer_first_name#9530,customer_last_name#9531,customer_login#9534])
+   +- Project [customer_id#9529, customer_first_name#9530, customer_last_name#9531, customer_login#9534]
+      +- SortMergeJoin [customer_id#9459], [customer_id#9549], Inner, (CASE WHEN (year_total#9477 > 0.0) THEN (year_total#9557 / year_total#9477) ELSE 0.0 END > CASE WHEN (year_total#9467 > 0.0) THEN (year_total#9537 / year_total#9467) ELSE 0.0 END)
+         :- Project [customer_id#9459, year_total#9467, customer_id#9529, customer_first_name#9530, customer_last_name#9531, customer_login#9534, year_total#9537, year_total#9477]
+         :  +- SortMergeJoin [customer_id#9459], [customer_id#9469], Inner
+         :     :- SortMergeJoin [customer_id#9459], [customer_id#9529], Inner
+         :     :  :- Sort [customer_id#9459 ASC NULLS FIRST], false, 0
+         :     :  :  +- Exchange hashpartitioning(customer_id#9459, 200), ENSURE_REQUIREMENTS, [plan_id=16629]
+         :     :  :     +- Filter (isnotnull(year_total#9467) AND (year_total#9467 > 0.0))
+         :     :  :        +- HashAggregate(keys=[c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, d_year#30], functions=[sum((ss_ext_list_price#1265 - ss_ext_discount_amt#1262))], output=[customer_id#9459, year_total#9467])
+         :     :  :           +- Exchange hashpartitioning(c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, d_year#30, 200), ENSURE_REQUIREMENTS, [plan_id=16613]
+         :     :  :              +- HashAggregate(keys=[c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, d_year#30], functions=[partial_sum((ss_ext_list_price#1265 - ss_ext_discount_amt#1262))], output=[c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, d_year#30, sum#11514])
+         :     :  :                 +- Project [c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, ss_ext_discount_amt#1262, ss_ext_list_price#1265, d_year#30]
+         :     :  :                    +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#24], Inner, BuildRight, false
+         :     :  :                       :- Project [c_customer_id#82, c_first_name#89, c_last_name#90, c_preferred_cust_flag#91, c_birth_country#95, c_login#96, c_email_address#97, ss_sold_date_sk#1248, ss_ext_discount_amt#1262, ss_ext_list_price#1265]
+         :     :  :                       :  +- BroadcastHashJoin [c_customer_sk#81], [ss_customer_sk#1251], Inner, BuildLeft, false
+         :     :  :                       :     :- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=16604]
+         :     :  :                       :     :  +- Filter (isnotnull(c_customer_sk#81) AND isnotnull(c_customer_id#82))
+         :     :  :                       :     :     +- FileScan parquet spark_catalog.m.customer[c_customer_sk#81,c_customer_id#82,c_first_name#89,c_last_name#90,c_preferred_cust_flag#91,c_birth_country#95,c_login#96,c_email_address#97] Batched: true, DataFilters: [isnotnull(c_customer_sk#81), isnotnull(c_customer_id#82)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer], PartitionFilters: [], PushedFilters: [IsNotNull(c_customer_sk), IsNotNull(c_customer_id)], ReadSchema: struct<c_customer_sk:int,c_customer_id:string,c_first_name:string,c_last_name:string,c_preferred_...
+         :     :  :                       :     +- Filter (isnotnull(ss_customer_sk#1251) AND isnotnull(ss_sold_date_sk#1248))
+         :     :  :                       :        +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_customer_sk#1251,ss_ext_discount_amt#1262,ss_ext_list_price#1265] Batched: true, DataFilters: [isnotnull(ss_customer_sk#1251), isnotnull(ss_sold_date_sk#1248)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_customer_sk), IsNotNull(ss_sold_date_sk)], ReadSchema: struct<ss_sold_date_sk:int,ss_customer_sk:int,ss_ext_discount_amt:double,ss_ext_list_price:double>
+         :     :  :                       +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=16608]
+         :     :  :                          +- Filter ((isnotnull(d_year#30) AND (d_year#30 = 2001)) AND isnotnull(d_date_sk#24))
+         :     :  :                             +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_year#30] Batched: true, DataFilters: [isnotnull(d_year#30), (d_year#30 = 2001), isnotnull(d_date_sk#24)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), EqualTo(d_year,2001), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int>
+         :     :  +- Sort [customer_id#9529 ASC NULLS FIRST], false, 0
+         :     :     +- Exchange hashpartitioning(customer_id#9529, 200), ENSURE_REQUIREMENTS, [plan_id=16630]
+         :     :        +- HashAggregate(keys=[c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, d_year#11593], functions=[sum((ss_ext_list_price#11581 - ss_ext_discount_amt#11578))], output=[customer_id#9529, customer_first_name#9530, customer_last_name#9531, customer_login#9534, year_total#9537])
+         :     :           +- Exchange hashpartitioning(c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, d_year#11593, 200), ENSURE_REQUIREMENTS, [plan_id=16625]
+         :     :              +- HashAggregate(keys=[c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, d_year#11593], functions=[partial_sum((ss_ext_list_price#11581 - ss_ext_discount_amt#11578))], output=[c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, d_year#11593, sum#12054])
+         :     :                 +- Project [c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, ss_ext_discount_amt#11578, ss_ext_list_price#11581, d_year#11593]
+         :     :                    +- BroadcastHashJoin [ss_sold_date_sk#11564], [d_date_sk#11587], Inner, BuildRight, false
+         :     :                       :- Project [c_customer_id#11547, c_first_name#11554, c_last_name#11555, c_preferred_cust_flag#11556, c_birth_country#11560, c_login#11561, c_email_address#11562, ss_sold_date_sk#11564, ss_ext_discount_amt#11578, ss_ext_list_price#11581]
+         :     :                       :  +- BroadcastHashJoin [c_customer_sk#11546], [ss_customer_sk#11567], Inner, BuildLeft, false
+         :     :                       :     :- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=16616]
+         :     :                       :     :  +- Filter (isnotnull(c_customer_sk#11546) AND isnotnull(c_customer_id#11547))
+         :     :                       :     :     +- FileScan parquet spark_catalog.m.customer[c_customer_sk#11546,c_customer_id#11547,c_first_name#11554,c_last_name#11555,c_preferred_cust_flag#11556,c_birth_country#11560,c_login#11561,c_email_address#11562] Batched: true, DataFilters: [isnotnull(c_customer_sk#11546), isnotnull(c_customer_id#11547)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer], PartitionFilters: [], PushedFilters: [IsNotNull(c_customer_sk), IsNotNull(c_customer_id)], ReadSchema: struct<c_customer_sk:int,c_customer_id:string,c_first_name:string,c_last_name:string,c_preferred_...
+         :     :                       :     +- Filter (isnotnull(ss_customer_sk#11567) AND isnotnull(ss_sold_date_sk#11564))
+         :     :                       :        +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#11564,ss_customer_sk#11567,ss_ext_discount_amt#11578,ss_ext_list_price#11581] Batched: true, DataFilters: [isnotnull(ss_customer_sk#11567), isnotnull(ss_sold_date_sk#11564)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_customer_sk), IsNotNull(ss_sold_date_sk)], ReadSchema: struct<ss_sold_date_sk:int,ss_customer_sk:int,ss_ext_discount_amt:double,ss_ext_list_price:double>
+         :     :                       +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=16620]
+         :     :                          +- Filter ((isnotnull(d_year#11593) AND (d_year#11593 = 2002)) AND isnotnull(d_date_sk#11587))
+         :     :                             +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#11587,d_year#11593] Batched: true, DataFilters: [isnotnull(d_year#11593), (d_year#11593 = 2002), isnotnull(d_date_sk#11587)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), EqualTo(d_year,2002), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int>
+         :     +- Sort [customer_id#9469 ASC NULLS FIRST], false, 0
+         :        +- Exchange hashpartitioning(customer_id#9469, 200), ENSURE_REQUIREMENTS, [plan_id=16648]
+         :           +- Filter (isnotnull(year_total#9477) AND (year_total#9477 > 0.0))
+         :              +- HashAggregate(keys=[c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, d_year#11832], functions=[sum((ws_ext_list_price#11817 - ws_ext_discount_amt#11814))], output=[customer_id#9469, year_total#9477])
+         :                 +- Exchange hashpartitioning(c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, d_year#11832, 200), ENSURE_REQUIREMENTS, [plan_id=16643]
+         :                    +- HashAggregate(keys=[c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, d_year#11832], functions=[partial_sum((ws_ext_list_price#11817 - ws_ext_discount_amt#11814))], output=[c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, d_year#11832, sum#12056])
+         :                       +- Project [c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, ws_ext_discount_amt#11814, ws_ext_list_price#11817, d_year#11832]
+         :                          +- BroadcastHashJoin [ws_sold_date_sk#11792], [d_date_sk#11826], Inner, BuildRight, false
+         :                             :- Project [c_customer_id#11775, c_first_name#11782, c_last_name#11783, c_preferred_cust_flag#11784, c_birth_country#11788, c_login#11789, c_email_address#11790, ws_sold_date_sk#11792, ws_ext_discount_amt#11814, ws_ext_list_price#11817]
+         :                             :  +- BroadcastHashJoin [c_customer_sk#11774], [ws_bill_customer_sk#11796], Inner, BuildLeft, false
+         :                             :     :- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=16634]
+         :                             :     :  +- Filter (isnotnull(c_customer_sk#11774) AND isnotnull(c_customer_id#11775))
+         :                             :     :     +- FileScan parquet spark_catalog.m.customer[c_customer_sk#11774,c_customer_id#11775,c_first_name#11782,c_last_name#11783,c_preferred_cust_flag#11784,c_birth_country#11788,c_login#11789,c_email_address#11790] Batched: true, DataFilters: [isnotnull(c_customer_sk#11774), isnotnull(c_customer_id#11775)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer], PartitionFilters: [], PushedFilters: [IsNotNull(c_customer_sk), IsNotNull(c_customer_id)], ReadSchema: struct<c_customer_sk:int,c_customer_id:string,c_first_name:string,c_last_name:string,c_preferred_...
+         :                             :     +- Filter (isnotnull(ws_bill_customer_sk#11796) AND isnotnull(ws_sold_date_sk#11792))
+         :                             :        +- FileScan parquet spark_catalog.m.web_sales[ws_sold_date_sk#11792,ws_bill_customer_sk#11796,ws_ext_discount_amt#11814,ws_ext_list_price#11817] Batched: true, DataFilters: [isnotnull(ws_bill_customer_sk#11796), isnotnull(ws_sold_date_sk#11792)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_bill_customer_sk), IsNotNull(ws_sold_date_sk)], ReadSchema: struct<ws_sold_date_sk:int,ws_bill_customer_sk:int,ws_ext_discount_amt:double,ws_ext_list_price:d...
+         :                             +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=16638]
+         :                                +- Filter ((isnotnull(d_year#11832) AND (d_year#11832 = 2001)) AND isnotnull(d_date_sk#11826))
+         :                                   +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#11826,d_year#11832] Batched: true, DataFilters: [isnotnull(d_year#11832), (d_year#11832 = 2001), isnotnull(d_date_sk#11826)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), EqualTo(d_year,2001), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int>
+         +- Sort [customer_id#9549 ASC NULLS FIRST], false, 0
+            +- Exchange hashpartitioning(customer_id#9549, 200), ENSURE_REQUIREMENTS, [plan_id=16665]
+               +- HashAggregate(keys=[c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, d_year#11991], functions=[sum((ws_ext_list_price#11976 - ws_ext_discount_amt#11973))], output=[customer_id#9549, year_total#9557])
+                  +- Exchange hashpartitioning(c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, d_year#11991, 200), ENSURE_REQUIREMENTS, [plan_id=16661]
+                     +- HashAggregate(keys=[c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, d_year#11991], functions=[partial_sum((ws_ext_list_price#11976 - ws_ext_discount_amt#11973))], output=[c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, d_year#11991, sum#12058])
+                        +- Project [c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, ws_ext_discount_amt#11973, ws_ext_list_price#11976, d_year#11991]
+                           +- BroadcastHashJoin [ws_sold_date_sk#11951], [d_date_sk#11985], Inner, BuildRight, false
+                              :- Project [c_customer_id#11934, c_first_name#11941, c_last_name#11942, c_preferred_cust_flag#11943, c_birth_country#11947, c_login#11948, c_email_address#11949, ws_sold_date_sk#11951, ws_ext_discount_amt#11973, ws_ext_list_price#11976]
+                              :  +- BroadcastHashJoin [c_customer_sk#11933], [ws_bill_customer_sk#11955], Inner, BuildLeft, false
+                              :     :- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=16652]
+                              :     :  +- Filter (isnotnull(c_customer_sk#11933) AND isnotnull(c_customer_id#11934))
+                              :     :     +- FileScan parquet spark_catalog.m.customer[c_customer_sk#11933,c_customer_id#11934,c_first_name#11941,c_last_name#11942,c_preferred_cust_flag#11943,c_birth_country#11947,c_login#11948,c_email_address#11949] Batched: true, DataFilters: [isnotnull(c_customer_sk#11933), isnotnull(c_customer_id#11934)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer], PartitionFilters: [], PushedFilters: [IsNotNull(c_customer_sk), IsNotNull(c_customer_id)], ReadSchema: struct<c_customer_sk:int,c_customer_id:string,c_first_name:string,c_last_name:string,c_preferred_...
+                              :     +- Filter (isnotnull(ws_bill_customer_sk#11955) AND isnotnull(ws_sold_date_sk#11951))
+                              :        +- FileScan parquet spark_catalog.m.web_sales[ws_sold_date_sk#11951,ws_bill_customer_sk#11955,ws_ext_discount_amt#11973,ws_ext_list_price#11976] Batched: true, DataFilters: [isnotnull(ws_bill_customer_sk#11955), isnotnull(ws_sold_date_sk#11951)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_bill_customer_sk), IsNotNull(ws_sold_date_sk)], ReadSchema: struct<ws_sold_date_sk:int,ws_bill_customer_sk:int,ws_ext_discount_amt:double,ws_ext_list_price:d...
+                              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=16656]
+                                 +- Filter ((isnotnull(d_year#11991) AND (d_year#11991 = 2002)) AND isnotnull(d_date_sk#11985))
+                                    +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#11985,d_year#11991] Batched: true, DataFilters: [isnotnull(d_year#11991), (d_year#11991 = 2002), isnotnull(d_date_sk#11985)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), EqualTo(d_year,2002), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int>

@@ -1,0 +1,11 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['i_product_name ASC NULLS FIRST], true
+      +- 'Distinct
+         +- 'Project ['i_product_name]
+            +- 'Filter ((('i_manufact_id >= 739) AND ('i_manufact_id <= (739 + 40))) AND (scalar-subquery#31300 [] > 0))
+               :  +- 'Project ['count(1) AS item_cnt#31299]
+               :     +- 'Filter ((('i_manufact = 'i1.i_manufact) AND ((((('i_category = Women) AND (('i_color = mint) OR ('i_color = almond))) AND ((('i_units = Dozen) OR ('i_units = Carton)) AND (('i_size = large) OR ('i_size = extra large)))) OR ((('i_category = Women) AND (('i_color = lime) OR ('i_color = dodger))) AND ((('i_units = Pallet) OR ('i_units = Ounce)) AND (('i_size = economy) OR ('i_size = medium))))) OR (((('i_category = Men) AND (('i_color = salmon) OR ('i_color = navy))) AND ((('i_units = Bunch) OR ('i_units = Oz)) AND (('i_size = N/A) OR ('i_size = small)))) OR ((('i_category = Men) AND (('i_color = antique) OR ('i_color = white))) AND ((('i_units = Unknown) OR ('i_units = Tbl)) AND (('i_size = large) OR ('i_size = extra large))))))) OR (('i_manufact = 'i1.i_manufact) AND ((((('i_category = Women) AND (('i_color = dim) OR ('i_color = chiffon))) AND ((('i_units = Box) OR ('i_units = N/A)) AND (('i_size = large) OR ('i_size = extra large)))) OR ((('i_category = Women) AND (('i_color = lemon) OR ('i_color = rosy))) AND ((('i_units = Tsp) OR ('i_units = Dram)) AND (('i_size = economy) OR ('i_size = medium))))) OR (((('i_category = Men) AND (('i_color = deep) OR ('i_color = smoke))) AND ((('i_units = Gram) OR ('i_units = Pound)) AND (('i_size = N/A) OR ('i_size = small)))) OR ((('i_category = Men) AND (('i_color = metallic) OR ('i_color = olive))) AND ((('i_units = Lb) OR ('i_units = Case)) AND (('i_size = large) OR ('i_size = extra large))))))))
+               :        +- 'UnresolvedRelation [item], [], false
+               +- 'SubqueryAlias i1
+                  +- 'UnresolvedRelation [item], [], false

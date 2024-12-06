@@ -1,0 +1,23 @@
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[ca_zip#8180 ASC NULLS FIRST], output=[ca_zip#8180,sum(cs_sales_price)#20225])
+   +- HashAggregate(keys=[ca_zip#8180], functions=[sum(cs_sales_price#482)], output=[ca_zip#8180, sum(cs_sales_price)#20225])
+      +- Exchange hashpartitioning(ca_zip#8180, 200), ENSURE_REQUIREMENTS, [plan_id=48928]
+         +- HashAggregate(keys=[ca_zip#8180], functions=[partial_sum(cs_sales_price#482)], output=[ca_zip#8180, sum#20235])
+            +- Project [cs_sales_price#482, ca_zip#8180]
+               +- BroadcastHashJoin [cs_sold_date_sk#461], [d_date_sk#24], Inner, BuildRight, false
+                  :- Project [cs_sold_date_sk#461, cs_sales_price#482, ca_zip#8180]
+                  :  +- BroadcastHashJoin [c_current_addr_sk#85], [ca_address_sk#8171], Inner, BuildRight, ((substr(ca_zip#8180, 1, 5) IN (85669,86197,88274,83405,86475,85392,85460,80348,81792) OR ca_state#8179 IN (CA,WA,GA)) OR (cs_sales_price#482 > 500.0)), false
+                  :     :- Project [cs_sold_date_sk#461, cs_sales_price#482, c_current_addr_sk#85]
+                  :     :  +- BroadcastHashJoin [cs_bill_customer_sk#464], [c_customer_sk#81], Inner, BuildRight, false
+                  :     :     :- Filter (isnotnull(cs_bill_customer_sk#464) AND isnotnull(cs_sold_date_sk#461))
+                  :     :     :  +- FileScan parquet spark_catalog.m.catalog_sales[cs_sold_date_sk#461,cs_bill_customer_sk#464,cs_sales_price#482] Batched: true, DataFilters: [isnotnull(cs_bill_customer_sk#464), isnotnull(cs_sold_date_sk#461)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/catalog_sales], PartitionFilters: [], PushedFilters: [IsNotNull(cs_bill_customer_sk), IsNotNull(cs_sold_date_sk)], ReadSchema: struct<cs_sold_date_sk:int,cs_bill_customer_sk:int,cs_sales_price:double>
+                  :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=48915]
+                  :     :        +- Filter (isnotnull(c_customer_sk#81) AND isnotnull(c_current_addr_sk#85))
+                  :     :           +- FileScan parquet spark_catalog.m.customer[c_customer_sk#81,c_current_addr_sk#85] Batched: true, DataFilters: [isnotnull(c_customer_sk#81), isnotnull(c_current_addr_sk#85)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer], PartitionFilters: [], PushedFilters: [IsNotNull(c_customer_sk), IsNotNull(c_current_addr_sk)], ReadSchema: struct<c_customer_sk:int,c_current_addr_sk:int>
+                  :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=48919]
+                  :        +- Filter isnotnull(ca_address_sk#8171)
+                  :           +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#8171,ca_state#8179,ca_zip#8180] Batched: true, DataFilters: [isnotnull(ca_address_sk#8171)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_state:string,ca_zip:string>
+                  +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=48923]
+                     +- Project [d_date_sk#24]
+                        +- Filter ((((isnotnull(d_qoy#34) AND isnotnull(d_year#30)) AND (d_qoy#34 = 1)) AND (d_year#30 = 2000)) AND isnotnull(d_date_sk#24))
+                           +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_year#30,d_qoy#34] Batched: true, DataFilters: [isnotnull(d_qoy#34), isnotnull(d_year#30), (d_qoy#34 = 1), (d_year#30 = 2000), isnotnull(d_date_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_qoy), IsNotNull(d_year), EqualTo(d_qoy,1), EqualTo(d_year,2000), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int,d_qoy:int>

@@ -1,0 +1,136 @@
+== Parsed Logical Plan ==
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['c_last_name ASC NULLS FIRST, 'ss_ticket_number ASC NULLS FIRST], true
+      +- 'Project ['c_last_name, 'c_first_name, 'ca_city, 'bought_city, 'ss_ticket_number, 'extended_price, 'extended_tax, 'list_price]
+         +- 'Filter ((('ss_customer_sk = 'c_customer_sk) AND ('customer.c_current_addr_sk = 'current_addr.ca_address_sk)) AND NOT ('current_addr.ca_city = 'bought_city))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'SubqueryAlias dn
+               :  :  +- 'Aggregate ['ss_ticket_number, 'ss_customer_sk, 'ss_addr_sk, 'ca_city], ['ss_ticket_number, 'ss_customer_sk, 'ca_city AS bought_city#40714, 'sum('ss_ext_sales_price) AS extended_price#40715, 'sum('ss_ext_list_price) AS list_price#40716, 'sum('ss_ext_tax) AS extended_tax#40717]
+               :  :     +- 'Filter (((('store_sales.ss_sold_date_sk = 'date_dim.d_date_sk) AND ('store_sales.ss_store_sk = 'store.s_store_sk)) AND (('store_sales.ss_hdemo_sk = 'household_demographics.hd_demo_sk) AND ('store_sales.ss_addr_sk = 'customer_address.ca_address_sk))) AND (((('date_dim.d_dom >= 1) AND ('date_dim.d_dom <= 2)) AND (('household_demographics.hd_dep_count = 5) OR ('household_demographics.hd_vehicle_count = 1))) AND ('date_dim.d_year IN (1998,(1998 + 1),(1998 + 2)) AND 'store.s_city IN (Oak Grove,Fairview))))
+               :  :        +- 'Join Inner
+               :  :           :- 'Join Inner
+               :  :           :  :- 'Join Inner
+               :  :           :  :  :- 'Join Inner
+               :  :           :  :  :  :- 'UnresolvedRelation [store_sales], [], false
+               :  :           :  :  :  +- 'UnresolvedRelation [date_dim], [], false
+               :  :           :  :  +- 'UnresolvedRelation [store], [], false
+               :  :           :  +- 'UnresolvedRelation [household_demographics], [], false
+               :  :           +- 'UnresolvedRelation [customer_address], [], false
+               :  +- 'UnresolvedRelation [customer], [], false
+               +- 'SubqueryAlias current_addr
+                  +- 'UnresolvedRelation [customer_address], [], false
+
+== Analyzed Logical Plan ==
+c_last_name: string, c_first_name: string, ca_city: string, bought_city: string, ss_ticket_number: int, extended_price: double, extended_tax: double, list_price: double
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [c_last_name#90 ASC NULLS FIRST, ss_ticket_number#1257 ASC NULLS FIRST], true
+      +- Project [c_last_name#90, c_first_name#89, ca_city#40724, bought_city#40714, ss_ticket_number#1257, extended_price#40715, extended_tax#40717, list_price#40716]
+         +- Filter (((ss_customer_sk#1251 = c_customer_sk#81) AND (c_current_addr_sk#85 = ca_address_sk#40718)) AND NOT (ca_city#40724 = bought_city#40714))
+            +- Join Inner
+               :- Join Inner
+               :  :- SubqueryAlias dn
+               :  :  +- Aggregate [ss_ticket_number#1257, ss_customer_sk#1251, ss_addr_sk#1254, ca_city#8177], [ss_ticket_number#1257, ss_customer_sk#1251, ca_city#8177 AS bought_city#40714, sum(ss_ext_sales_price#1263) AS extended_price#40715, sum(ss_ext_list_price#1265) AS list_price#40716, sum(ss_ext_tax#1266) AS extended_tax#40717]
+               :  :     +- Filter ((((ss_sold_date_sk#1248 = d_date_sk#24) AND (ss_store_sk#1255 = s_store_sk#52)) AND ((ss_hdemo_sk#1253 = hd_demo_sk#12110) AND (ss_addr_sk#1254 = ca_address_sk#8171))) AND ((((d_dom#33 >= 1) AND (d_dom#33 <= 2)) AND ((hd_dep_count#12113 = 5) OR (hd_vehicle_count#12114 = 1))) AND (d_year#30 IN (1998,(1998 + 1),(1998 + 2)) AND s_city#74 IN (Oak Grove,Fairview))))
+               :  :        +- Join Inner
+               :  :           :- Join Inner
+               :  :           :  :- Join Inner
+               :  :           :  :  :- Join Inner
+               :  :           :  :  :  :- SubqueryAlias spark_catalog.m.store_sales
+               :  :           :  :  :  :  +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+               :  :           :  :  :  +- SubqueryAlias spark_catalog.m.date_dim
+               :  :           :  :  :     +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+               :  :           :  :  +- SubqueryAlias spark_catalog.m.store
+               :  :           :  :     +- Relation spark_catalog.m.store[s_store_sk#52,s_store_id#53,s_rec_start_date#54,s_rec_end_date#55,s_closed_date_sk#56,s_store_name#57,s_number_employees#58,s_floor_space#59,s_hours#60,s_manager#61,s_market_id#62,s_geography_class#63,s_market_desc#64,s_market_manager#65,s_division_id#66,s_division_name#67,s_company_id#68,s_company_name#69,s_street_number#70,s_street_name#71,s_street_type#72,s_suite_number#73,s_city#74,s_county#75,... 5 more fields] parquet
+               :  :           :  +- SubqueryAlias spark_catalog.m.household_demographics
+               :  :           :     +- Relation spark_catalog.m.household_demographics[hd_demo_sk#12110,hd_income_band_sk#12111,hd_buy_potential#12112,hd_dep_count#12113,hd_vehicle_count#12114] parquet
+               :  :           +- SubqueryAlias spark_catalog.m.customer_address
+               :  :              +- Relation spark_catalog.m.customer_address[ca_address_sk#8171,ca_address_id#8172,ca_street_number#8173,ca_street_name#8174,ca_street_type#8175,ca_suite_number#8176,ca_city#8177,ca_county#8178,ca_state#8179,ca_zip#8180,ca_country#8181,ca_gmt_offset#8182,ca_location_type#8183] parquet
+               :  +- SubqueryAlias spark_catalog.m.customer
+               :     +- Relation spark_catalog.m.customer[c_customer_sk#81,c_customer_id#82,c_current_cdemo_sk#83,c_current_hdemo_sk#84,c_current_addr_sk#85,c_first_shipto_date_sk#86,c_first_sales_date_sk#87,c_salutation#88,c_first_name#89,c_last_name#90,c_preferred_cust_flag#91,c_birth_day#92,c_birth_month#93,c_birth_year#94,c_birth_country#95,c_login#96,c_email_address#97,c_last_review_date#98] parquet
+               +- SubqueryAlias current_addr
+                  +- SubqueryAlias spark_catalog.m.customer_address
+                     +- Relation spark_catalog.m.customer_address[ca_address_sk#40718,ca_address_id#40719,ca_street_number#40720,ca_street_name#40721,ca_street_type#40722,ca_suite_number#40723,ca_city#40724,ca_county#40725,ca_state#40726,ca_zip#40727,ca_country#40728,ca_gmt_offset#40729,ca_location_type#40730] parquet
+
+== Optimized Logical Plan ==
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [c_last_name#90 ASC NULLS FIRST, ss_ticket_number#1257 ASC NULLS FIRST], true
+      +- Project [c_last_name#90, c_first_name#89, ca_city#40724, bought_city#40714, ss_ticket_number#1257, extended_price#40715, extended_tax#40717, list_price#40716]
+         +- Join Inner, ((c_current_addr_sk#85 = ca_address_sk#40718) AND NOT (ca_city#40724 = bought_city#40714))
+            :- Project [ss_ticket_number#1257, bought_city#40714, extended_price#40715, list_price#40716, extended_tax#40717, c_current_addr_sk#85, c_first_name#89, c_last_name#90]
+            :  +- Join Inner, (ss_customer_sk#1251 = c_customer_sk#81)
+            :     :- Aggregate [ss_ticket_number#1257, ss_customer_sk#1251, ss_addr_sk#1254, ca_city#8177], [ss_ticket_number#1257, ss_customer_sk#1251, ca_city#8177 AS bought_city#40714, sum(ss_ext_sales_price#1263) AS extended_price#40715, sum(ss_ext_list_price#1265) AS list_price#40716, sum(ss_ext_tax#1266) AS extended_tax#40717]
+            :     :  +- Project [ss_customer_sk#1251, ss_addr_sk#1254, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266, ca_city#8177]
+            :     :     +- Join Inner, (ss_addr_sk#1254 = ca_address_sk#8171)
+            :     :        :- Project [ss_customer_sk#1251, ss_addr_sk#1254, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266]
+            :     :        :  +- Join Inner, (ss_hdemo_sk#1253 = hd_demo_sk#12110)
+            :     :        :     :- Project [ss_customer_sk#1251, ss_hdemo_sk#1253, ss_addr_sk#1254, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266]
+            :     :        :     :  +- Join Inner, (ss_store_sk#1255 = s_store_sk#52)
+            :     :        :     :     :- Project [ss_customer_sk#1251, ss_hdemo_sk#1253, ss_addr_sk#1254, ss_store_sk#1255, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266]
+            :     :        :     :     :  +- Join Inner, (ss_sold_date_sk#1248 = d_date_sk#24)
+            :     :        :     :     :     :- Project [ss_sold_date_sk#1248, ss_customer_sk#1251, ss_hdemo_sk#1253, ss_addr_sk#1254, ss_store_sk#1255, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266]
+            :     :        :     :     :     :  +- Filter ((isnotnull(ss_sold_date_sk#1248) AND isnotnull(ss_store_sk#1255)) AND ((isnotnull(ss_hdemo_sk#1253) AND isnotnull(ss_addr_sk#1254)) AND isnotnull(ss_customer_sk#1251)))
+            :     :        :     :     :     :     +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+            :     :        :     :     :     +- Project [d_date_sk#24]
+            :     :        :     :     :        +- Filter ((isnotnull(d_dom#33) AND (((d_dom#33 >= 1) AND (d_dom#33 <= 2)) AND d_year#30 IN (1998,1999,2000))) AND isnotnull(d_date_sk#24))
+            :     :        :     :     :           +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+            :     :        :     :     +- Project [s_store_sk#52]
+            :     :        :     :        +- Filter (s_city#74 IN (Oak Grove,Fairview) AND isnotnull(s_store_sk#52))
+            :     :        :     :           +- Relation spark_catalog.m.store[s_store_sk#52,s_store_id#53,s_rec_start_date#54,s_rec_end_date#55,s_closed_date_sk#56,s_store_name#57,s_number_employees#58,s_floor_space#59,s_hours#60,s_manager#61,s_market_id#62,s_geography_class#63,s_market_desc#64,s_market_manager#65,s_division_id#66,s_division_name#67,s_company_id#68,s_company_name#69,s_street_number#70,s_street_name#71,s_street_type#72,s_suite_number#73,s_city#74,s_county#75,... 5 more fields] parquet
+            :     :        :     +- Project [hd_demo_sk#12110]
+            :     :        :        +- Filter (((hd_dep_count#12113 = 5) OR (hd_vehicle_count#12114 = 1)) AND isnotnull(hd_demo_sk#12110))
+            :     :        :           +- Relation spark_catalog.m.household_demographics[hd_demo_sk#12110,hd_income_band_sk#12111,hd_buy_potential#12112,hd_dep_count#12113,hd_vehicle_count#12114] parquet
+            :     :        +- Project [ca_address_sk#8171, ca_city#8177]
+            :     :           +- Filter (isnotnull(ca_address_sk#8171) AND isnotnull(ca_city#8177))
+            :     :              +- Relation spark_catalog.m.customer_address[ca_address_sk#8171,ca_address_id#8172,ca_street_number#8173,ca_street_name#8174,ca_street_type#8175,ca_suite_number#8176,ca_city#8177,ca_county#8178,ca_state#8179,ca_zip#8180,ca_country#8181,ca_gmt_offset#8182,ca_location_type#8183] parquet
+            :     +- Project [c_customer_sk#81, c_current_addr_sk#85, c_first_name#89, c_last_name#90]
+            :        +- Filter (isnotnull(c_customer_sk#81) AND isnotnull(c_current_addr_sk#85))
+            :           +- Relation spark_catalog.m.customer[c_customer_sk#81,c_customer_id#82,c_current_cdemo_sk#83,c_current_hdemo_sk#84,c_current_addr_sk#85,c_first_shipto_date_sk#86,c_first_sales_date_sk#87,c_salutation#88,c_first_name#89,c_last_name#90,c_preferred_cust_flag#91,c_birth_day#92,c_birth_month#93,c_birth_year#94,c_birth_country#95,c_login#96,c_email_address#97,c_last_review_date#98] parquet
+            +- Project [ca_address_sk#40718, ca_city#40724]
+               +- Filter (isnotnull(ca_address_sk#40718) AND isnotnull(ca_city#40724))
+                  +- Relation spark_catalog.m.customer_address[ca_address_sk#40718,ca_address_id#40719,ca_street_number#40720,ca_street_name#40721,ca_street_type#40722,ca_suite_number#40723,ca_city#40724,ca_county#40725,ca_state#40726,ca_zip#40727,ca_country#40728,ca_gmt_offset#40729,ca_location_type#40730] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[c_last_name#90 ASC NULLS FIRST,ss_ticket_number#1257 ASC NULLS FIRST], output=[c_last_name#90,c_first_name#89,ca_city#40724,bought_city#40714,ss_ticket_number#1257,extended_price#40715,extended_tax#40717,list_price#40716])
+   +- Project [c_last_name#90, c_first_name#89, ca_city#40724, bought_city#40714, ss_ticket_number#1257, extended_price#40715, extended_tax#40717, list_price#40716]
+      +- BroadcastHashJoin [c_current_addr_sk#85], [ca_address_sk#40718], Inner, BuildRight, NOT (ca_city#40724 = bought_city#40714), false
+         :- Project [ss_ticket_number#1257, bought_city#40714, extended_price#40715, list_price#40716, extended_tax#40717, c_current_addr_sk#85, c_first_name#89, c_last_name#90]
+         :  +- BroadcastHashJoin [ss_customer_sk#1251], [c_customer_sk#81], Inner, BuildRight, false
+         :     :- HashAggregate(keys=[ss_ticket_number#1257, ss_customer_sk#1251, ss_addr_sk#1254, ca_city#8177], functions=[sum(ss_ext_sales_price#1263), sum(ss_ext_list_price#1265), sum(ss_ext_tax#1266)], output=[ss_ticket_number#1257, ss_customer_sk#1251, bought_city#40714, extended_price#40715, list_price#40716, extended_tax#40717])
+         :     :  +- Exchange hashpartitioning(ss_ticket_number#1257, ss_customer_sk#1251, ss_addr_sk#1254, ca_city#8177, 200), ENSURE_REQUIREMENTS, [plan_id=135250]
+         :     :     +- HashAggregate(keys=[ss_ticket_number#1257, ss_customer_sk#1251, ss_addr_sk#1254, ca_city#8177], functions=[partial_sum(ss_ext_sales_price#1263), partial_sum(ss_ext_list_price#1265), partial_sum(ss_ext_tax#1266)], output=[ss_ticket_number#1257, ss_customer_sk#1251, ss_addr_sk#1254, ca_city#8177, sum#40770, sum#40771, sum#40772])
+         :     :        +- Project [ss_customer_sk#1251, ss_addr_sk#1254, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266, ca_city#8177]
+         :     :           +- BroadcastHashJoin [ss_addr_sk#1254], [ca_address_sk#8171], Inner, BuildRight, false
+         :     :              :- Project [ss_customer_sk#1251, ss_addr_sk#1254, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266]
+         :     :              :  +- BroadcastHashJoin [ss_hdemo_sk#1253], [hd_demo_sk#12110], Inner, BuildRight, false
+         :     :              :     :- Project [ss_customer_sk#1251, ss_hdemo_sk#1253, ss_addr_sk#1254, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266]
+         :     :              :     :  +- BroadcastHashJoin [ss_store_sk#1255], [s_store_sk#52], Inner, BuildRight, false
+         :     :              :     :     :- Project [ss_customer_sk#1251, ss_hdemo_sk#1253, ss_addr_sk#1254, ss_store_sk#1255, ss_ticket_number#1257, ss_ext_sales_price#1263, ss_ext_list_price#1265, ss_ext_tax#1266]
+         :     :              :     :     :  +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#24], Inner, BuildRight, false
+         :     :              :     :     :     :- Filter ((((isnotnull(ss_sold_date_sk#1248) AND isnotnull(ss_store_sk#1255)) AND isnotnull(ss_hdemo_sk#1253)) AND isnotnull(ss_addr_sk#1254)) AND isnotnull(ss_customer_sk#1251))
+         :     :              :     :     :     :  +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_customer_sk#1251,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_ticket_number#1257,ss_ext_sales_price#1263,ss_ext_list_price#1265,ss_ext_tax#1266] Batched: true, DataFilters: [isnotnull(ss_sold_date_sk#1248), isnotnull(ss_store_sk#1255), isnotnull(ss_hdemo_sk#1253), isnot..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_sold_date_sk), IsNotNull(ss_store_sk), IsNotNull(ss_hdemo_sk), IsNotNull(ss_addr_sk..., ReadSchema: struct<ss_sold_date_sk:int,ss_customer_sk:int,ss_hdemo_sk:int,ss_addr_sk:int,ss_store_sk:int,ss_t...
+         :     :              :     :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=135233]
+         :     :              :     :     :        +- Project [d_date_sk#24]
+         :     :              :     :     :           +- Filter ((((isnotnull(d_dom#33) AND (d_dom#33 >= 1)) AND (d_dom#33 <= 2)) AND d_year#30 IN (1998,1999,2000)) AND isnotnull(d_date_sk#24))
+         :     :              :     :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_year#30,d_dom#33] Batched: true, DataFilters: [isnotnull(d_dom#33), (d_dom#33 >= 1), (d_dom#33 <= 2), d_year#30 IN (1998,1999,2000), isnotnull(..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_dom), GreaterThanOrEqual(d_dom,1), LessThanOrEqual(d_dom,2), In(d_year, [1998,1999,2..., ReadSchema: struct<d_date_sk:int,d_year:int,d_dom:int>
+         :     :              :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=135237]
+         :     :              :     :        +- Project [s_store_sk#52]
+         :     :              :     :           +- Filter (s_city#74 IN (Oak Grove,Fairview) AND isnotnull(s_store_sk#52))
+         :     :              :     :              +- FileScan parquet spark_catalog.m.store[s_store_sk#52,s_city#74] Batched: true, DataFilters: [s_city#74 IN (Oak Grove,Fairview), isnotnull(s_store_sk#52)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store], PartitionFilters: [], PushedFilters: [In(s_city, [Fairview,Oak Grove]), IsNotNull(s_store_sk)], ReadSchema: struct<s_store_sk:int,s_city:string>
+         :     :              :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=135241]
+         :     :              :        +- Project [hd_demo_sk#12110]
+         :     :              :           +- Filter (((hd_dep_count#12113 = 5) OR (hd_vehicle_count#12114 = 1)) AND isnotnull(hd_demo_sk#12110))
+         :     :              :              +- FileScan parquet spark_catalog.m.household_demographics[hd_demo_sk#12110,hd_dep_count#12113,hd_vehicle_count#12114] Batched: true, DataFilters: [((hd_dep_count#12113 = 5) OR (hd_vehicle_count#12114 = 1)), isnotnull(hd_demo_sk#12110)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/household_demograp..., PartitionFilters: [], PushedFilters: [Or(EqualTo(hd_dep_count,5),EqualTo(hd_vehicle_count,1)), IsNotNull(hd_demo_sk)], ReadSchema: struct<hd_demo_sk:int,hd_dep_count:int,hd_vehicle_count:int>
+         :     :              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=135245]
+         :     :                 +- Filter (isnotnull(ca_address_sk#8171) AND isnotnull(ca_city#8177))
+         :     :                    +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#8171,ca_city#8177] Batched: true, DataFilters: [isnotnull(ca_address_sk#8171), isnotnull(ca_city#8177)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_address_sk), IsNotNull(ca_city)], ReadSchema: struct<ca_address_sk:int,ca_city:string>
+         :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=135253]
+         :        +- Filter (isnotnull(c_customer_sk#81) AND isnotnull(c_current_addr_sk#85))
+         :           +- FileScan parquet spark_catalog.m.customer[c_customer_sk#81,c_current_addr_sk#85,c_first_name#89,c_last_name#90] Batched: true, DataFilters: [isnotnull(c_customer_sk#81), isnotnull(c_current_addr_sk#85)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer], PartitionFilters: [], PushedFilters: [IsNotNull(c_customer_sk), IsNotNull(c_current_addr_sk)], ReadSchema: struct<c_customer_sk:int,c_current_addr_sk:int,c_first_name:string,c_last_name:string>
+         +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=135257]
+            +- Filter (isnotnull(ca_address_sk#40718) AND isnotnull(ca_city#40724))
+               +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#40718,ca_city#40724] Batched: true, DataFilters: [isnotnull(ca_address_sk#40718), isnotnull(ca_city#40724)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_address_sk), IsNotNull(ca_city)], ReadSchema: struct<ca_address_sk:int,ca_city:string>

@@ -1,0 +1,22 @@
+CTE [inv]
+:  +- 'SubqueryAlias inv
+:     +- 'Project ['w_warehouse_name, 'w_warehouse_sk, 'i_item_sk, 'd_moy, 'stdev, 'mean, CASE WHEN ('mean = 0) THEN null ELSE ('stdev / 'mean) END AS cov#30582]
+:        +- 'Filter (CASE WHEN ('mean = 0) THEN 0 ELSE ('stdev / 'mean) END > 1)
+:           +- 'SubqueryAlias foo
+:              +- 'Aggregate ['w_warehouse_name, 'w_warehouse_sk, 'i_item_sk, 'd_moy], ['w_warehouse_name, 'w_warehouse_sk, 'i_item_sk, 'd_moy, 'stddev_samp('inv_quantity_on_hand) AS stdev#30580, 'avg('inv_quantity_on_hand) AS mean#30581]
+:                 +- 'Filter ((('inv_item_sk = 'i_item_sk) AND ('inv_warehouse_sk = 'w_warehouse_sk)) AND (('inv_date_sk = 'd_date_sk) AND ('d_year = 1998)))
+:                    +- 'Join Inner
+:                       :- 'Join Inner
+:                       :  :- 'Join Inner
+:                       :  :  :- 'UnresolvedRelation [inventory], [], false
+:                       :  :  +- 'UnresolvedRelation [item], [], false
+:                       :  +- 'UnresolvedRelation [warehouse], [], false
+:                       +- 'UnresolvedRelation [date_dim], [], false
++- 'Sort ['inv1.w_warehouse_sk ASC NULLS FIRST, 'inv1.i_item_sk ASC NULLS FIRST, 'inv1.d_moy ASC NULLS FIRST, 'inv1.mean ASC NULLS FIRST, 'inv1.cov ASC NULLS FIRST, 'inv2.d_moy ASC NULLS FIRST, 'inv2.mean ASC NULLS FIRST, 'inv2.cov ASC NULLS FIRST], true
+   +- 'Project ['inv1.w_warehouse_sk, 'inv1.i_item_sk, 'inv1.d_moy, 'inv1.mean, 'inv1.cov, 'inv2.w_warehouse_sk, 'inv2.i_item_sk, 'inv2.d_moy, 'inv2.mean, 'inv2.cov]
+      +- 'Filter (((('inv1.i_item_sk = 'inv2.i_item_sk) AND ('inv1.w_warehouse_sk = 'inv2.w_warehouse_sk)) AND ('inv1.d_moy = 4)) AND (('inv2.d_moy = (4 + 1)) AND ('inv1.cov > 1.5)))
+         +- 'Join Inner
+            :- 'SubqueryAlias inv1
+            :  +- 'UnresolvedRelation [inv], [], false
+            +- 'SubqueryAlias inv2
+               +- 'UnresolvedRelation [inv], [], false

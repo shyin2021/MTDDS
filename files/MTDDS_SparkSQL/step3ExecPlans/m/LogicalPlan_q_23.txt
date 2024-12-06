@@ -1,0 +1,57 @@
+CTE [frequent_ss_items, max_store_sales, best_ss_customer]
+:  :- 'SubqueryAlias frequent_ss_items
+:  :  +- 'UnresolvedHaving ('count(1) > 4)
+:  :     +- 'Aggregate ['substr('i_item_desc, 1, 30), 'i_item_sk, 'd_date], ['substr('i_item_desc, 1, 30) AS itemdesc#22506, 'i_item_sk AS item_sk#22507, 'd_date AS solddate#22508, 'count(1) AS cnt#22509]
+:  :        +- 'Filter ((('ss_sold_date_sk = 'd_date_sk) AND ('ss_item_sk = 'i_item_sk)) AND 'd_year IN (1999,(1999 + 1),(1999 + 2),(1999 + 3)))
+:  :           +- 'Join Inner
+:  :              :- 'Join Inner
+:  :              :  :- 'UnresolvedRelation [store_sales], [], false
+:  :              :  +- 'UnresolvedRelation [date_dim], [], false
+:  :              +- 'UnresolvedRelation [item], [], false
+:  :- 'SubqueryAlias max_store_sales
+:  :  +- 'Project ['max('csales) AS tpcds_cmax#22511]
+:  :     +- 'SubqueryAlias r5
+:  :        +- 'Aggregate ['c_customer_sk], ['c_customer_sk, 'sum(('ss_quantity * 'ss_sales_price)) AS csales#22510]
+:  :           +- 'Filter ((('ss_customer_sk = 'c_customer_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND 'd_year IN (1999,(1999 + 1),(1999 + 2),(1999 + 3)))
+:  :              +- 'Join Inner
+:  :                 :- 'Join Inner
+:  :                 :  :- 'UnresolvedRelation [store_sales], [], false
+:  :                 :  +- 'UnresolvedRelation [customer], [], false
+:  :                 +- 'UnresolvedRelation [date_dim], [], false
+:  +- 'SubqueryAlias best_ss_customer
+:     +- 'UnresolvedHaving ('sum(('ss_quantity * 'ss_sales_price)) > ((95 / 100.0) * scalar-subquery#22513 []))
+:        :  +- 'Project [*]
+:        :     +- 'UnresolvedRelation [max_store_sales], [], false
+:        +- 'Aggregate ['c_customer_sk], ['c_customer_sk, 'sum(('ss_quantity * 'ss_sales_price)) AS ssales#22512]
+:           +- 'Filter ('ss_customer_sk = 'c_customer_sk)
+:              +- 'Join Inner
+:                 :- 'UnresolvedRelation [store_sales], [], false
+:                 +- 'UnresolvedRelation [customer], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['c_last_name ASC NULLS FIRST, 'c_first_name ASC NULLS FIRST, 'sales ASC NULLS FIRST], true
+         +- 'Project ['c_last_name, 'c_first_name, 'sales]
+            +- 'SubqueryAlias r6
+               +- 'Union false, false
+                  :- 'Aggregate ['c_last_name, 'c_first_name], ['c_last_name, 'c_first_name, 'sum(('cs_quantity * 'cs_list_price)) AS sales#22500]
+                  :  +- 'Filter (((('d_year = 1999) AND ('d_moy = 7)) AND ('cs_sold_date_sk = 'd_date_sk)) AND (('cs_item_sk IN (list#22501 []) AND 'cs_bill_customer_sk IN (list#22502 [])) AND ('cs_bill_customer_sk = 'c_customer_sk)))
+                  :     :  :- 'Project ['item_sk]
+                  :     :  :  +- 'UnresolvedRelation [frequent_ss_items], [], false
+                  :     :  +- 'Project ['c_customer_sk]
+                  :     :     +- 'UnresolvedRelation [best_ss_customer], [], false
+                  :     +- 'Join Inner
+                  :        :- 'Join Inner
+                  :        :  :- 'UnresolvedRelation [catalog_sales], [], false
+                  :        :  +- 'UnresolvedRelation [customer], [], false
+                  :        +- 'UnresolvedRelation [date_dim], [], false
+                  +- 'Aggregate ['c_last_name, 'c_first_name], ['c_last_name, 'c_first_name, 'sum(('ws_quantity * 'ws_list_price)) AS sales#22503]
+                     +- 'Filter (((('d_year = 1999) AND ('d_moy = 7)) AND ('ws_sold_date_sk = 'd_date_sk)) AND (('ws_item_sk IN (list#22504 []) AND 'ws_bill_customer_sk IN (list#22505 [])) AND ('ws_bill_customer_sk = 'c_customer_sk)))
+                        :  :- 'Project ['item_sk]
+                        :  :  +- 'UnresolvedRelation [frequent_ss_items], [], false
+                        :  +- 'Project ['c_customer_sk]
+                        :     +- 'UnresolvedRelation [best_ss_customer], [], false
+                        +- 'Join Inner
+                           :- 'Join Inner
+                           :  :- 'UnresolvedRelation [web_sales], [], false
+                           :  +- 'UnresolvedRelation [customer], [], false
+                           +- 'UnresolvedRelation [date_dim], [], false

@@ -1,0 +1,14 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Project ['sum('cs_ext_discount_amt) AS excess_discount_amount#28580]
+      +- 'Filter (((('i_manufact_id = 994) AND ('i_item_sk = 'cs_item_sk)) AND (('d_date >= 2001-03-14) AND ('d_date <= (cast(2001-03-14 as date) + 90)))) AND (('d_date_sk = 'cs_sold_date_sk) AND ('cs_ext_discount_amt > scalar-subquery#28581 [])))
+         :  +- 'Project [unresolvedalias((1.3 * 'avg('cs_ext_discount_amt)), None)]
+         :     +- 'Filter ((('cs_item_sk = 'i_item_sk) AND (('d_date >= 2001-03-14) AND ('d_date <= (cast(2001-03-14 as date) + 90)))) AND ('d_date_sk = 'cs_sold_date_sk))
+         :        +- 'Join Inner
+         :           :- 'UnresolvedRelation [catalog_sales], [], false
+         :           +- 'UnresolvedRelation [date_dim], [], false
+         +- 'Join Inner
+            :- 'Join Inner
+            :  :- 'UnresolvedRelation [catalog_sales], [], false
+            :  +- 'UnresolvedRelation [item], [], false
+            +- 'UnresolvedRelation [date_dim], [], false

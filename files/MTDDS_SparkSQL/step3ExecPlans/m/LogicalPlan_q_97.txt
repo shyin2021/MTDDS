@@ -1,0 +1,19 @@
+CTE [ssci, csci]
+:  :- 'SubqueryAlias ssci
+:  :  +- 'Aggregate ['ss_customer_sk, 'ss_item_sk], ['ss_customer_sk AS customer_sk#49351, 'ss_item_sk AS item_sk#49352]
+:  :     +- 'Filter (('ss_sold_date_sk = 'd_date_sk) AND (('d_month_seq >= 1211) AND ('d_month_seq <= (1211 + 11))))
+:  :        +- 'Join Inner
+:  :           :- 'UnresolvedRelation [store_sales], [], false
+:  :           +- 'UnresolvedRelation [date_dim], [], false
+:  +- 'SubqueryAlias csci
+:     +- 'Aggregate ['cs_bill_customer_sk, 'cs_item_sk], ['cs_bill_customer_sk AS customer_sk#49353, 'cs_item_sk AS item_sk#49354]
+:        +- 'Filter (('cs_sold_date_sk = 'd_date_sk) AND (('d_month_seq >= 1211) AND ('d_month_seq <= (1211 + 11))))
+:           +- 'Join Inner
+:              :- 'UnresolvedRelation [catalog_sales], [], false
+:              +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Project ['sum(CASE WHEN (isnotnull('ssci.customer_sk) AND isnull('csci.customer_sk)) THEN 1 ELSE 0 END) AS store_only#49348, 'sum(CASE WHEN (isnull('ssci.customer_sk) AND isnotnull('csci.customer_sk)) THEN 1 ELSE 0 END) AS catalog_only#49349, 'sum(CASE WHEN (isnotnull('ssci.customer_sk) AND isnotnull('csci.customer_sk)) THEN 1 ELSE 0 END) AS store_and_catalog#49350]
+         +- 'Join FullOuter, (('ssci.customer_sk = 'csci.customer_sk) AND ('ssci.item_sk = 'csci.item_sk))
+            :- 'UnresolvedRelation [ssci], [], false
+            +- 'UnresolvedRelation [csci], [], false

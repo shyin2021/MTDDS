@@ -1,0 +1,28 @@
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[i_item_id#1272 ASC NULLS FIRST], output=[i_item_id#1272,i_item_desc#1275,i_current_price#1276])
+   +- HashAggregate(keys=[i_item_id#1272, i_item_desc#1275, i_current_price#1276], functions=[], output=[i_item_id#1272, i_item_desc#1275, i_current_price#1276])
+      +- Exchange hashpartitioning(i_item_id#1272, i_item_desc#1275, i_current_price#1276, 200), ENSURE_REQUIREMENTS, [plan_id=159795]
+         +- HashAggregate(keys=[i_item_id#1272, i_item_desc#1275, knownfloatingpointnormalized(normalizenanandzero(i_current_price#1276)) AS i_current_price#1276], functions=[], output=[i_item_id#1272, i_item_desc#1275, i_current_price#1276])
+            +- Project [i_item_id#1272, i_item_desc#1275, i_current_price#1276]
+               +- SortMergeJoin [i_item_sk#1271], [ss_item_sk#1250], Inner
+                  :- Sort [i_item_sk#1271 ASC NULLS FIRST], false, 0
+                  :  +- Exchange hashpartitioning(i_item_sk#1271, 200), ENSURE_REQUIREMENTS, [plan_id=159787]
+                  :     +- Project [i_item_sk#1271, i_item_id#1272, i_item_desc#1275, i_current_price#1276]
+                  :        +- BroadcastHashJoin [inv_date_sk#21216], [d_date_sk#24], Inner, BuildRight, false
+                  :           :- Project [i_item_sk#1271, i_item_id#1272, i_item_desc#1275, i_current_price#1276, inv_date_sk#21216]
+                  :           :  +- BroadcastHashJoin [i_item_sk#1271], [inv_item_sk#21217], Inner, BuildLeft, false
+                  :           :     :- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=159778]
+                  :           :     :  +- Project [i_item_sk#1271, i_item_id#1272, i_item_desc#1275, i_current_price#1276]
+                  :           :     :     +- Filter ((((isnotnull(i_current_price#1276) AND (i_current_price#1276 >= 25.0)) AND (i_current_price#1276 <= 55.0)) AND i_manufact_id#1284 IN (838,637,831,580)) AND isnotnull(i_item_sk#1271))
+                  :           :     :        +- FileScan parquet spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_item_desc#1275,i_current_price#1276,i_manufact_id#1284] Batched: true, DataFilters: [isnotnull(i_current_price#1276), (i_current_price#1276 >= 25.0), (i_current_price#1276 <= 55.0),..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_current_price), GreaterThanOrEqual(i_current_price,25.0), LessThanOrEqual(i_current_..., ReadSchema: struct<i_item_sk:int,i_item_id:string,i_item_desc:string,i_current_price:double,i_manufact_id:int>
+                  :           :     +- Project [inv_date_sk#21216, inv_item_sk#21217]
+                  :           :        +- Filter ((((isnotnull(inv_quantity_on_hand#21219L) AND (inv_quantity_on_hand#21219L >= 100)) AND (inv_quantity_on_hand#21219L <= 500)) AND isnotnull(inv_item_sk#21217)) AND isnotnull(inv_date_sk#21216))
+                  :           :           +- FileScan parquet spark_catalog.m.inventory[inv_date_sk#21216,inv_item_sk#21217,inv_quantity_on_hand#21219L] Batched: true, DataFilters: [isnotnull(inv_quantity_on_hand#21219L), (inv_quantity_on_hand#21219L >= 100), (inv_quantity_on_h..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/inventory], PartitionFilters: [], PushedFilters: [IsNotNull(inv_quantity_on_hand), GreaterThanOrEqual(inv_quantity_on_hand,100), LessThanOrEqual(i..., ReadSchema: struct<inv_date_sk:int,inv_item_sk:int,inv_quantity_on_hand:bigint>
+                  :           +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=159782]
+                  :              +- Project [d_date_sk#24]
+                  :                 +- Filter (((isnotnull(d_date#26) AND (cast(d_date#26 as date) >= 2001-04-09)) AND (cast(d_date#26 as date) <= 2001-06-08)) AND isnotnull(d_date_sk#24))
+                  :                    +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_date#26] Batched: true, DataFilters: [isnotnull(d_date#26), (cast(d_date#26 as date) >= 2001-04-09), (cast(d_date#26 as date) <= 2001-..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_date), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_date:string>
+                  +- Sort [ss_item_sk#1250 ASC NULLS FIRST], false, 0
+                     +- Exchange hashpartitioning(ss_item_sk#1250, 200), ENSURE_REQUIREMENTS, [plan_id=159788]
+                        +- Filter isnotnull(ss_item_sk#1250)
+                           +- FileScan parquet spark_catalog.m.store_sales[ss_item_sk#1250] Batched: true, DataFilters: [isnotnull(ss_item_sk#1250)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_item_sk)], ReadSchema: struct<ss_item_sk:int>

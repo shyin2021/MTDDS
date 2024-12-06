@@ -1,0 +1,66 @@
+== Parsed Logical Plan ==
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['i_product_name ASC NULLS FIRST], true
+      +- 'Distinct
+         +- 'Project ['i_product_name]
+            +- 'Filter ((('i_manufact_id >= 739) AND ('i_manufact_id <= (739 + 40))) AND (scalar-subquery#31300 [] > 0))
+               :  +- 'Project ['count(1) AS item_cnt#31299]
+               :     +- 'Filter ((('i_manufact = 'i1.i_manufact) AND ((((('i_category = Women) AND (('i_color = mint) OR ('i_color = almond))) AND ((('i_units = Dozen) OR ('i_units = Carton)) AND (('i_size = large) OR ('i_size = extra large)))) OR ((('i_category = Women) AND (('i_color = lime) OR ('i_color = dodger))) AND ((('i_units = Pallet) OR ('i_units = Ounce)) AND (('i_size = economy) OR ('i_size = medium))))) OR (((('i_category = Men) AND (('i_color = salmon) OR ('i_color = navy))) AND ((('i_units = Bunch) OR ('i_units = Oz)) AND (('i_size = N/A) OR ('i_size = small)))) OR ((('i_category = Men) AND (('i_color = antique) OR ('i_color = white))) AND ((('i_units = Unknown) OR ('i_units = Tbl)) AND (('i_size = large) OR ('i_size = extra large))))))) OR (('i_manufact = 'i1.i_manufact) AND ((((('i_category = Women) AND (('i_color = dim) OR ('i_color = chiffon))) AND ((('i_units = Box) OR ('i_units = N/A)) AND (('i_size = large) OR ('i_size = extra large)))) OR ((('i_category = Women) AND (('i_color = lemon) OR ('i_color = rosy))) AND ((('i_units = Tsp) OR ('i_units = Dram)) AND (('i_size = economy) OR ('i_size = medium))))) OR (((('i_category = Men) AND (('i_color = deep) OR ('i_color = smoke))) AND ((('i_units = Gram) OR ('i_units = Pound)) AND (('i_size = N/A) OR ('i_size = small)))) OR ((('i_category = Men) AND (('i_color = metallic) OR ('i_color = olive))) AND ((('i_units = Lb) OR ('i_units = Case)) AND (('i_size = large) OR ('i_size = extra large))))))))
+               :        +- 'UnresolvedRelation [item], [], false
+               +- 'SubqueryAlias i1
+                  +- 'UnresolvedRelation [item], [], false
+
+== Analyzed Logical Plan ==
+i_product_name: string
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [i_product_name#1292 ASC NULLS FIRST], true
+      +- Distinct
+         +- Project [i_product_name#1292]
+            +- Filter (((i_manufact_id#1284 >= 739) AND (i_manufact_id#1284 <= (739 + 40))) AND (scalar-subquery#31300 [i_manufact#1285 && i_manufact#1285] > cast(0 as bigint)))
+               :  +- Aggregate [count(1) AS item_cnt#31299L]
+               :     +- Filter (((i_manufact#31316 = outer(i_manufact#1285)) AND (((((i_category#31314 = Women) AND ((i_color#31319 = mint) OR (i_color#31319 = almond))) AND (((i_units#31320 = Dozen) OR (i_units#31320 = Carton)) AND ((i_size#31317 = large) OR (i_size#31317 = extra large)))) OR (((i_category#31314 = Women) AND ((i_color#31319 = lime) OR (i_color#31319 = dodger))) AND (((i_units#31320 = Pallet) OR (i_units#31320 = Ounce)) AND ((i_size#31317 = economy) OR (i_size#31317 = medium))))) OR ((((i_category#31314 = Men) AND ((i_color#31319 = salmon) OR (i_color#31319 = navy))) AND (((i_units#31320 = Bunch) OR (i_units#31320 = Oz)) AND ((i_size#31317 = N/A) OR (i_size#31317 = small)))) OR (((i_category#31314 = Men) AND ((i_color#31319 = antique) OR (i_color#31319 = white))) AND (((i_units#31320 = Unknown) OR (i_units#31320 = Tbl)) AND ((i_size#31317 = large) OR (i_size#31317 = extra large))))))) OR ((i_manufact#31316 = outer(i_manufact#1285)) AND (((((i_category#31314 = Women) AND ((i_color#31319 = dim) OR (i_color#31319 = chiffon))) AND (((i_units#31320 = Box) OR (i_units#31320 = N/A)) AND ((i_size#31317 = large) OR (i_size#31317 = extra large)))) OR (((i_category#31314 = Women) AND ((i_color#31319 = lemon) OR (i_color#31319 = rosy))) AND (((i_units#31320 = Tsp) OR (i_units#31320 = Dram)) AND ((i_size#31317 = economy) OR (i_size#31317 = medium))))) OR ((((i_category#31314 = Men) AND ((i_color#31319 = deep) OR (i_color#31319 = smoke))) AND (((i_units#31320 = Gram) OR (i_units#31320 = Pound)) AND ((i_size#31317 = N/A) OR (i_size#31317 = small)))) OR (((i_category#31314 = Men) AND ((i_color#31319 = metallic) OR (i_color#31319 = olive))) AND (((i_units#31320 = Lb) OR (i_units#31320 = Case)) AND ((i_size#31317 = large) OR (i_size#31317 = extra large))))))))
+               :        +- SubqueryAlias spark_catalog.m.item
+               :           +- Relation spark_catalog.m.item[i_item_sk#31302,i_item_id#31303,i_rec_start_date#31304,i_rec_end_date#31305,i_item_desc#31306,i_current_price#31307,i_wholesale_cost#31308,i_brand_id#31309,i_brand#31310,i_class_id#31311,i_class#31312,i_category_id#31313,i_category#31314,i_manufact_id#31315,i_manufact#31316,i_size#31317,i_formulation#31318,i_color#31319,i_units#31320,i_container#31321,i_manager_id#31322,i_product_name#31323] parquet
+               +- SubqueryAlias i1
+                  +- SubqueryAlias spark_catalog.m.item
+                     +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+
+== Optimized Logical Plan ==
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [i_product_name#1292 ASC NULLS FIRST], true
+      +- Aggregate [i_product_name#1292], [i_product_name#1292]
+         +- Project [i_product_name#1292]
+            +- Join Inner, (i_manufact#31316 = i_manufact#1285)
+               :- Project [i_manufact#1285, i_product_name#1292]
+               :  +- Filter ((isnotnull(i_manufact_id#1284) AND ((i_manufact_id#1284 >= 739) AND (i_manufact_id#1284 <= 779))) AND isnotnull(i_manufact#1285))
+               :     +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+               +- Project [i_manufact#31316]
+                  +- Filter (item_cnt#31299L > 0)
+                     +- Aggregate [i_manufact#31316], [count(1) AS item_cnt#31299L, i_manufact#31316]
+                        +- Project [i_manufact#31316]
+                           +- Filter (((((i_category#31314 = Women) AND (((((i_color#31319 = mint) OR (i_color#31319 = almond)) AND ((i_units#31320 = Dozen) OR (i_units#31320 = Carton))) AND ((i_size#31317 = large) OR (i_size#31317 = extra large))) OR ((((i_color#31319 = lime) OR (i_color#31319 = dodger)) AND ((i_units#31320 = Pallet) OR (i_units#31320 = Ounce))) AND ((i_size#31317 = economy) OR (i_size#31317 = medium))))) OR ((i_category#31314 = Men) AND (((((i_color#31319 = salmon) OR (i_color#31319 = navy)) AND ((i_units#31320 = Bunch) OR (i_units#31320 = Oz))) AND ((i_size#31317 = N/A) OR (i_size#31317 = small))) OR ((((i_color#31319 = antique) OR (i_color#31319 = white)) AND ((i_units#31320 = Unknown) OR (i_units#31320 = Tbl))) AND ((i_size#31317 = large) OR (i_size#31317 = extra large)))))) OR (((i_category#31314 = Women) AND (((((i_color#31319 = dim) OR (i_color#31319 = chiffon)) AND ((i_units#31320 = Box) OR (i_units#31320 = N/A))) AND ((i_size#31317 = large) OR (i_size#31317 = extra large))) OR ((((i_color#31319 = lemon) OR (i_color#31319 = rosy)) AND ((i_units#31320 = Tsp) OR (i_units#31320 = Dram))) AND ((i_size#31317 = economy) OR (i_size#31317 = medium))))) OR ((i_category#31314 = Men) AND (((((i_color#31319 = deep) OR (i_color#31319 = smoke)) AND ((i_units#31320 = Gram) OR (i_units#31320 = Pound))) AND ((i_size#31317 = N/A) OR (i_size#31317 = small))) OR ((((i_color#31319 = metallic) OR (i_color#31319 = olive)) AND ((i_units#31320 = Lb) OR (i_units#31320 = Case))) AND ((i_size#31317 = large) OR (i_size#31317 = extra large))))))) AND isnotnull(i_manufact#31316))
+                              +- Relation spark_catalog.m.item[i_item_sk#31302,i_item_id#31303,i_rec_start_date#31304,i_rec_end_date#31305,i_item_desc#31306,i_current_price#31307,i_wholesale_cost#31308,i_brand_id#31309,i_brand#31310,i_class_id#31311,i_class#31312,i_category_id#31313,i_category#31314,i_manufact_id#31315,i_manufact#31316,i_size#31317,i_formulation#31318,i_color#31319,i_units#31320,i_container#31321,i_manager_id#31322,i_product_name#31323] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[i_product_name#1292 ASC NULLS FIRST], output=[i_product_name#1292])
+   +- HashAggregate(keys=[i_product_name#1292], functions=[], output=[i_product_name#1292])
+      +- Exchange hashpartitioning(i_product_name#1292, 200), ENSURE_REQUIREMENTS, [plan_id=91868]
+         +- HashAggregate(keys=[i_product_name#1292], functions=[], output=[i_product_name#1292])
+            +- Project [i_product_name#1292]
+               +- BroadcastHashJoin [i_manufact#1285], [i_manufact#31316], Inner, BuildRight, false
+                  :- Project [i_manufact#1285, i_product_name#1292]
+                  :  +- Filter (((isnotnull(i_manufact_id#1284) AND (i_manufact_id#1284 >= 739)) AND (i_manufact_id#1284 <= 779)) AND isnotnull(i_manufact#1285))
+                  :     +- FileScan parquet spark_catalog.m.item[i_manufact_id#1284,i_manufact#1285,i_product_name#1292] Batched: true, DataFilters: [isnotnull(i_manufact_id#1284), (i_manufact_id#1284 >= 739), (i_manufact_id#1284 <= 779), isnotnu..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_manufact_id), GreaterThanOrEqual(i_manufact_id,739), LessThanOrEqual(i_manufact_id,7..., ReadSchema: struct<i_manufact_id:int,i_manufact:string,i_product_name:string>
+                  +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]),false), [plan_id=91863]
+                     +- Project [i_manufact#31316]
+                        +- Filter (item_cnt#31299L > 0)
+                           +- HashAggregate(keys=[i_manufact#31316], functions=[count(1)], output=[item_cnt#31299L, i_manufact#31316])
+                              +- Exchange hashpartitioning(i_manufact#31316, 200), ENSURE_REQUIREMENTS, [plan_id=91858]
+                                 +- HashAggregate(keys=[i_manufact#31316], functions=[partial_count(1)], output=[i_manufact#31316, count#31331L])
+                                    +- Project [i_manufact#31316]
+                                       +- Filter (((((i_category#31314 = Women) AND (((((i_color#31319 = mint) OR (i_color#31319 = almond)) AND ((i_units#31320 = Dozen) OR (i_units#31320 = Carton))) AND ((i_size#31317 = large) OR (i_size#31317 = extra large))) OR ((((i_color#31319 = lime) OR (i_color#31319 = dodger)) AND ((i_units#31320 = Pallet) OR (i_units#31320 = Ounce))) AND ((i_size#31317 = economy) OR (i_size#31317 = medium))))) OR ((i_category#31314 = Men) AND (((((i_color#31319 = salmon) OR (i_color#31319 = navy)) AND ((i_units#31320 = Bunch) OR (i_units#31320 = Oz))) AND ((i_size#31317 = N/A) OR (i_size#31317 = small))) OR ((((i_color#31319 = antique) OR (i_color#31319 = white)) AND ((i_units#31320 = Unknown) OR (i_units#31320 = Tbl))) AND ((i_size#31317 = large) OR (i_size#31317 = extra large)))))) OR (((i_category#31314 = Women) AND (((((i_color#31319 = dim) OR (i_color#31319 = chiffon)) AND ((i_units#31320 = Box) OR (i_units#31320 = N/A))) AND ((i_size#31317 = large) OR (i_size#31317 = extra large))) OR ((((i_color#31319 = lemon) OR (i_color#31319 = rosy)) AND ((i_units#31320 = Tsp) OR (i_units#31320 = Dram))) AND ((i_size#31317 = economy) OR (i_size#31317 = medium))))) OR ((i_category#31314 = Men) AND (((((i_color#31319 = deep) OR (i_color#31319 = smoke)) AND ((i_units#31320 = Gram) OR (i_units#31320 = Pound))) AND ((i_size#31317 = N/A) OR (i_size#31317 = small))) OR ((((i_color#31319 = metallic) OR (i_color#31319 = olive)) AND ((i_units#31320 = Lb) OR (i_units#31320 = Case))) AND ((i_size#31317 = large) OR (i_size#31317 = extra large))))))) AND isnotnull(i_manufact#31316))
+                                          +- FileScan parquet spark_catalog.m.item[i_category#31314,i_manufact#31316,i_size#31317,i_color#31319,i_units#31320] Batched: true, DataFilters: [((((i_category#31314 = Women) AND (((((i_color#31319 = mint) OR (i_color#31319 = almond)) AND ((..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [Or(Or(And(EqualTo(i_category,Women),Or(And(And(Or(EqualTo(i_color,mint),EqualTo(i_color,almond))..., ReadSchema: struct<i_category:string,i_manufact:string,i_size:string,i_color:string,i_units:string>

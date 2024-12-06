@@ -10,8 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import core.Metrics;
 
@@ -825,12 +823,12 @@ public class DataForFigures {
 		}													
 	}
 
-	public static void exportDataForFigure13(String directory) throws IOException {
-		// export data for Figure 13
+	public static void exportDataForFigure13ref(String directory) throws IOException {
+		// export data for Figure 13ref, which is not presented in the paper. It serves as a reference related to Fig. 13
 		FileWriter csvWriter = null;
 		try {
 			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure13.csv"); 
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure13ref.csv"); 
 				//write the file header
 				csvWriter.append("");
 				csvWriter.append(";");
@@ -911,16 +909,16 @@ public class DataForFigures {
 			System.out.println(se);
 		} finally {
 			csvWriter.close();
-			System.out.println("File dataFigure13.csv exported.");
+			System.out.println("File dataFigure13ref.csv exported.");
 		}													
 	}
 	
-	public static void exportDataForFigure14(String directory) throws IOException {
-		// export data for Figure 14
+	public static void exportDataForFigure13(String directory) throws IOException {
+		// export data for Figure 13
 		FileWriter csvWriter = null;
 		try {
 			try {
-				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure14.csv"); 
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure13.csv"); 
 				//write the file header
 				csvWriter.append("");
 				csvWriter.append(";");
@@ -1001,8 +999,79 @@ public class DataForFigures {
 			System.out.println(se);
 		} finally {
 			csvWriter.close();
-			System.out.println("File dataFigure14.csv exported.");
+			System.out.println("File dataFigure13.csv exported.");
 		}													
+	}
+
+	public static void exportDataForFigure14(String directory) throws IOException {
+		// export data for Figure 14
+		FileWriter csvWriter = null;
+		BufferedReader csvReaderSUT3 = null;
+		BufferedReader csvReaderSUT4 = null;
+		
+		try {
+			try {
+				csvWriter = new FileWriter(directory + "\\excelFilesforFigures\\dataFigure14.csv"); 
+				//write the file header
+				//for SUT3a
+				csvWriter.append("query_stream_id");
+				csvWriter.append(";");
+				csvWriter.append("query_id");
+				csvWriter.append(";");
+				csvWriter.append("start");
+				csvWriter.append(";");
+				csvWriter.append("relative_start");
+				csvWriter.append(";");
+				csvWriter.append("query_duration");
+				csvWriter.append(";");
+				csvWriter.append("query_duration_with_queue");
+				csvWriter.append(";");
+				csvWriter.append("start_delay");
+				csvWriter.append(";;");
+				//for SUT4a
+				csvWriter.append("query_stream_id");
+				csvWriter.append(";");
+				csvWriter.append("query_id");
+				csvWriter.append(";");
+				csvWriter.append("start");
+				csvWriter.append(";");
+				csvWriter.append("relative_start");
+				csvWriter.append(";");
+				csvWriter.append("query_duration");
+				csvWriter.append(";");
+				csvWriter.append("query_duration_with_queue");
+				csvWriter.append(";");
+				csvWriter.append("start_delay");
+				csvWriter.append("\n");
+			}catch (IOException ie) {
+				System.out.println(ie);
+			}
+			
+			try {
+				// load data from the input file into the relation InitialTraces
+				csvReaderSUT3 = new BufferedReader(new FileReader(directory + "\\CABTraces\\SUT3\\CAB_traces_SUT3.csv"));
+				csvReaderSUT4 = new BufferedReader(new FileReader(directory + "\\CABTraces\\SUT4\\CAB_traces_SUT4.csv"));
+				
+				//skip the file header
+				String rowSUT3 = csvReaderSUT3.readLine();
+				String rowSUT4 = csvReaderSUT4.readLine();
+				while ((rowSUT3 = csvReaderSUT3.readLine()) != null && (rowSUT4 = csvReaderSUT4.readLine()) != null) {
+					csvWriter.append(rowSUT3);
+					csvWriter.append(";;");
+					csvWriter.append(rowSUT4);
+					csvWriter.append("\n");
+				}
+				csvReaderSUT3.close();
+				csvReaderSUT4.close();
+			}catch (IOException ie) {
+				System.out.println(ie);
+			} 
+		} catch (Exception se) {
+			System.out.println(se);
+		} finally {
+			csvWriter.close();
+			System.out.println("File dataFigure14.csv exported.");
+		}		
 	}
 	
 	public static void exportDataForFigure15(String directory) throws IOException {

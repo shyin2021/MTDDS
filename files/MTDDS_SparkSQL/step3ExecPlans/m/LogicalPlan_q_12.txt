@@ -1,0 +1,10 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['i_category ASC NULLS FIRST, 'i_class ASC NULLS FIRST, 'i_item_id ASC NULLS FIRST, 'i_item_desc ASC NULLS FIRST, 'revenueratio ASC NULLS FIRST], true
+      +- 'Aggregate ['i_item_id, 'i_item_desc, 'i_category, 'i_class, 'i_current_price], ['i_item_id, 'i_item_desc, 'i_category, 'i_class, 'i_current_price, 'sum('ws_ext_sales_price) AS itemrevenue#12059, (('sum('ws_ext_sales_price) * 100) / 'sum('sum('ws_ext_sales_price)) windowspecdefinition('i_class, unspecifiedframe$())) AS revenueratio#12060]
+         +- 'Filter ((('ws_item_sk = 'i_item_sk) AND 'i_category IN (Men,Sports,Home)) AND (('ws_sold_date_sk = 'd_date_sk) AND (('d_date >= cast(2001-03-04 as date)) AND ('d_date <= (cast(2001-03-04 as date) + 30)))))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'UnresolvedRelation [web_sales], [], false
+               :  +- 'UnresolvedRelation [item], [], false
+               +- 'UnresolvedRelation [date_dim], [], false

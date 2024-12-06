@@ -1,0 +1,139 @@
+AdaptiveSparkPlan isFinalPlan=false
++- Project [CASE WHEN (Subquery subquery#8409, [id=#12610].count(1) > 157344) THEN Subquery subquery#8410, [id=#12611].avg(ss_ext_discount_amt) ELSE Subquery subquery#8411, [id=#12612].avg(ss_net_profit) END AS bucket1#8412, CASE WHEN (Subquery subquery#8413, [id=#12613].count(1) > 34708) THEN Subquery subquery#8414, [id=#12614].avg(ss_ext_discount_amt) ELSE Subquery subquery#8415, [id=#12615].avg(ss_net_profit) END AS bucket2#8416, CASE WHEN (Subquery subquery#8417, [id=#12616].count(1) > 253327) THEN Subquery subquery#8418, [id=#12617].avg(ss_ext_discount_amt) ELSE Subquery subquery#8419, [id=#12618].avg(ss_net_profit) END AS bucket3#8420, CASE WHEN (Subquery subquery#8421, [id=#12619].count(1) > 272224) THEN Subquery subquery#8422, [id=#12620].avg(ss_ext_discount_amt) ELSE Subquery subquery#8423, [id=#12621].avg(ss_net_profit) END AS bucket4#8424, CASE WHEN (Subquery subquery#8425, [id=#12622].count(1) > 428113) THEN Subquery subquery#8426, [id=#12623].avg(ss_ext_discount_amt) ELSE Subquery subquery#8427, [id=#12624].avg(ss_net_profit) END AS bucket5#8428]
+   :  :- Subquery subquery#8409, [id=#12610]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8433L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8435, avg(ss_net_profit), avg(ss_net_profit)#8437) AS mergedValue#9104]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#1262), avg(ss_net_profit#1270)], output=[count(1)#8433L, avg(ss_ext_discount_amt)#8435, avg(ss_net_profit)#8437])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12383]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#1262), partial_avg(ss_net_profit#1270)], output=[count#8853L, sum#9109, count#9110L, sum#9111, count#9112L])
+   :  :                 +- Project [ss_ext_discount_amt#1262, ss_net_profit#1270]
+   :  :                    +- Filter ((isnotnull(ss_quantity#1258) AND (ss_quantity#1258 >= 1)) AND (ss_quantity#1258 <= 20))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#1258,ss_ext_discount_amt#1262,ss_net_profit#1270] Batched: true, DataFilters: [isnotnull(ss_quantity#1258), (ss_quantity#1258 >= 1), (ss_quantity#1258 <= 20)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,1), LessThanOrEqual(ss_quantity,20)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8410, [id=#12611]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8433L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8435, avg(ss_net_profit), avg(ss_net_profit)#8437) AS mergedValue#9104]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#1262), avg(ss_net_profit#1270)], output=[count(1)#8433L, avg(ss_ext_discount_amt)#8435, avg(ss_net_profit)#8437])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12399]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#1262), partial_avg(ss_net_profit#1270)], output=[count#8853L, sum#9109, count#9110L, sum#9111, count#9112L])
+   :  :                 +- Project [ss_ext_discount_amt#1262, ss_net_profit#1270]
+   :  :                    +- Filter ((isnotnull(ss_quantity#1258) AND (ss_quantity#1258 >= 1)) AND (ss_quantity#1258 <= 20))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#1258,ss_ext_discount_amt#1262,ss_net_profit#1270] Batched: true, DataFilters: [isnotnull(ss_quantity#1258), (ss_quantity#1258 >= 1), (ss_quantity#1258 <= 20)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,1), LessThanOrEqual(ss_quantity,20)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8411, [id=#12612]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8433L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8435, avg(ss_net_profit), avg(ss_net_profit)#8437) AS mergedValue#9104]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#1262), avg(ss_net_profit#1270)], output=[count(1)#8433L, avg(ss_ext_discount_amt)#8435, avg(ss_net_profit)#8437])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12415]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#1262), partial_avg(ss_net_profit#1270)], output=[count#8853L, sum#9109, count#9110L, sum#9111, count#9112L])
+   :  :                 +- Project [ss_ext_discount_amt#1262, ss_net_profit#1270]
+   :  :                    +- Filter ((isnotnull(ss_quantity#1258) AND (ss_quantity#1258 >= 1)) AND (ss_quantity#1258 <= 20))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#1258,ss_ext_discount_amt#1262,ss_net_profit#1270] Batched: true, DataFilters: [isnotnull(ss_quantity#1258), (ss_quantity#1258 >= 1), (ss_quantity#1258 <= 20)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,1), LessThanOrEqual(ss_quantity,20)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8413, [id=#12613]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8439L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8441, avg(ss_net_profit), avg(ss_net_profit)#8443) AS mergedValue#9105]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8523), avg(ss_net_profit#8531)], output=[count(1)#8439L, avg(ss_ext_discount_amt)#8441, avg(ss_net_profit)#8443])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12431]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8523), partial_avg(ss_net_profit#8531)], output=[count#8858L, sum#9113, count#9114L, sum#9115, count#9116L])
+   :  :                 +- Project [ss_ext_discount_amt#8523, ss_net_profit#8531]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8519) AND (ss_quantity#8519 >= 21)) AND (ss_quantity#8519 <= 40))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8519,ss_ext_discount_amt#8523,ss_net_profit#8531] Batched: true, DataFilters: [isnotnull(ss_quantity#8519), (ss_quantity#8519 >= 21), (ss_quantity#8519 <= 40)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,21), LessThanOrEqual(ss_quantity,40)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8414, [id=#12614]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8439L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8441, avg(ss_net_profit), avg(ss_net_profit)#8443) AS mergedValue#9105]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8523), avg(ss_net_profit#8531)], output=[count(1)#8439L, avg(ss_ext_discount_amt)#8441, avg(ss_net_profit)#8443])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12447]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8523), partial_avg(ss_net_profit#8531)], output=[count#8858L, sum#9113, count#9114L, sum#9115, count#9116L])
+   :  :                 +- Project [ss_ext_discount_amt#8523, ss_net_profit#8531]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8519) AND (ss_quantity#8519 >= 21)) AND (ss_quantity#8519 <= 40))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8519,ss_ext_discount_amt#8523,ss_net_profit#8531] Batched: true, DataFilters: [isnotnull(ss_quantity#8519), (ss_quantity#8519 >= 21), (ss_quantity#8519 <= 40)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,21), LessThanOrEqual(ss_quantity,40)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8415, [id=#12615]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8439L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8441, avg(ss_net_profit), avg(ss_net_profit)#8443) AS mergedValue#9105]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8523), avg(ss_net_profit#8531)], output=[count(1)#8439L, avg(ss_ext_discount_amt)#8441, avg(ss_net_profit)#8443])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12463]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8523), partial_avg(ss_net_profit#8531)], output=[count#8858L, sum#9113, count#9114L, sum#9115, count#9116L])
+   :  :                 +- Project [ss_ext_discount_amt#8523, ss_net_profit#8531]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8519) AND (ss_quantity#8519 >= 21)) AND (ss_quantity#8519 <= 40))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8519,ss_ext_discount_amt#8523,ss_net_profit#8531] Batched: true, DataFilters: [isnotnull(ss_quantity#8519), (ss_quantity#8519 >= 21), (ss_quantity#8519 <= 40)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,21), LessThanOrEqual(ss_quantity,40)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8417, [id=#12616]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8445L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8447, avg(ss_net_profit), avg(ss_net_profit)#8449) AS mergedValue#9106]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8592), avg(ss_net_profit#8600)], output=[count(1)#8445L, avg(ss_ext_discount_amt)#8447, avg(ss_net_profit)#8449])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12479]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8592), partial_avg(ss_net_profit#8600)], output=[count#8863L, sum#9117, count#9118L, sum#9119, count#9120L])
+   :  :                 +- Project [ss_ext_discount_amt#8592, ss_net_profit#8600]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8588) AND (ss_quantity#8588 >= 41)) AND (ss_quantity#8588 <= 60))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8588,ss_ext_discount_amt#8592,ss_net_profit#8600] Batched: true, DataFilters: [isnotnull(ss_quantity#8588), (ss_quantity#8588 >= 41), (ss_quantity#8588 <= 60)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,41), LessThanOrEqual(ss_quantity,60)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8418, [id=#12617]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8445L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8447, avg(ss_net_profit), avg(ss_net_profit)#8449) AS mergedValue#9106]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8592), avg(ss_net_profit#8600)], output=[count(1)#8445L, avg(ss_ext_discount_amt)#8447, avg(ss_net_profit)#8449])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12495]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8592), partial_avg(ss_net_profit#8600)], output=[count#8863L, sum#9117, count#9118L, sum#9119, count#9120L])
+   :  :                 +- Project [ss_ext_discount_amt#8592, ss_net_profit#8600]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8588) AND (ss_quantity#8588 >= 41)) AND (ss_quantity#8588 <= 60))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8588,ss_ext_discount_amt#8592,ss_net_profit#8600] Batched: true, DataFilters: [isnotnull(ss_quantity#8588), (ss_quantity#8588 >= 41), (ss_quantity#8588 <= 60)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,41), LessThanOrEqual(ss_quantity,60)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8419, [id=#12618]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8445L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8447, avg(ss_net_profit), avg(ss_net_profit)#8449) AS mergedValue#9106]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8592), avg(ss_net_profit#8600)], output=[count(1)#8445L, avg(ss_ext_discount_amt)#8447, avg(ss_net_profit)#8449])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12511]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8592), partial_avg(ss_net_profit#8600)], output=[count#8863L, sum#9117, count#9118L, sum#9119, count#9120L])
+   :  :                 +- Project [ss_ext_discount_amt#8592, ss_net_profit#8600]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8588) AND (ss_quantity#8588 >= 41)) AND (ss_quantity#8588 <= 60))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8588,ss_ext_discount_amt#8592,ss_net_profit#8600] Batched: true, DataFilters: [isnotnull(ss_quantity#8588), (ss_quantity#8588 >= 41), (ss_quantity#8588 <= 60)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,41), LessThanOrEqual(ss_quantity,60)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8421, [id=#12619]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8451L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8453, avg(ss_net_profit), avg(ss_net_profit)#8455) AS mergedValue#9107]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8661), avg(ss_net_profit#8669)], output=[count(1)#8451L, avg(ss_ext_discount_amt)#8453, avg(ss_net_profit)#8455])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12527]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8661), partial_avg(ss_net_profit#8669)], output=[count#8868L, sum#9121, count#9122L, sum#9123, count#9124L])
+   :  :                 +- Project [ss_ext_discount_amt#8661, ss_net_profit#8669]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8657) AND (ss_quantity#8657 >= 61)) AND (ss_quantity#8657 <= 80))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8657,ss_ext_discount_amt#8661,ss_net_profit#8669] Batched: true, DataFilters: [isnotnull(ss_quantity#8657), (ss_quantity#8657 >= 61), (ss_quantity#8657 <= 80)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,61), LessThanOrEqual(ss_quantity,80)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8422, [id=#12620]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8451L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8453, avg(ss_net_profit), avg(ss_net_profit)#8455) AS mergedValue#9107]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8661), avg(ss_net_profit#8669)], output=[count(1)#8451L, avg(ss_ext_discount_amt)#8453, avg(ss_net_profit)#8455])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12543]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8661), partial_avg(ss_net_profit#8669)], output=[count#8868L, sum#9121, count#9122L, sum#9123, count#9124L])
+   :  :                 +- Project [ss_ext_discount_amt#8661, ss_net_profit#8669]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8657) AND (ss_quantity#8657 >= 61)) AND (ss_quantity#8657 <= 80))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8657,ss_ext_discount_amt#8661,ss_net_profit#8669] Batched: true, DataFilters: [isnotnull(ss_quantity#8657), (ss_quantity#8657 >= 61), (ss_quantity#8657 <= 80)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,61), LessThanOrEqual(ss_quantity,80)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8423, [id=#12621]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8451L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8453, avg(ss_net_profit), avg(ss_net_profit)#8455) AS mergedValue#9107]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8661), avg(ss_net_profit#8669)], output=[count(1)#8451L, avg(ss_ext_discount_amt)#8453, avg(ss_net_profit)#8455])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12559]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8661), partial_avg(ss_net_profit#8669)], output=[count#8868L, sum#9121, count#9122L, sum#9123, count#9124L])
+   :  :                 +- Project [ss_ext_discount_amt#8661, ss_net_profit#8669]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8657) AND (ss_quantity#8657 >= 61)) AND (ss_quantity#8657 <= 80))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8657,ss_ext_discount_amt#8661,ss_net_profit#8669] Batched: true, DataFilters: [isnotnull(ss_quantity#8657), (ss_quantity#8657 >= 61), (ss_quantity#8657 <= 80)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,61), LessThanOrEqual(ss_quantity,80)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8425, [id=#12622]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8457L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8459, avg(ss_net_profit), avg(ss_net_profit)#8461) AS mergedValue#9108]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8730), avg(ss_net_profit#8738)], output=[count(1)#8457L, avg(ss_ext_discount_amt)#8459, avg(ss_net_profit)#8461])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12575]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8730), partial_avg(ss_net_profit#8738)], output=[count#8875L, sum#9127, count#9128L, sum#9129, count#9130L])
+   :  :                 +- Project [ss_ext_discount_amt#8730, ss_net_profit#8738]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8726) AND (ss_quantity#8726 >= 81)) AND (ss_quantity#8726 <= 100))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8726,ss_ext_discount_amt#8730,ss_net_profit#8738] Batched: true, DataFilters: [isnotnull(ss_quantity#8726), (ss_quantity#8726 >= 81), (ss_quantity#8726 <= 100)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,81), LessThanOrEqual(ss_quantity,100)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  :- Subquery subquery#8426, [id=#12623]
+   :  :  +- AdaptiveSparkPlan isFinalPlan=false
+   :  :     +- Project [named_struct(count(1), count(1)#8457L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8459, avg(ss_net_profit), avg(ss_net_profit)#8461) AS mergedValue#9108]
+   :  :        +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8730), avg(ss_net_profit#8738)], output=[count(1)#8457L, avg(ss_ext_discount_amt)#8459, avg(ss_net_profit)#8461])
+   :  :           +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12591]
+   :  :              +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8730), partial_avg(ss_net_profit#8738)], output=[count#8875L, sum#9127, count#9128L, sum#9129, count#9130L])
+   :  :                 +- Project [ss_ext_discount_amt#8730, ss_net_profit#8738]
+   :  :                    +- Filter ((isnotnull(ss_quantity#8726) AND (ss_quantity#8726 >= 81)) AND (ss_quantity#8726 <= 100))
+   :  :                       +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8726,ss_ext_discount_amt#8730,ss_net_profit#8738] Batched: true, DataFilters: [isnotnull(ss_quantity#8726), (ss_quantity#8726 >= 81), (ss_quantity#8726 <= 100)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,81), LessThanOrEqual(ss_quantity,100)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   :  +- Subquery subquery#8427, [id=#12624]
+   :     +- AdaptiveSparkPlan isFinalPlan=false
+   :        +- Project [named_struct(count(1), count(1)#8457L, avg(ss_ext_discount_amt), avg(ss_ext_discount_amt)#8459, avg(ss_net_profit), avg(ss_net_profit)#8461) AS mergedValue#9108]
+   :           +- HashAggregate(keys=[], functions=[count(1), avg(ss_ext_discount_amt#8730), avg(ss_net_profit#8738)], output=[count(1)#8457L, avg(ss_ext_discount_amt)#8459, avg(ss_net_profit)#8461])
+   :              +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=12607]
+   :                 +- HashAggregate(keys=[], functions=[partial_count(1), partial_avg(ss_ext_discount_amt#8730), partial_avg(ss_net_profit#8738)], output=[count#8875L, sum#9127, count#9128L, sum#9129, count#9130L])
+   :                    +- Project [ss_ext_discount_amt#8730, ss_net_profit#8738]
+   :                       +- Filter ((isnotnull(ss_quantity#8726) AND (ss_quantity#8726 >= 81)) AND (ss_quantity#8726 <= 100))
+   :                          +- FileScan parquet spark_catalog.m.store_sales[ss_quantity#8726,ss_ext_discount_amt#8730,ss_net_profit#8738] Batched: true, DataFilters: [isnotnull(ss_quantity#8726), (ss_quantity#8726 >= 81), (ss_quantity#8726 <= 100)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_quantity), GreaterThanOrEqual(ss_quantity,81), LessThanOrEqual(ss_quantity,100)], ReadSchema: struct<ss_quantity:int,ss_ext_discount_amt:double,ss_net_profit:double>
+   +- Filter (isnotnull(r_reason_sk#8429) AND (r_reason_sk#8429 = 1))
+      +- FileScan parquet spark_catalog.m.reason[r_reason_sk#8429] Batched: true, DataFilters: [isnotnull(r_reason_sk#8429), (r_reason_sk#8429 = 1)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/reason], PartitionFilters: [], PushedFilters: [IsNotNull(r_reason_sk), EqualTo(r_reason_sk,1)], ReadSchema: struct<r_reason_sk:int>

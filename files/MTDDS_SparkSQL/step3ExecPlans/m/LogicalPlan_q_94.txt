@@ -1,0 +1,21 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['count(distinct 'ws_order_number) ASC NULLS FIRST], true
+      +- 'Project ['count(distinct 'ws_order_number) AS order_count#48728, 'sum('ws_ext_ship_cost) AS total_shipping_cost#48729, 'sum('ws_net_profit) AS total_net_profit#48730]
+         +- 'Filter ((((('d_date >= 1999-5-01) AND ('d_date <= (cast(1999-5-01 as date) + 60))) AND ('ws1.ws_ship_date_sk = 'd_date_sk)) AND (('ws1.ws_ship_addr_sk = 'ca_address_sk) AND ('ca_state = ND))) AND ((('ws1.ws_web_site_sk = 'web_site_sk) AND ('web_company_name = pri)) AND (exists#48731 [] AND NOT exists#48732 [])))
+            :  :- 'Project [*]
+            :  :  +- 'Filter (('ws1.ws_order_number = 'ws2.ws_order_number) AND NOT ('ws1.ws_warehouse_sk = 'ws2.ws_warehouse_sk))
+            :  :     +- 'SubqueryAlias ws2
+            :  :        +- 'UnresolvedRelation [web_sales], [], false
+            :  +- 'Project [*]
+            :     +- 'Filter ('ws1.ws_order_number = 'wr1.wr_order_number)
+            :        +- 'SubqueryAlias wr1
+            :           +- 'UnresolvedRelation [web_returns], [], false
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'SubqueryAlias ws1
+               :  :  :  +- 'UnresolvedRelation [web_sales], [], false
+               :  :  +- 'UnresolvedRelation [date_dim], [], false
+               :  +- 'UnresolvedRelation [customer_address], [], false
+               +- 'UnresolvedRelation [web_site], [], false

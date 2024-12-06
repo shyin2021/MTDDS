@@ -1,0 +1,21 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['lochierarchy DESC NULLS LAST, CASE WHEN (('grouping('s_state) + 'grouping('s_county)) = 0) THEN 's_state END ASC NULLS FIRST, 'rank_within_parent ASC NULLS FIRST], true
+      +- 'Aggregate [rollup(Vector(0), Vector(1), 's_state, 's_county)], ['sum('ss_net_profit) AS total_sum#40899, 's_state, 's_county, ('grouping('s_state) + 'grouping('s_county)) AS lochierarchy#40900, 'rank() windowspecdefinition(('grouping('s_state) + 'grouping('s_county)), CASE WHEN ('grouping('s_county) = 0) THEN 's_state END, 'sum('ss_net_profit) DESC NULLS LAST, unspecifiedframe$()) AS rank_within_parent#40901]
+         +- 'Filter (((('d1.d_month_seq >= 1186) AND ('d1.d_month_seq <= (1186 + 11))) AND ('d1.d_date_sk = 'ss_sold_date_sk)) AND (('s_store_sk = 'ss_store_sk) AND 's_state IN (list#40904 [])))
+            :  +- 'Project ['s_state]
+            :     +- 'Filter ('ranking <= 5)
+            :        +- 'SubqueryAlias tmp1
+            :           +- 'Aggregate ['s_state], ['s_state AS s_state#40902, 'rank() windowspecdefinition('s_state, 'sum('ss_net_profit) DESC NULLS LAST, unspecifiedframe$()) AS ranking#40903]
+            :              +- 'Filter (((('d_month_seq >= 1186) AND ('d_month_seq <= (1186 + 11))) AND ('d_date_sk = 'ss_sold_date_sk)) AND ('s_store_sk = 'ss_store_sk))
+            :                 +- 'Join Inner
+            :                    :- 'Join Inner
+            :                    :  :- 'UnresolvedRelation [store_sales], [], false
+            :                    :  +- 'UnresolvedRelation [store], [], false
+            :                    +- 'UnresolvedRelation [date_dim], [], false
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'UnresolvedRelation [store_sales], [], false
+               :  +- 'SubqueryAlias d1
+               :     +- 'UnresolvedRelation [date_dim], [], false
+               +- 'UnresolvedRelation [store], [], false

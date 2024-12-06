@@ -1,0 +1,27 @@
+CTE [web_v1, store_v1]
+:  :- 'SubqueryAlias web_v1
+:  :  +- 'Aggregate ['ws_item_sk, 'd_date], ['ws_item_sk AS item_sk#33784, 'd_date, 'sum('sum('ws_sales_price)) windowspecdefinition('ws_item_sk, 'd_date ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33785]
+:  :     +- 'Filter ((('ws_sold_date_sk = 'd_date_sk) AND (('d_month_seq >= 1202) AND ('d_month_seq <= (1202 + 11)))) AND isnotnull('ws_item_sk))
+:  :        +- 'Join Inner
+:  :           :- 'UnresolvedRelation [web_sales], [], false
+:  :           +- 'UnresolvedRelation [date_dim], [], false
+:  +- 'SubqueryAlias store_v1
+:     +- 'Aggregate ['ss_item_sk, 'd_date], ['ss_item_sk AS item_sk#33786, 'd_date, 'sum('sum('ss_sales_price)) windowspecdefinition('ss_item_sk, 'd_date ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS cume_sales#33787]
+:        +- 'Filter ((('ss_sold_date_sk = 'd_date_sk) AND (('d_month_seq >= 1202) AND ('d_month_seq <= (1202 + 11)))) AND isnotnull('ss_item_sk))
+:           +- 'Join Inner
+:              :- 'UnresolvedRelation [store_sales], [], false
+:              +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['item_sk ASC NULLS FIRST, 'd_date ASC NULLS FIRST], true
+         +- 'Project [*]
+            +- 'Filter ('web_cumulative > 'store_cumulative)
+               +- 'SubqueryAlias y
+                  +- 'Project ['item_sk, 'd_date, 'web_sales, 'store_sales, 'max('web_sales) windowspecdefinition('item_sk, 'd_date ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS web_cumulative#33782, 'max('store_sales) windowspecdefinition('item_sk, 'd_date ASC NULLS FIRST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS store_cumulative#33783]
+                     +- 'SubqueryAlias x
+                        +- 'Project [CASE WHEN isnotnull('web.item_sk) THEN 'web.item_sk ELSE 'store.item_sk END AS item_sk#33778, CASE WHEN isnotnull('web.d_date) THEN 'web.d_date ELSE 'store.d_date END AS d_date#33779, 'web.cume_sales AS web_sales#33780, 'store.cume_sales AS store_sales#33781]
+                           +- 'Join FullOuter, (('web.item_sk = 'store.item_sk) AND ('web.d_date = 'store.d_date))
+                              :- 'SubqueryAlias web
+                              :  +- 'UnresolvedRelation [web_v1], [], false
+                              +- 'SubqueryAlias store
+                                 +- 'UnresolvedRelation [store_v1], [], false

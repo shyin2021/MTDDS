@@ -1,0 +1,31 @@
+CTE [wss]
+:  +- 'SubqueryAlias wss
+:     +- 'Aggregate ['d_week_seq, 'ss_store_sk], ['d_week_seq, 'ss_store_sk, 'sum(CASE WHEN ('d_day_name = Sunday) THEN 'ss_sales_price ELSE null END) AS sun_sales#36102, 'sum(CASE WHEN ('d_day_name = Monday) THEN 'ss_sales_price ELSE null END) AS mon_sales#36103, 'sum(CASE WHEN ('d_day_name = Tuesday) THEN 'ss_sales_price ELSE null END) AS tue_sales#36104, 'sum(CASE WHEN ('d_day_name = Wednesday) THEN 'ss_sales_price ELSE null END) AS wed_sales#36105, 'sum(CASE WHEN ('d_day_name = Thursday) THEN 'ss_sales_price ELSE null END) AS thu_sales#36106, 'sum(CASE WHEN ('d_day_name = Friday) THEN 'ss_sales_price ELSE null END) AS fri_sales#36107, 'sum(CASE WHEN ('d_day_name = Saturday) THEN 'ss_sales_price ELSE null END) AS sat_sales#36108]
+:        +- 'Filter ('d_date_sk = 'ss_sold_date_sk)
+:           +- 'Join Inner
+:              :- 'UnresolvedRelation [store_sales], [], false
+:              +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['s_store_name1 ASC NULLS FIRST, 's_store_id1 ASC NULLS FIRST, 'd_week_seq1 ASC NULLS FIRST], true
+         +- 'Project ['s_store_name1, 's_store_id1, 'd_week_seq1, unresolvedalias(('sun_sales1 / 'sun_sales2), None), unresolvedalias(('mon_sales1 / 'mon_sales2), None), unresolvedalias(('tue_sales1 / 'tue_sales2), None), unresolvedalias(('wed_sales1 / 'wed_sales2), None), unresolvedalias(('thu_sales1 / 'thu_sales2), None), unresolvedalias(('fri_sales1 / 'fri_sales2), None), unresolvedalias(('sat_sales1 / 'sat_sales2), None)]
+            +- 'Filter (('s_store_id1 = 's_store_id2) AND ('d_week_seq1 = ('d_week_seq2 - 52)))
+               +- 'Join Inner
+                  :- 'SubqueryAlias y
+                  :  +- 'Project ['s_store_name AS s_store_name1#36082, 'wss.d_week_seq AS d_week_seq1#36083, 's_store_id AS s_store_id1#36084, 'sun_sales AS sun_sales1#36085, 'mon_sales AS mon_sales1#36086, 'tue_sales AS tue_sales1#36087, 'wed_sales AS wed_sales1#36088, 'thu_sales AS thu_sales1#36089, 'fri_sales AS fri_sales1#36090, 'sat_sales AS sat_sales1#36091]
+                  :     +- 'Filter ((('d.d_week_seq = 'wss.d_week_seq) AND ('ss_store_sk = 's_store_sk)) AND (('d_month_seq >= 1205) AND ('d_month_seq <= (1205 + 11))))
+                  :        +- 'Join Inner
+                  :           :- 'Join Inner
+                  :           :  :- 'UnresolvedRelation [wss], [], false
+                  :           :  +- 'UnresolvedRelation [store], [], false
+                  :           +- 'SubqueryAlias d
+                  :              +- 'UnresolvedRelation [date_dim], [], false
+                  +- 'SubqueryAlias x
+                     +- 'Project ['s_store_name AS s_store_name2#36092, 'wss.d_week_seq AS d_week_seq2#36093, 's_store_id AS s_store_id2#36094, 'sun_sales AS sun_sales2#36095, 'mon_sales AS mon_sales2#36096, 'tue_sales AS tue_sales2#36097, 'wed_sales AS wed_sales2#36098, 'thu_sales AS thu_sales2#36099, 'fri_sales AS fri_sales2#36100, 'sat_sales AS sat_sales2#36101]
+                        +- 'Filter ((('d.d_week_seq = 'wss.d_week_seq) AND ('ss_store_sk = 's_store_sk)) AND (('d_month_seq >= (1205 + 12)) AND ('d_month_seq <= (1205 + 23))))
+                           +- 'Join Inner
+                              :- 'Join Inner
+                              :  :- 'UnresolvedRelation [wss], [], false
+                              :  +- 'UnresolvedRelation [store], [], false
+                              +- 'SubqueryAlias d
+                                 +- 'UnresolvedRelation [date_dim], [], false

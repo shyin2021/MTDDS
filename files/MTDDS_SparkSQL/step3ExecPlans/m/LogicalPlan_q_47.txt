@@ -1,0 +1,27 @@
+CTE [v1, v2]
+:  :- 'SubqueryAlias v1
+:  :  +- 'Aggregate ['i_category, 'i_brand, 's_store_name, 's_company_name, 'd_year, 'd_moy], ['i_category, 'i_brand, 's_store_name, 's_company_name, 'd_year, 'd_moy, 'sum('ss_sales_price) AS sum_sales#31848, 'avg('sum('ss_sales_price)) windowspecdefinition('i_category, 'i_brand, 's_store_name, 's_company_name, 'd_year, unspecifiedframe$()) AS avg_monthly_sales#31849, 'rank() windowspecdefinition('i_category, 'i_brand, 's_store_name, 's_company_name, 'd_year ASC NULLS FIRST, 'd_moy ASC NULLS FIRST, unspecifiedframe$()) AS rn#31850]
+:  :     +- 'Filter ((('ss_item_sk = 'i_item_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND (('ss_store_sk = 's_store_sk) AND ((('d_year = 2001) OR (('d_year = (2001 - 1)) AND ('d_moy = 12))) OR (('d_year = (2001 + 1)) AND ('d_moy = 1)))))
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'UnresolvedRelation [item], [], false
+:  :           :  :  +- 'UnresolvedRelation [store_sales], [], false
+:  :           :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           +- 'UnresolvedRelation [store], [], false
+:  +- 'SubqueryAlias v2
+:     +- 'Project ['v1.i_category, 'v1.d_year, 'v1.avg_monthly_sales, 'v1.sum_sales, 'v1_lag.sum_sales AS psum#31851, 'v1_lead.sum_sales AS nsum#31852]
+:        +- 'Filter ((((('v1.i_category = 'v1_lag.i_category) AND ('v1.i_category = 'v1_lead.i_category)) AND ('v1.i_brand = 'v1_lag.i_brand)) AND (('v1.i_brand = 'v1_lead.i_brand) AND ('v1.s_store_name = 'v1_lag.s_store_name))) AND (((('v1.s_store_name = 'v1_lead.s_store_name) AND ('v1.s_company_name = 'v1_lag.s_company_name)) AND ('v1.s_company_name = 'v1_lead.s_company_name)) AND (('v1.rn = ('v1_lag.rn + 1)) AND ('v1.rn = ('v1_lead.rn - 1)))))
+:           +- 'Join Inner
+:              :- 'Join Inner
+:              :  :- 'UnresolvedRelation [v1], [], false
+:              :  +- 'SubqueryAlias v1_lag
+:              :     +- 'UnresolvedRelation [v1], [], false
+:              +- 'SubqueryAlias v1_lead
+:                 +- 'UnresolvedRelation [v1], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort [('sum_sales - 'avg_monthly_sales) ASC NULLS FIRST, 'psum ASC NULLS FIRST], true
+         +- 'Project [*]
+            +- 'Filter ((('d_year = 2001) AND ('avg_monthly_sales > 0)) AND (CASE WHEN ('avg_monthly_sales > 0) THEN ('abs(('sum_sales - 'avg_monthly_sales)) / 'avg_monthly_sales) ELSE null END > 0.1))
+               +- 'UnresolvedRelation [v2], [], false

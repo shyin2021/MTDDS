@@ -1,0 +1,70 @@
+== Parsed Logical Plan ==
+'Sort ['i_category ASC NULLS FIRST, 'i_class ASC NULLS FIRST, 'i_item_id ASC NULLS FIRST, 'i_item_desc ASC NULLS FIRST, 'revenueratio ASC NULLS FIRST], true
++- 'Aggregate ['i_item_id, 'i_item_desc, 'i_category, 'i_class, 'i_current_price], ['i_item_id, 'i_item_desc, 'i_category, 'i_class, 'i_current_price, 'sum('ss_ext_sales_price) AS itemrevenue#49421, (('sum('ss_ext_sales_price) * 100) / 'sum('sum('ss_ext_sales_price)) windowspecdefinition('i_class, unspecifiedframe$())) AS revenueratio#49422]
+   +- 'Filter ((('ss_item_sk = 'i_item_sk) AND 'i_category IN (Books,Shoes,Children)) AND (('ss_sold_date_sk = 'd_date_sk) AND (('d_date >= cast(2002-01-02 as date)) AND ('d_date <= (cast(2002-01-02 as date) + 30)))))
+      +- 'Join Inner
+         :- 'Join Inner
+         :  :- 'UnresolvedRelation [store_sales], [], false
+         :  +- 'UnresolvedRelation [item], [], false
+         +- 'UnresolvedRelation [date_dim], [], false
+
+== Analyzed Logical Plan ==
+i_item_id: string, i_item_desc: string, i_category: string, i_class: string, i_current_price: double, itemrevenue: double, revenueratio: double
+Sort [i_category#1283 ASC NULLS FIRST, i_class#1281 ASC NULLS FIRST, i_item_id#1272 ASC NULLS FIRST, i_item_desc#1275 ASC NULLS FIRST, revenueratio#49422 ASC NULLS FIRST], true
++- Project [i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, itemrevenue#49421, revenueratio#49422]
+   +- Project [i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, itemrevenue#49421, _w0#49427, _we0#49428, ((_w0#49427 * cast(100 as double)) / _we0#49428) AS revenueratio#49422]
+      +- Window [sum(_w0#49427) windowspecdefinition(i_class#1281, specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS _we0#49428], [i_class#1281]
+         +- Aggregate [i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276], [i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, sum(ss_ext_sales_price#1263) AS itemrevenue#49421, sum(ss_ext_sales_price#1263) AS _w0#49427]
+            +- Filter (((ss_item_sk#1250 = i_item_sk#1271) AND i_category#1283 IN (Books,Shoes,Children)) AND ((ss_sold_date_sk#1248 = d_date_sk#24) AND ((cast(d_date#26 as date) >= cast(2002-01-02 as date)) AND (cast(d_date#26 as date) <= date_add(cast(2002-01-02 as date), 30)))))
+               +- Join Inner
+                  :- Join Inner
+                  :  :- SubqueryAlias spark_catalog.m.store_sales
+                  :  :  +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+                  :  +- SubqueryAlias spark_catalog.m.item
+                  :     +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+                  +- SubqueryAlias spark_catalog.m.date_dim
+                     +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+
+== Optimized Logical Plan ==
+Sort [i_category#1283 ASC NULLS FIRST, i_class#1281 ASC NULLS FIRST, i_item_id#1272 ASC NULLS FIRST, i_item_desc#1275 ASC NULLS FIRST, revenueratio#49422 ASC NULLS FIRST], true
++- Project [i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, itemrevenue#49421, ((_w0#49427 * 100.0) / _we0#49428) AS revenueratio#49422]
+   +- Window [sum(_w0#49427) windowspecdefinition(i_class#1281, specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS _we0#49428], [i_class#1281]
+      +- Aggregate [i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276], [i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, sum(ss_ext_sales_price#1263) AS itemrevenue#49421, sum(ss_ext_sales_price#1263) AS _w0#49427]
+         +- Project [ss_ext_sales_price#1263, i_item_id#1272, i_item_desc#1275, i_current_price#1276, i_class#1281, i_category#1283]
+            +- Join Inner, (ss_sold_date_sk#1248 = d_date_sk#24)
+               :- Project [ss_sold_date_sk#1248, ss_ext_sales_price#1263, i_item_id#1272, i_item_desc#1275, i_current_price#1276, i_class#1281, i_category#1283]
+               :  +- Join Inner, (ss_item_sk#1250 = i_item_sk#1271)
+               :     :- Project [ss_sold_date_sk#1248, ss_item_sk#1250, ss_ext_sales_price#1263]
+               :     :  +- Filter (isnotnull(ss_item_sk#1250) AND isnotnull(ss_sold_date_sk#1248))
+               :     :     +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+               :     +- Project [i_item_sk#1271, i_item_id#1272, i_item_desc#1275, i_current_price#1276, i_class#1281, i_category#1283]
+               :        +- Filter (i_category#1283 IN (Books,Shoes,Children) AND isnotnull(i_item_sk#1271))
+               :           +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+               +- Project [d_date_sk#24]
+                  +- Filter ((isnotnull(d_date#26) AND ((cast(d_date#26 as date) >= 2002-01-02) AND (cast(d_date#26 as date) <= 2002-02-01))) AND isnotnull(d_date_sk#24))
+                     +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- Sort [i_category#1283 ASC NULLS FIRST, i_class#1281 ASC NULLS FIRST, i_item_id#1272 ASC NULLS FIRST, i_item_desc#1275 ASC NULLS FIRST, revenueratio#49422 ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(i_category#1283 ASC NULLS FIRST, i_class#1281 ASC NULLS FIRST, i_item_id#1272 ASC NULLS FIRST, i_item_desc#1275 ASC NULLS FIRST, revenueratio#49422 ASC NULLS FIRST, 200), ENSURE_REQUIREMENTS, [plan_id=178182]
+      +- Project [i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, itemrevenue#49421, ((_w0#49427 * 100.0) / _we0#49428) AS revenueratio#49422]
+         +- Window [sum(_w0#49427) windowspecdefinition(i_class#1281, specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS _we0#49428], [i_class#1281]
+            +- Sort [i_class#1281 ASC NULLS FIRST], false, 0
+               +- Exchange hashpartitioning(i_class#1281, 200), ENSURE_REQUIREMENTS, [plan_id=178177]
+                  +- HashAggregate(keys=[i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276], functions=[sum(ss_ext_sales_price#1263)], output=[i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, itemrevenue#49421, _w0#49427])
+                     +- Exchange hashpartitioning(i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, 200), ENSURE_REQUIREMENTS, [plan_id=178174]
+                        +- HashAggregate(keys=[i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, knownfloatingpointnormalized(normalizenanandzero(i_current_price#1276)) AS i_current_price#1276], functions=[partial_sum(ss_ext_sales_price#1263)], output=[i_item_id#1272, i_item_desc#1275, i_category#1283, i_class#1281, i_current_price#1276, sum#49458])
+                           +- Project [ss_ext_sales_price#1263, i_item_id#1272, i_item_desc#1275, i_current_price#1276, i_class#1281, i_category#1283]
+                              +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#24], Inner, BuildRight, false
+                                 :- Project [ss_sold_date_sk#1248, ss_ext_sales_price#1263, i_item_id#1272, i_item_desc#1275, i_current_price#1276, i_class#1281, i_category#1283]
+                                 :  +- BroadcastHashJoin [ss_item_sk#1250], [i_item_sk#1271], Inner, BuildRight, false
+                                 :     :- Filter (isnotnull(ss_item_sk#1250) AND isnotnull(ss_sold_date_sk#1248))
+                                 :     :  +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_item_sk#1250,ss_ext_sales_price#1263] Batched: true, DataFilters: [isnotnull(ss_item_sk#1250), isnotnull(ss_sold_date_sk#1248)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_item_sk), IsNotNull(ss_sold_date_sk)], ReadSchema: struct<ss_sold_date_sk:int,ss_item_sk:int,ss_ext_sales_price:double>
+                                 :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=178165]
+                                 :        +- Filter (i_category#1283 IN (Books,Shoes,Children) AND isnotnull(i_item_sk#1271))
+                                 :           +- FileScan parquet spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_item_desc#1275,i_current_price#1276,i_class#1281,i_category#1283] Batched: true, DataFilters: [i_category#1283 IN (Books,Shoes,Children), isnotnull(i_item_sk#1271)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [In(i_category, [Books,Children,Shoes]), IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_item_id:string,i_item_desc:string,i_current_price:double,i_class:string,i_...
+                                 +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=178169]
+                                    +- Project [d_date_sk#24]
+                                       +- Filter (((isnotnull(d_date#26) AND (cast(d_date#26 as date) >= 2002-01-02)) AND (cast(d_date#26 as date) <= 2002-02-01)) AND isnotnull(d_date_sk#24))
+                                          +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_date#26] Batched: true, DataFilters: [isnotnull(d_date#26), (cast(d_date#26 as date) >= 2002-01-02), (cast(d_date#26 as date) <= 2002-..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_date), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_date:string>

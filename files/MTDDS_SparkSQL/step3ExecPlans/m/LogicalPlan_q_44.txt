@@ -1,0 +1,40 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['asceding.rnk ASC NULLS FIRST], true
+      +- 'Project ['asceding.rnk, 'i1.i_product_name AS best_performing#31484, 'i2.i_product_name AS worst_performing#31485]
+         +- 'Filter ((('asceding.rnk = 'descending.rnk) AND ('i1.i_item_sk = 'asceding.item_sk)) AND ('i2.i_item_sk = 'descending.item_sk))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'SubqueryAlias asceding
+               :  :  :  +- 'Project [*]
+               :  :  :     +- 'Filter ('rnk < 11)
+               :  :  :        +- 'SubqueryAlias V11
+               :  :  :           +- 'Project ['item_sk, 'rank() windowspecdefinition('rank_col ASC NULLS FIRST, unspecifiedframe$()) AS rnk#31478]
+               :  :  :              +- 'SubqueryAlias V1
+               :  :  :                 +- 'UnresolvedHaving ('avg('ss_net_profit) > (0.9 * scalar-subquery#31477 []))
+               :  :  :                    :  +- 'Aggregate ['ss_store_sk], ['avg('ss_net_profit) AS rank_col#31476]
+               :  :  :                    :     +- 'Filter (('ss_store_sk = 29) AND isnull('ss_cdemo_sk))
+               :  :  :                    :        +- 'UnresolvedRelation [store_sales], [], false
+               :  :  :                    +- 'Aggregate ['ss_item_sk], ['ss_item_sk AS item_sk#31474, 'avg('ss_net_profit) AS rank_col#31475]
+               :  :  :                       +- 'Filter ('ss_store_sk = 29)
+               :  :  :                          +- 'SubqueryAlias ss1
+               :  :  :                             +- 'UnresolvedRelation [store_sales], [], false
+               :  :  +- 'SubqueryAlias descending
+               :  :     +- 'Project [*]
+               :  :        +- 'Filter ('rnk < 11)
+               :  :           +- 'SubqueryAlias V21
+               :  :              +- 'Project ['item_sk, 'rank() windowspecdefinition('rank_col DESC NULLS LAST, unspecifiedframe$()) AS rnk#31483]
+               :  :                 +- 'SubqueryAlias V2
+               :  :                    +- 'UnresolvedHaving ('avg('ss_net_profit) > (0.9 * scalar-subquery#31482 []))
+               :  :                       :  +- 'Aggregate ['ss_store_sk], ['avg('ss_net_profit) AS rank_col#31481]
+               :  :                       :     +- 'Filter (('ss_store_sk = 29) AND isnull('ss_cdemo_sk))
+               :  :                       :        +- 'UnresolvedRelation [store_sales], [], false
+               :  :                       +- 'Aggregate ['ss_item_sk], ['ss_item_sk AS item_sk#31479, 'avg('ss_net_profit) AS rank_col#31480]
+               :  :                          +- 'Filter ('ss_store_sk = 29)
+               :  :                             +- 'SubqueryAlias ss1
+               :  :                                +- 'UnresolvedRelation [store_sales], [], false
+               :  +- 'SubqueryAlias i1
+               :     +- 'UnresolvedRelation [item], [], false
+               +- 'SubqueryAlias i2
+                  +- 'UnresolvedRelation [item], [], false

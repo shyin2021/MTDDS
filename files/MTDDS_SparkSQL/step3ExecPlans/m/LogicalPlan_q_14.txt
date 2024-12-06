@@ -1,0 +1,94 @@
+CTE [cross_items, avg_sales]
+:  :- 'SubqueryAlias cross_items
+:  :  +- 'Project ['i_item_sk AS ss_item_sk#17378]
+:  :     +- 'Filter ((('i_brand_id = 'brand_id) AND ('i_class_id = 'class_id)) AND ('i_category_id = 'category_id))
+:  :        +- 'Join Inner
+:  :           :- 'UnresolvedRelation [item], [], false
+:  :           +- 'SubqueryAlias x
+:  :              +- 'Intersect false
+:  :                 :- 'Intersect false
+:  :                 :  :- 'Project ['iss.i_brand_id AS brand_id#17375, 'iss.i_class_id AS class_id#17376, 'iss.i_category_id AS category_id#17377]
+:  :                 :  :  +- 'Filter ((('ss_item_sk = 'iss.i_item_sk) AND ('ss_sold_date_sk = 'd1.d_date_sk)) AND (('d1.d_year >= 1998) AND ('d1.d_year <= (1998 + 2))))
+:  :                 :  :     +- 'Join Inner
+:  :                 :  :        :- 'Join Inner
+:  :                 :  :        :  :- 'UnresolvedRelation [store_sales], [], false
+:  :                 :  :        :  +- 'SubqueryAlias iss
+:  :                 :  :        :     +- 'UnresolvedRelation [item], [], false
+:  :                 :  :        +- 'SubqueryAlias d1
+:  :                 :  :           +- 'UnresolvedRelation [date_dim], [], false
+:  :                 :  +- 'Project ['ics.i_brand_id, 'ics.i_class_id, 'ics.i_category_id]
+:  :                 :     +- 'Filter ((('cs_item_sk = 'ics.i_item_sk) AND ('cs_sold_date_sk = 'd2.d_date_sk)) AND (('d2.d_year >= 1998) AND ('d2.d_year <= (1998 + 2))))
+:  :                 :        +- 'Join Inner
+:  :                 :           :- 'Join Inner
+:  :                 :           :  :- 'UnresolvedRelation [catalog_sales], [], false
+:  :                 :           :  +- 'SubqueryAlias ics
+:  :                 :           :     +- 'UnresolvedRelation [item], [], false
+:  :                 :           +- 'SubqueryAlias d2
+:  :                 :              +- 'UnresolvedRelation [date_dim], [], false
+:  :                 +- 'Project ['iws.i_brand_id, 'iws.i_class_id, 'iws.i_category_id]
+:  :                    +- 'Filter ((('ws_item_sk = 'iws.i_item_sk) AND ('ws_sold_date_sk = 'd3.d_date_sk)) AND (('d3.d_year >= 1998) AND ('d3.d_year <= (1998 + 2))))
+:  :                       +- 'Join Inner
+:  :                          :- 'Join Inner
+:  :                          :  :- 'UnresolvedRelation [web_sales], [], false
+:  :                          :  +- 'SubqueryAlias iws
+:  :                          :     +- 'UnresolvedRelation [item], [], false
+:  :                          +- 'SubqueryAlias d3
+:  :                             +- 'UnresolvedRelation [date_dim], [], false
+:  +- 'SubqueryAlias avg_sales
+:     +- 'Project ['avg(('quantity * 'list_price)) AS average_sales#17385]
+:        +- 'SubqueryAlias x
+:           +- 'Union false, false
+:              :- 'Union false, false
+:              :  :- 'Project ['ss_quantity AS quantity#17379, 'ss_list_price AS list_price#17380]
+:              :  :  +- 'Filter (('ss_sold_date_sk = 'd_date_sk) AND (('d_year >= 1998) AND ('d_year <= (1998 + 2))))
+:              :  :     +- 'Join Inner
+:              :  :        :- 'UnresolvedRelation [store_sales], [], false
+:              :  :        +- 'UnresolvedRelation [date_dim], [], false
+:              :  +- 'Project ['cs_quantity AS quantity#17381, 'cs_list_price AS list_price#17382]
+:              :     +- 'Filter (('cs_sold_date_sk = 'd_date_sk) AND (('d_year >= 1998) AND ('d_year <= (1998 + 2))))
+:              :        +- 'Join Inner
+:              :           :- 'UnresolvedRelation [catalog_sales], [], false
+:              :           +- 'UnresolvedRelation [date_dim], [], false
+:              +- 'Project ['ws_quantity AS quantity#17383, 'ws_list_price AS list_price#17384]
+:                 +- 'Filter (('ws_sold_date_sk = 'd_date_sk) AND (('d_year >= 1998) AND ('d_year <= (1998 + 2))))
+:                    +- 'Join Inner
+:                       :- 'UnresolvedRelation [web_sales], [], false
+:                       +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['this_year.channel ASC NULLS FIRST, 'this_year.i_brand_id ASC NULLS FIRST, 'this_year.i_class_id ASC NULLS FIRST, 'this_year.i_category_id ASC NULLS FIRST], true
+         +- 'Project ['this_year.channel AS ty_channel#17363, 'this_year.i_brand_id AS ty_brand#17364, 'this_year.i_class_id AS ty_class#17365, 'this_year.i_category_id AS ty_category#17366, 'this_year.sales AS ty_sales#17367, 'this_year.number_sales AS ty_number_sales#17368, 'last_year.channel AS ly_channel#17369, 'last_year.i_brand_id AS ly_brand#17370, 'last_year.i_class_id AS ly_class#17371, 'last_year.i_category_id AS ly_category#17372, 'last_year.sales AS ly_sales#17373, 'last_year.number_sales AS ly_number_sales#17374]
+            +- 'Filter ((('this_year.i_brand_id = 'last_year.i_brand_id) AND ('this_year.i_class_id = 'last_year.i_class_id)) AND ('this_year.i_category_id = 'last_year.i_category_id))
+               +- 'Join Inner
+                  :- 'SubqueryAlias this_year
+                  :  +- 'UnresolvedHaving ('sum(('ss_quantity * 'ss_list_price)) > scalar-subquery#17356 [])
+                  :     :  +- 'Project ['average_sales]
+                  :     :     +- 'UnresolvedRelation [avg_sales], [], false
+                  :     +- 'Aggregate ['i_brand_id, 'i_class_id, 'i_category_id], [store AS channel#17351, 'i_brand_id, 'i_class_id, 'i_category_id, 'sum(('ss_quantity * 'ss_list_price)) AS sales#17352, 'count(1) AS number_sales#17353]
+                  :        +- 'Filter (('ss_item_sk IN (list#17354 []) AND ('ss_item_sk = 'i_item_sk)) AND (('ss_sold_date_sk = 'd_date_sk) AND ('d_week_seq = scalar-subquery#17355 [])))
+                  :           :  :- 'Project ['ss_item_sk]
+                  :           :  :  +- 'UnresolvedRelation [cross_items], [], false
+                  :           :  +- 'Project ['d_week_seq]
+                  :           :     +- 'Filter ((('d_year = (1998 + 1)) AND ('d_moy = 12)) AND ('d_dom = 20))
+                  :           :        +- 'UnresolvedRelation [date_dim], [], false
+                  :           +- 'Join Inner
+                  :              :- 'Join Inner
+                  :              :  :- 'UnresolvedRelation [store_sales], [], false
+                  :              :  +- 'UnresolvedRelation [item], [], false
+                  :              +- 'UnresolvedRelation [date_dim], [], false
+                  +- 'SubqueryAlias last_year
+                     +- 'UnresolvedHaving ('sum(('ss_quantity * 'ss_list_price)) > scalar-subquery#17362 [])
+                        :  +- 'Project ['average_sales]
+                        :     +- 'UnresolvedRelation [avg_sales], [], false
+                        +- 'Aggregate ['i_brand_id, 'i_class_id, 'i_category_id], [store AS channel#17357, 'i_brand_id, 'i_class_id, 'i_category_id, 'sum(('ss_quantity * 'ss_list_price)) AS sales#17358, 'count(1) AS number_sales#17359]
+                           +- 'Filter (('ss_item_sk IN (list#17360 []) AND ('ss_item_sk = 'i_item_sk)) AND (('ss_sold_date_sk = 'd_date_sk) AND ('d_week_seq = scalar-subquery#17361 [])))
+                              :  :- 'Project ['ss_item_sk]
+                              :  :  +- 'UnresolvedRelation [cross_items], [], false
+                              :  +- 'Project ['d_week_seq]
+                              :     +- 'Filter ((('d_year = 1998) AND ('d_moy = 12)) AND ('d_dom = 20))
+                              :        +- 'UnresolvedRelation [date_dim], [], false
+                              +- 'Join Inner
+                                 :- 'Join Inner
+                                 :  :- 'UnresolvedRelation [store_sales], [], false
+                                 :  +- 'UnresolvedRelation [item], [], false
+                                 +- 'UnresolvedRelation [date_dim], [], false

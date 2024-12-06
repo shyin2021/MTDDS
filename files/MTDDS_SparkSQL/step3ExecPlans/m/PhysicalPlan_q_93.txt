@@ -1,0 +1,17 @@
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[sumsales#48712 ASC NULLS FIRST,ss_customer_sk#1251 ASC NULLS FIRST], output=[ss_customer_sk#1251,sumsales#48712])
+   +- HashAggregate(keys=[ss_customer_sk#1251], functions=[sum(act_sales#48711)], output=[ss_customer_sk#1251, sumsales#48712])
+      +- Exchange hashpartitioning(ss_customer_sk#1251, 200), ENSURE_REQUIREMENTS, [plan_id=175002]
+         +- HashAggregate(keys=[ss_customer_sk#1251], functions=[partial_sum(act_sales#48711)], output=[ss_customer_sk#1251, sum#48723])
+            +- Project [ss_customer_sk#1251, CASE WHEN isnotnull(sr_return_quantity#14) THEN (cast((ss_quantity#1258 - sr_return_quantity#14) as double) * ss_sales_price#1261) ELSE (cast(ss_quantity#1258 as double) * ss_sales_price#1261) END AS act_sales#48711]
+               +- BroadcastHashJoin [sr_reason_sk#12], [r_reason_sk#8429], Inner, BuildRight, false
+                  :- Project [ss_customer_sk#1251, ss_quantity#1258, ss_sales_price#1261, sr_reason_sk#12, sr_return_quantity#14]
+                  :  +- BroadcastHashJoin [ss_item_sk#1250, ss_ticket_number#1257], [sr_item_sk#6, sr_ticket_number#13], Inner, BuildRight, false
+                  :     :- FileScan parquet spark_catalog.m.store_sales[ss_item_sk#1250,ss_customer_sk#1251,ss_ticket_number#1257,ss_quantity#1258,ss_sales_price#1261] Batched: true, DataFilters: [], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<ss_item_sk:int,ss_customer_sk:int,ss_ticket_number:int,ss_quantity:int,ss_sales_price:double>
+                  :     +- BroadcastExchange HashedRelationBroadcastMode(List((shiftleft(cast(input[0, int, false] as bigint), 32) | (cast(input[2, int, false] as bigint) & 4294967295))),false), [plan_id=174993]
+                  :        +- Filter ((isnotnull(sr_item_sk#6) AND isnotnull(sr_ticket_number#13)) AND isnotnull(sr_reason_sk#12))
+                  :           +- FileScan parquet spark_catalog.m.store_returns[sr_item_sk#6,sr_reason_sk#12,sr_ticket_number#13,sr_return_quantity#14] Batched: true, DataFilters: [isnotnull(sr_item_sk#6), isnotnull(sr_ticket_number#13), isnotnull(sr_reason_sk#12)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_returns], PartitionFilters: [], PushedFilters: [IsNotNull(sr_item_sk), IsNotNull(sr_ticket_number), IsNotNull(sr_reason_sk)], ReadSchema: struct<sr_item_sk:int,sr_reason_sk:int,sr_ticket_number:int,sr_return_quantity:int>
+                  +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=174997]
+                     +- Project [r_reason_sk#8429]
+                        +- Filter ((isnotnull(r_reason_desc#8431) AND (r_reason_desc#8431 = reason 48)) AND isnotnull(r_reason_sk#8429))
+                           +- FileScan parquet spark_catalog.m.reason[r_reason_sk#8429,r_reason_desc#8431] Batched: true, DataFilters: [isnotnull(r_reason_desc#8431), (r_reason_desc#8431 = reason 48), isnotnull(r_reason_sk#8429)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/reason], PartitionFilters: [], PushedFilters: [IsNotNull(r_reason_desc), EqualTo(r_reason_desc,reason 48), IsNotNull(r_reason_sk)], ReadSchema: struct<r_reason_sk:int,r_reason_desc:string>

@@ -1,0 +1,45 @@
+CTE [my_customers, my_revenue, segments]
+:  :- 'SubqueryAlias my_customers
+:  :  +- 'Distinct
+:  :     +- 'Project ['c_customer_sk, 'c_current_addr_sk]
+:  :        +- 'Filter (((('sold_date_sk = 'd_date_sk) AND ('item_sk = 'i_item_sk)) AND (('i_category = Electronics) AND ('i_class = disk drives))) AND ((('c_customer_sk = 'cs_or_ws_sales.customer_sk) AND ('d_moy = 3)) AND ('d_year = 1998)))
+:  :           +- 'Join Inner
+:  :              :- 'Join Inner
+:  :              :  :- 'Join Inner
+:  :              :  :  :- 'SubqueryAlias cs_or_ws_sales
+:  :              :  :  :  +- 'Union false, false
+:  :              :  :  :     :- 'Project ['cs_sold_date_sk AS sold_date_sk#33931, 'cs_bill_customer_sk AS customer_sk#33932, 'cs_item_sk AS item_sk#33933]
+:  :              :  :  :     :  +- 'UnresolvedRelation [catalog_sales], [], false
+:  :              :  :  :     +- 'Project ['ws_sold_date_sk AS sold_date_sk#33934, 'ws_bill_customer_sk AS customer_sk#33935, 'ws_item_sk AS item_sk#33936]
+:  :              :  :  :        +- 'UnresolvedRelation [web_sales], [], false
+:  :              :  :  +- 'UnresolvedRelation [item], [], false
+:  :              :  +- 'UnresolvedRelation [date_dim], [], false
+:  :              +- 'UnresolvedRelation [customer], [], false
+:  :- 'SubqueryAlias my_revenue
+:  :  +- 'Aggregate ['c_customer_sk], ['c_customer_sk, 'sum('ss_ext_sales_price) AS revenue#33937]
+:  :     +- 'Filter (((('c_current_addr_sk = 'ca_address_sk) AND ('ca_county = 's_county)) AND ('ca_state = 's_state)) AND ((('ss_sold_date_sk = 'd_date_sk) AND ('c_customer_sk = 'ss_customer_sk)) AND (('d_month_seq >= scalar-subquery#33938 []) AND ('d_month_seq <= scalar-subquery#33939 []))))
+:  :        :  :- 'Distinct
+:  :        :  :  +- 'Project [unresolvedalias(('d_month_seq + 1), None)]
+:  :        :  :     +- 'Filter (('d_year = 1998) AND ('d_moy = 3))
+:  :        :  :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        :  +- 'Distinct
+:  :        :     +- 'Project [unresolvedalias(('d_month_seq + 3), None)]
+:  :        :        +- 'Filter (('d_year = 1998) AND ('d_moy = 3))
+:  :        :           +- 'UnresolvedRelation [date_dim], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'Join Inner
+:  :           :  :  :  :- 'UnresolvedRelation [my_customers], [], false
+:  :           :  :  :  +- 'UnresolvedRelation [store_sales], [], false
+:  :           :  :  +- 'UnresolvedRelation [customer_address], [], false
+:  :           :  +- 'UnresolvedRelation [store], [], false
+:  :           +- 'UnresolvedRelation [date_dim], [], false
+:  +- 'SubqueryAlias segments
+:     +- 'Project [cast(('revenue / 50) as int) AS segment#33940]
+:        +- 'UnresolvedRelation [my_revenue], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['segment ASC NULLS FIRST, 'num_customers ASC NULLS FIRST], true
+         +- 'Aggregate ['segment], ['segment, 'count(1) AS num_customers#33929, ('segment * 50) AS segment_base#33930]
+            +- 'UnresolvedRelation [segments], [], false

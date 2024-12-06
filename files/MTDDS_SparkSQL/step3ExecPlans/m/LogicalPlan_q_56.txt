@@ -1,0 +1,53 @@
+CTE [ss, cs, ws]
+:  :- 'SubqueryAlias ss
+:  :  +- 'Aggregate ['i_item_id], ['i_item_id, 'sum('ss_ext_sales_price) AS total_sales#34086]
+:  :     +- 'Filter ((('i_item_id IN (list#34087 []) AND ('ss_item_sk = 'i_item_sk)) AND (('ss_sold_date_sk = 'd_date_sk) AND ('d_year = 2002))) AND ((('d_moy = 3) AND ('ss_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -5)))
+:  :        :  +- 'Project ['i_item_id]
+:  :        :     +- 'Filter 'i_color IN (olive,metallic,cornsilk)
+:  :        :        +- 'UnresolvedRelation [item], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'UnresolvedRelation [store_sales], [], false
+:  :           :  :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           :  +- 'UnresolvedRelation [customer_address], [], false
+:  :           +- 'UnresolvedRelation [item], [], false
+:  :- 'SubqueryAlias cs
+:  :  +- 'Aggregate ['i_item_id], ['i_item_id, 'sum('cs_ext_sales_price) AS total_sales#34088]
+:  :     +- 'Filter ((('i_item_id IN (list#34089 []) AND ('cs_item_sk = 'i_item_sk)) AND (('cs_sold_date_sk = 'd_date_sk) AND ('d_year = 2002))) AND ((('d_moy = 3) AND ('cs_bill_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -5)))
+:  :        :  +- 'Project ['i_item_id]
+:  :        :     +- 'Filter 'i_color IN (olive,metallic,cornsilk)
+:  :        :        +- 'UnresolvedRelation [item], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'UnresolvedRelation [catalog_sales], [], false
+:  :           :  :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           :  +- 'UnresolvedRelation [customer_address], [], false
+:  :           +- 'UnresolvedRelation [item], [], false
+:  +- 'SubqueryAlias ws
+:     +- 'Aggregate ['i_item_id], ['i_item_id, 'sum('ws_ext_sales_price) AS total_sales#34090]
+:        +- 'Filter ((('i_item_id IN (list#34091 []) AND ('ws_item_sk = 'i_item_sk)) AND (('ws_sold_date_sk = 'd_date_sk) AND ('d_year = 2002))) AND ((('d_moy = 3) AND ('ws_bill_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -5)))
+:           :  +- 'Project ['i_item_id]
+:           :     +- 'Filter 'i_color IN (olive,metallic,cornsilk)
+:           :        +- 'UnresolvedRelation [item], [], false
+:           +- 'Join Inner
+:              :- 'Join Inner
+:              :  :- 'Join Inner
+:              :  :  :- 'UnresolvedRelation [web_sales], [], false
+:              :  :  +- 'UnresolvedRelation [date_dim], [], false
+:              :  +- 'UnresolvedRelation [customer_address], [], false
+:              +- 'UnresolvedRelation [item], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['total_sales ASC NULLS FIRST, 'i_item_id ASC NULLS FIRST], true
+         +- 'Aggregate ['i_item_id], ['i_item_id, 'sum('total_sales) AS total_sales#34085]
+            +- 'SubqueryAlias tmp1
+               +- 'Union false, false
+                  :- 'Union false, false
+                  :  :- 'Project [*]
+                  :  :  +- 'UnresolvedRelation [ss], [], false
+                  :  +- 'Project [*]
+                  :     +- 'UnresolvedRelation [cs], [], false
+                  +- 'Project [*]
+                     +- 'UnresolvedRelation [ws], [], false

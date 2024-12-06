@@ -1,0 +1,87 @@
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[total_sales#34085 ASC NULLS FIRST,i_item_id#1272 ASC NULLS FIRST], output=[i_item_id#1272,total_sales#34085])
+   +- HashAggregate(keys=[i_item_id#1272], functions=[sum(total_sales#34086)], output=[i_item_id#1272, total_sales#34085])
+      +- Exchange hashpartitioning(i_item_id#1272, 200), ENSURE_REQUIREMENTS, [plan_id=108356]
+         +- HashAggregate(keys=[i_item_id#1272], functions=[partial_sum(total_sales#34086)], output=[i_item_id#1272, sum#34303])
+            +- Union
+               :- HashAggregate(keys=[i_item_id#1272], functions=[sum(ss_ext_sales_price#1263)], output=[i_item_id#1272, total_sales#34086])
+               :  +- Exchange hashpartitioning(i_item_id#1272, 200), ENSURE_REQUIREMENTS, [plan_id=108317]
+               :     +- HashAggregate(keys=[i_item_id#1272], functions=[partial_sum(ss_ext_sales_price#1263)], output=[i_item_id#1272, sum#34305])
+               :        +- Project [ss_ext_sales_price#1263, i_item_id#1272]
+               :           +- BroadcastHashJoin [ss_item_sk#1250], [i_item_sk#1271], Inner, BuildRight, false
+               :              :- Project [ss_item_sk#1250, ss_ext_sales_price#1263]
+               :              :  +- BroadcastHashJoin [ss_addr_sk#1254], [ca_address_sk#8171], Inner, BuildRight, false
+               :              :     :- Project [ss_item_sk#1250, ss_addr_sk#1254, ss_ext_sales_price#1263]
+               :              :     :  +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#24], Inner, BuildRight, false
+               :              :     :     :- Filter ((isnotnull(ss_sold_date_sk#1248) AND isnotnull(ss_addr_sk#1254)) AND isnotnull(ss_item_sk#1250))
+               :              :     :     :  +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_item_sk#1250,ss_addr_sk#1254,ss_ext_sales_price#1263] Batched: true, DataFilters: [isnotnull(ss_sold_date_sk#1248), isnotnull(ss_addr_sk#1254), isnotnull(ss_item_sk#1250)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_sold_date_sk), IsNotNull(ss_addr_sk), IsNotNull(ss_item_sk)], ReadSchema: struct<ss_sold_date_sk:int,ss_item_sk:int,ss_addr_sk:int,ss_ext_sales_price:double>
+               :              :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=108302]
+               :              :     :        +- Project [d_date_sk#24]
+               :              :     :           +- Filter ((((isnotnull(d_year#30) AND isnotnull(d_moy#32)) AND (d_year#30 = 2002)) AND (d_moy#32 = 3)) AND isnotnull(d_date_sk#24))
+               :              :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_year#30,d_moy#32] Batched: true, DataFilters: [isnotnull(d_year#30), isnotnull(d_moy#32), (d_year#30 = 2002), (d_moy#32 = 3), isnotnull(d_date_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), IsNotNull(d_moy), EqualTo(d_year,2002), EqualTo(d_moy,3), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int,d_moy:int>
+               :              :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=108306]
+               :              :        +- Project [ca_address_sk#8171]
+               :              :           +- Filter ((isnotnull(ca_gmt_offset#8182) AND (ca_gmt_offset#8182 = -5.0)) AND isnotnull(ca_address_sk#8171))
+               :              :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#8171,ca_gmt_offset#8182] Batched: true, DataFilters: [isnotnull(ca_gmt_offset#8182), (ca_gmt_offset#8182 = -5.0), isnotnull(ca_address_sk#8171)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_gmt_offset), EqualTo(ca_gmt_offset,-5.0), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_gmt_offset:double>
+               :              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=108312]
+               :                 +- BroadcastHashJoin [i_item_id#1272], [i_item_id#34225], LeftSemi, BuildRight, false
+               :                    :- Filter isnotnull(i_item_sk#1271)
+               :                    :  +- FileScan parquet spark_catalog.m.item[i_item_sk#1271,i_item_id#1272] Batched: true, DataFilters: [isnotnull(i_item_sk#1271)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_item_id:string>
+               :                    +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]),false), [plan_id=108309]
+               :                       +- Project [i_item_id#34225]
+               :                          +- Filter i_color#34241 IN (olive,metallic,cornsilk)
+               :                             +- FileScan parquet spark_catalog.m.item[i_item_id#34225,i_color#34241] Batched: true, DataFilters: [i_color#34241 IN (olive,metallic,cornsilk)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [In(i_color, [cornsilk,metallic,olive])], ReadSchema: struct<i_item_id:string,i_color:string>
+               :- HashAggregate(keys=[i_item_id#34134], functions=[sum(cs_ext_sales_price#484)], output=[i_item_id#34134, total_sales#34088])
+               :  +- Exchange hashpartitioning(i_item_id#34134, 200), ENSURE_REQUIREMENTS, [plan_id=108334]
+               :     +- HashAggregate(keys=[i_item_id#34134], functions=[partial_sum(cs_ext_sales_price#484)], output=[i_item_id#34134, sum#34307])
+               :        +- Project [cs_ext_sales_price#484, i_item_id#34134]
+               :           +- BroadcastHashJoin [cs_item_sk#476], [i_item_sk#34133], Inner, BuildRight, false
+               :              :- Project [cs_item_sk#476, cs_ext_sales_price#484]
+               :              :  +- BroadcastHashJoin [cs_bill_addr_sk#467], [ca_address_sk#34120], Inner, BuildRight, false
+               :              :     :- Project [cs_bill_addr_sk#467, cs_item_sk#476, cs_ext_sales_price#484]
+               :              :     :  +- BroadcastHashJoin [cs_sold_date_sk#461], [d_date_sk#34092], Inner, BuildRight, false
+               :              :     :     :- Filter ((isnotnull(cs_sold_date_sk#461) AND isnotnull(cs_bill_addr_sk#467)) AND isnotnull(cs_item_sk#476))
+               :              :     :     :  +- FileScan parquet spark_catalog.m.catalog_sales[cs_sold_date_sk#461,cs_bill_addr_sk#467,cs_item_sk#476,cs_ext_sales_price#484] Batched: true, DataFilters: [isnotnull(cs_sold_date_sk#461), isnotnull(cs_bill_addr_sk#467), isnotnull(cs_item_sk#476)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/catalog_sales], PartitionFilters: [], PushedFilters: [IsNotNull(cs_sold_date_sk), IsNotNull(cs_bill_addr_sk), IsNotNull(cs_item_sk)], ReadSchema: struct<cs_sold_date_sk:int,cs_bill_addr_sk:int,cs_item_sk:int,cs_ext_sales_price:double>
+               :              :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=108319]
+               :              :     :        +- Project [d_date_sk#34092]
+               :              :     :           +- Filter ((((isnotnull(d_year#34098) AND isnotnull(d_moy#34100)) AND (d_year#34098 = 2002)) AND (d_moy#34100 = 3)) AND isnotnull(d_date_sk#34092))
+               :              :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#34092,d_year#34098,d_moy#34100] Batched: true, DataFilters: [isnotnull(d_year#34098), isnotnull(d_moy#34100), (d_year#34098 = 2002), (d_moy#34100 = 3), isnot..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), IsNotNull(d_moy), EqualTo(d_year,2002), EqualTo(d_moy,3), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int,d_moy:int>
+               :              :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=108323]
+               :              :        +- Project [ca_address_sk#34120]
+               :              :           +- Filter ((isnotnull(ca_gmt_offset#34131) AND (ca_gmt_offset#34131 = -5.0)) AND isnotnull(ca_address_sk#34120))
+               :              :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#34120,ca_gmt_offset#34131] Batched: true, DataFilters: [isnotnull(ca_gmt_offset#34131), (ca_gmt_offset#34131 = -5.0), isnotnull(ca_address_sk#34120)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_gmt_offset), EqualTo(ca_gmt_offset,-5.0), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_gmt_offset:double>
+               :              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=108329]
+               :                 +- BroadcastHashJoin [i_item_id#34134], [i_item_id#34247], LeftSemi, BuildRight, false
+               :                    :- Filter isnotnull(i_item_sk#34133)
+               :                    :  +- FileScan parquet spark_catalog.m.item[i_item_sk#34133,i_item_id#34134] Batched: true, DataFilters: [isnotnull(i_item_sk#34133)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_item_id:string>
+               :                    +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]),false), [plan_id=108326]
+               :                       +- Project [i_item_id#34247]
+               :                          +- Filter i_color#34263 IN (olive,metallic,cornsilk)
+               :                             +- FileScan parquet spark_catalog.m.item[i_item_id#34247,i_color#34263] Batched: true, DataFilters: [i_color#34263 IN (olive,metallic,cornsilk)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [In(i_color, [cornsilk,metallic,olive])], ReadSchema: struct<i_item_id:string,i_color:string>
+               +- HashAggregate(keys=[i_item_id#34197], functions=[sum(ws_ext_sales_price#450)], output=[i_item_id#34197, total_sales#34090])
+                  +- Exchange hashpartitioning(i_item_id#34197, 200), ENSURE_REQUIREMENTS, [plan_id=108351]
+                     +- HashAggregate(keys=[i_item_id#34197], functions=[partial_sum(ws_ext_sales_price#450)], output=[i_item_id#34197, sum#34309])
+                        +- Project [ws_ext_sales_price#450, i_item_id#34197]
+                           +- BroadcastHashJoin [ws_item_sk#430], [i_item_sk#34196], Inner, BuildRight, false
+                              :- Project [ws_item_sk#430, ws_ext_sales_price#450]
+                              :  +- BroadcastHashJoin [ws_bill_addr_sk#434], [ca_address_sk#34183], Inner, BuildRight, false
+                              :     :- Project [ws_item_sk#430, ws_bill_addr_sk#434, ws_ext_sales_price#450]
+                              :     :  +- BroadcastHashJoin [ws_sold_date_sk#427], [d_date_sk#34155], Inner, BuildRight, false
+                              :     :     :- Filter ((isnotnull(ws_sold_date_sk#427) AND isnotnull(ws_bill_addr_sk#434)) AND isnotnull(ws_item_sk#430))
+                              :     :     :  +- FileScan parquet spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_item_sk#430,ws_bill_addr_sk#434,ws_ext_sales_price#450] Batched: true, DataFilters: [isnotnull(ws_sold_date_sk#427), isnotnull(ws_bill_addr_sk#434), isnotnull(ws_item_sk#430)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_sold_date_sk), IsNotNull(ws_bill_addr_sk), IsNotNull(ws_item_sk)], ReadSchema: struct<ws_sold_date_sk:int,ws_item_sk:int,ws_bill_addr_sk:int,ws_ext_sales_price:double>
+                              :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=108336]
+                              :     :        +- Project [d_date_sk#34155]
+                              :     :           +- Filter ((((isnotnull(d_year#34161) AND isnotnull(d_moy#34163)) AND (d_year#34161 = 2002)) AND (d_moy#34163 = 3)) AND isnotnull(d_date_sk#34155))
+                              :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#34155,d_year#34161,d_moy#34163] Batched: true, DataFilters: [isnotnull(d_year#34161), isnotnull(d_moy#34163), (d_year#34161 = 2002), (d_moy#34163 = 3), isnot..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_year), IsNotNull(d_moy), EqualTo(d_year,2002), EqualTo(d_moy,3), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_year:int,d_moy:int>
+                              :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=108340]
+                              :        +- Project [ca_address_sk#34183]
+                              :           +- Filter ((isnotnull(ca_gmt_offset#34194) AND (ca_gmt_offset#34194 = -5.0)) AND isnotnull(ca_address_sk#34183))
+                              :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#34183,ca_gmt_offset#34194] Batched: true, DataFilters: [isnotnull(ca_gmt_offset#34194), (ca_gmt_offset#34194 = -5.0), isnotnull(ca_address_sk#34183)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_gmt_offset), EqualTo(ca_gmt_offset,-5.0), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_gmt_offset:double>
+                              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=108346]
+                                 +- BroadcastHashJoin [i_item_id#34197], [i_item_id#34269], LeftSemi, BuildRight, false
+                                    :- Filter isnotnull(i_item_sk#34196)
+                                    :  +- FileScan parquet spark_catalog.m.item[i_item_sk#34196,i_item_id#34197] Batched: true, DataFilters: [isnotnull(i_item_sk#34196)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_item_id:string>
+                                    +- BroadcastExchange HashedRelationBroadcastMode(List(input[0, string, true]),false), [plan_id=108343]
+                                       +- Project [i_item_id#34269]
+                                          +- Filter i_color#34285 IN (olive,metallic,cornsilk)
+                                             +- FileScan parquet spark_catalog.m.item[i_item_id#34269,i_color#34285] Batched: true, DataFilters: [i_color#34285 IN (olive,metallic,cornsilk)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [In(i_color, [cornsilk,metallic,olive])], ReadSchema: struct<i_item_id:string,i_color:string>

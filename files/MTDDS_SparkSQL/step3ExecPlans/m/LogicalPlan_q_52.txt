@@ -1,0 +1,11 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['dt.d_year ASC NULLS FIRST, 'ext_price DESC NULLS LAST, 'brand_id ASC NULLS FIRST], true
+      +- 'Aggregate ['dt.d_year, 'item.i_brand, 'item.i_brand_id], ['dt.d_year, 'item.i_brand_id AS brand_id#33870, 'item.i_brand AS brand#33871, 'sum('ss_ext_sales_price) AS ext_price#33872]
+         +- 'Filter (((('dt.d_date_sk = 'store_sales.ss_sold_date_sk) AND ('store_sales.ss_item_sk = 'item.i_item_sk)) AND ('item.i_manager_id = 1)) AND (('dt.d_moy = 12) AND ('dt.d_year = 2002)))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'SubqueryAlias dt
+               :  :  +- 'UnresolvedRelation [date_dim], [], false
+               :  +- 'UnresolvedRelation [store_sales], [], false
+               +- 'UnresolvedRelation [item], [], false

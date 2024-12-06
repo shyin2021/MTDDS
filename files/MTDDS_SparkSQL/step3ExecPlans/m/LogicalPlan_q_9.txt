@@ -1,0 +1,48 @@
+'Project [CASE WHEN (scalar-subquery#8409 [] > 157344) THEN scalar-subquery#8410 [] ELSE scalar-subquery#8411 [] END AS bucket1#8412, CASE WHEN (scalar-subquery#8413 [] > 34708) THEN scalar-subquery#8414 [] ELSE scalar-subquery#8415 [] END AS bucket2#8416, CASE WHEN (scalar-subquery#8417 [] > 253327) THEN scalar-subquery#8418 [] ELSE scalar-subquery#8419 [] END AS bucket3#8420, CASE WHEN (scalar-subquery#8421 [] > 272224) THEN scalar-subquery#8422 [] ELSE scalar-subquery#8423 [] END AS bucket4#8424, CASE WHEN (scalar-subquery#8425 [] > 428113) THEN scalar-subquery#8426 [] ELSE scalar-subquery#8427 [] END AS bucket5#8428]
+:  :- 'Project [unresolvedalias('count(1), None)]
+:  :  +- 'Filter (('ss_quantity >= 1) AND ('ss_quantity <= 20))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_ext_discount_amt), None)]
+:  :  +- 'Filter (('ss_quantity >= 1) AND ('ss_quantity <= 20))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_net_profit), None)]
+:  :  +- 'Filter (('ss_quantity >= 1) AND ('ss_quantity <= 20))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('count(1), None)]
+:  :  +- 'Filter (('ss_quantity >= 21) AND ('ss_quantity <= 40))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_ext_discount_amt), None)]
+:  :  +- 'Filter (('ss_quantity >= 21) AND ('ss_quantity <= 40))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_net_profit), None)]
+:  :  +- 'Filter (('ss_quantity >= 21) AND ('ss_quantity <= 40))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('count(1), None)]
+:  :  +- 'Filter (('ss_quantity >= 41) AND ('ss_quantity <= 60))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_ext_discount_amt), None)]
+:  :  +- 'Filter (('ss_quantity >= 41) AND ('ss_quantity <= 60))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_net_profit), None)]
+:  :  +- 'Filter (('ss_quantity >= 41) AND ('ss_quantity <= 60))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('count(1), None)]
+:  :  +- 'Filter (('ss_quantity >= 61) AND ('ss_quantity <= 80))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_ext_discount_amt), None)]
+:  :  +- 'Filter (('ss_quantity >= 61) AND ('ss_quantity <= 80))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_net_profit), None)]
+:  :  +- 'Filter (('ss_quantity >= 61) AND ('ss_quantity <= 80))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('count(1), None)]
+:  :  +- 'Filter (('ss_quantity >= 81) AND ('ss_quantity <= 100))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  :- 'Project [unresolvedalias('avg('ss_ext_discount_amt), None)]
+:  :  +- 'Filter (('ss_quantity >= 81) AND ('ss_quantity <= 100))
+:  :     +- 'UnresolvedRelation [store_sales], [], false
+:  +- 'Project [unresolvedalias('avg('ss_net_profit), None)]
+:     +- 'Filter (('ss_quantity >= 81) AND ('ss_quantity <= 100))
+:        +- 'UnresolvedRelation [store_sales], [], false
++- 'Filter ('r_reason_sk = 1)
+   +- 'UnresolvedRelation [reason], [], false

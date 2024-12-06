@@ -1,0 +1,27 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['ca_state ASC NULLS FIRST, 'cd_gender ASC NULLS FIRST, 'cd_marital_status ASC NULLS FIRST, 'cd_dep_count ASC NULLS FIRST, 'cd_dep_employed_count ASC NULLS FIRST, 'cd_dep_college_count ASC NULLS FIRST], true
+      +- 'Aggregate ['ca_state, 'cd_gender, 'cd_marital_status, 'cd_dep_count, 'cd_dep_employed_count, 'cd_dep_college_count], ['ca_state, 'cd_gender, 'cd_marital_status, 'cd_dep_count, 'count(1) AS cnt1#28961, unresolvedalias('sum('cd_dep_count), None), unresolvedalias('min('cd_dep_count), None), unresolvedalias('stddev_samp('cd_dep_count), None), 'cd_dep_employed_count, 'count(1) AS cnt2#28962, unresolvedalias('sum('cd_dep_employed_count), None), unresolvedalias('min('cd_dep_employed_count), None), unresolvedalias('stddev_samp('cd_dep_employed_count), None), 'cd_dep_college_count, 'count(1) AS cnt3#28963, unresolvedalias('sum('cd_dep_college_count), None), unresolvedalias('min('cd_dep_college_count), None), unresolvedalias('stddev_samp('cd_dep_college_count), None)]
+         +- 'Filter ((('c.c_current_addr_sk = 'ca.ca_address_sk) AND ('cd_demo_sk = 'c.c_current_cdemo_sk)) AND (exists#28964 [] AND (exists#28965 [] OR exists#28966 [])))
+            :  :- 'Project [*]
+            :  :  +- 'Filter ((('c.c_customer_sk = 'ss_customer_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND (('d_year = 1999) AND ('d_qoy < 4)))
+            :  :     +- 'Join Inner
+            :  :        :- 'UnresolvedRelation [store_sales], [], false
+            :  :        +- 'UnresolvedRelation [date_dim], [], false
+            :  :- 'Project [*]
+            :  :  +- 'Filter ((('c.c_customer_sk = 'ws_bill_customer_sk) AND ('ws_sold_date_sk = 'd_date_sk)) AND (('d_year = 1999) AND ('d_qoy < 4)))
+            :  :     +- 'Join Inner
+            :  :        :- 'UnresolvedRelation [web_sales], [], false
+            :  :        +- 'UnresolvedRelation [date_dim], [], false
+            :  +- 'Project [*]
+            :     +- 'Filter ((('c.c_customer_sk = 'cs_ship_customer_sk) AND ('cs_sold_date_sk = 'd_date_sk)) AND (('d_year = 1999) AND ('d_qoy < 4)))
+            :        +- 'Join Inner
+            :           :- 'UnresolvedRelation [catalog_sales], [], false
+            :           +- 'UnresolvedRelation [date_dim], [], false
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'SubqueryAlias c
+               :  :  +- 'UnresolvedRelation [customer], [], false
+               :  +- 'SubqueryAlias ca
+               :     +- 'UnresolvedRelation [customer_address], [], false
+               +- 'UnresolvedRelation [customer_demographics], [], false

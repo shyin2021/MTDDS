@@ -1,0 +1,12 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['sumsales ASC NULLS FIRST, 'ss_customer_sk ASC NULLS FIRST], true
+      +- 'Aggregate ['ss_customer_sk], ['ss_customer_sk, 'sum('act_sales) AS sumsales#48712]
+         +- 'SubqueryAlias t
+            +- 'Project ['ss_item_sk, 'ss_ticket_number, 'ss_customer_sk, CASE WHEN isnotnull('sr_return_quantity) THEN (('ss_quantity - 'sr_return_quantity) * 'ss_sales_price) ELSE ('ss_quantity * 'ss_sales_price) END AS act_sales#48711]
+               +- 'Filter (('sr_reason_sk = 'r_reason_sk) AND ('r_reason_desc = reason 48))
+                  +- 'Join Inner
+                     :- 'Join LeftOuter, (('sr_item_sk = 'ss_item_sk) AND ('sr_ticket_number = 'ss_ticket_number))
+                     :  :- 'UnresolvedRelation [store_sales], [], false
+                     :  +- 'UnresolvedRelation [store_returns], [], false
+                     +- 'UnresolvedRelation [reason], [], false

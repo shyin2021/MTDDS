@@ -1,0 +1,53 @@
+CTE [sr_items, cr_items, wr_items]
+:  :- 'SubqueryAlias sr_items
+:  :  +- 'Aggregate ['i_item_id], ['i_item_id AS item_id#47269, 'sum('sr_return_quantity) AS sr_item_qty#47270]
+:  :     +- 'Filter ((('sr_item_sk = 'i_item_sk) AND 'd_date IN (list#47272 [])) AND ('sr_returned_date_sk = 'd_date_sk))
+:  :        :  +- 'Project ['d_date]
+:  :        :     +- 'Filter 'd_week_seq IN (list#47271 [])
+:  :        :        :  +- 'Project ['d_week_seq]
+:  :        :        :     +- 'Filter 'd_date IN (1998-06-11,1998-09-01,1998-11-12)
+:  :        :        :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'UnresolvedRelation [store_returns], [], false
+:  :           :  +- 'UnresolvedRelation [item], [], false
+:  :           +- 'UnresolvedRelation [date_dim], [], false
+:  :- 'SubqueryAlias cr_items
+:  :  +- 'Aggregate ['i_item_id], ['i_item_id AS item_id#47273, 'sum('cr_return_quantity) AS cr_item_qty#47274]
+:  :     +- 'Filter ((('cr_item_sk = 'i_item_sk) AND 'd_date IN (list#47276 [])) AND ('cr_returned_date_sk = 'd_date_sk))
+:  :        :  +- 'Project ['d_date]
+:  :        :     +- 'Filter 'd_week_seq IN (list#47275 [])
+:  :        :        :  +- 'Project ['d_week_seq]
+:  :        :        :     +- 'Filter 'd_date IN (1998-06-11,1998-09-01,1998-11-12)
+:  :        :        :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        :        +- 'UnresolvedRelation [date_dim], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'UnresolvedRelation [catalog_returns], [], false
+:  :           :  +- 'UnresolvedRelation [item], [], false
+:  :           +- 'UnresolvedRelation [date_dim], [], false
+:  +- 'SubqueryAlias wr_items
+:     +- 'Aggregate ['i_item_id], ['i_item_id AS item_id#47277, 'sum('wr_return_quantity) AS wr_item_qty#47278]
+:        +- 'Filter ((('wr_item_sk = 'i_item_sk) AND 'd_date IN (list#47280 [])) AND ('wr_returned_date_sk = 'd_date_sk))
+:           :  +- 'Project ['d_date]
+:           :     +- 'Filter 'd_week_seq IN (list#47279 [])
+:           :        :  +- 'Project ['d_week_seq]
+:           :        :     +- 'Filter 'd_date IN (1998-06-11,1998-09-01,1998-11-12)
+:           :        :        +- 'UnresolvedRelation [date_dim], [], false
+:           :        +- 'UnresolvedRelation [date_dim], [], false
+:           +- 'Join Inner
+:              :- 'Join Inner
+:              :  :- 'UnresolvedRelation [web_returns], [], false
+:              :  +- 'UnresolvedRelation [item], [], false
+:              +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['sr_items.item_id ASC NULLS FIRST, 'sr_item_qty ASC NULLS FIRST], true
+         +- 'Project ['sr_items.item_id, 'sr_item_qty, ((('sr_item_qty / (('sr_item_qty + 'cr_item_qty) + 'wr_item_qty)) / 3.0) * 100) AS sr_dev#47265, 'cr_item_qty, ((('cr_item_qty / (('sr_item_qty + 'cr_item_qty) + 'wr_item_qty)) / 3.0) * 100) AS cr_dev#47266, 'wr_item_qty, ((('wr_item_qty / (('sr_item_qty + 'cr_item_qty) + 'wr_item_qty)) / 3.0) * 100) AS wr_dev#47267, ((('sr_item_qty + 'cr_item_qty) + 'wr_item_qty) / 3.0) AS average#47268]
+            +- 'Filter (('sr_items.item_id = 'cr_items.item_id) AND ('sr_items.item_id = 'wr_items.item_id))
+               +- 'Join Inner
+                  :- 'Join Inner
+                  :  :- 'UnresolvedRelation [sr_items], [], false
+                  :  +- 'UnresolvedRelation [cr_items], [], false
+                  +- 'UnresolvedRelation [wr_items], [], false

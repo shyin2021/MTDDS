@@ -1,0 +1,33 @@
+CTE [year_total]
+:  +- 'SubqueryAlias year_total
+:     +- 'Union false, false
+:        :- 'Aggregate ['c_customer_id, 'c_first_name, 'c_last_name, 'd_year], ['c_customer_id AS customer_id#41390, 'c_first_name AS customer_first_name#41391, 'c_last_name AS customer_last_name#41392, 'd_year AS year#41393, 'sum('ss_net_paid) AS year_total#41394, s AS sale_type#41395]
+:        :  +- 'Filter ((('c_customer_sk = 'ss_customer_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND 'd_year IN (2000,(2000 + 1)))
+:        :     +- 'Join Inner
+:        :        :- 'Join Inner
+:        :        :  :- 'UnresolvedRelation [customer], [], false
+:        :        :  +- 'UnresolvedRelation [store_sales], [], false
+:        :        +- 'UnresolvedRelation [date_dim], [], false
+:        +- 'Aggregate ['c_customer_id, 'c_first_name, 'c_last_name, 'd_year], ['c_customer_id AS customer_id#41396, 'c_first_name AS customer_first_name#41397, 'c_last_name AS customer_last_name#41398, 'd_year AS year#41399, 'sum('ws_net_paid) AS year_total#41400, w AS sale_type#41401]
+:           +- 'Filter ((('c_customer_sk = 'ws_bill_customer_sk) AND ('ws_sold_date_sk = 'd_date_sk)) AND 'd_year IN (2000,(2000 + 1)))
+:              +- 'Join Inner
+:                 :- 'Join Inner
+:                 :  :- 'UnresolvedRelation [customer], [], false
+:                 :  +- 'UnresolvedRelation [web_sales], [], false
+:                 +- 'UnresolvedRelation [date_dim], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort [3 ASC NULLS FIRST, 2 ASC NULLS FIRST, 1 ASC NULLS FIRST], true
+         +- 'Project ['t_s_secyear.customer_id, 't_s_secyear.customer_first_name, 't_s_secyear.customer_last_name]
+            +- 'Filter ((((('t_s_secyear.customer_id = 't_s_firstyear.customer_id) AND ('t_s_firstyear.customer_id = 't_w_secyear.customer_id)) AND (('t_s_firstyear.customer_id = 't_w_firstyear.customer_id) AND ('t_s_firstyear.sale_type = s))) AND ((('t_w_firstyear.sale_type = w) AND ('t_s_secyear.sale_type = s)) AND ('t_w_secyear.sale_type = w))) AND (((('t_s_firstyear.year = 2000) AND ('t_s_secyear.year = (2000 + 1))) AND (('t_w_firstyear.year = 2000) AND ('t_w_secyear.year = (2000 + 1)))) AND ((('t_s_firstyear.year_total > 0) AND ('t_w_firstyear.year_total > 0)) AND (CASE WHEN ('t_w_firstyear.year_total > 0) THEN ('t_w_secyear.year_total / 't_w_firstyear.year_total) ELSE null END > CASE WHEN ('t_s_firstyear.year_total > 0) THEN ('t_s_secyear.year_total / 't_s_firstyear.year_total) ELSE null END))))
+               +- 'Join Inner
+                  :- 'Join Inner
+                  :  :- 'Join Inner
+                  :  :  :- 'SubqueryAlias t_s_firstyear
+                  :  :  :  +- 'UnresolvedRelation [year_total], [], false
+                  :  :  +- 'SubqueryAlias t_s_secyear
+                  :  :     +- 'UnresolvedRelation [year_total], [], false
+                  :  +- 'SubqueryAlias t_w_firstyear
+                  :     +- 'UnresolvedRelation [year_total], [], false
+                  +- 'SubqueryAlias t_w_secyear
+                     +- 'UnresolvedRelation [year_total], [], false

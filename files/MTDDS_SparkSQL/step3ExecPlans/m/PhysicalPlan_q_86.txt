@@ -1,0 +1,23 @@
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[lochierarchy#47707 DESC NULLS LAST,CASE WHEN ((cast((shiftright(spark_grouping_id#47715L, 1) & 1) as tinyint) + cast((shiftright(spark_grouping_id#47715L, 0) & 1) as tinyint)) = 0) THEN i_category#47716 END ASC NULLS FIRST,rank_within_parent#47708 ASC NULLS FIRST], output=[total_sum#47706,i_category#47716,i_class#47717,lochierarchy#47707,rank_within_parent#47708])
+   +- Project [total_sum#47706, i_category#47716, i_class#47717, lochierarchy#47707, rank_within_parent#47708, spark_grouping_id#47715L]
+      +- Window [rank(_w0#47726) windowspecdefinition(_w1#47730, _w2#47731, _w0#47726 DESC NULLS LAST, specifiedwindowframe(RowFrame, unboundedpreceding$(), currentrow$())) AS rank_within_parent#47708], [_w1#47730, _w2#47731], [_w0#47726 DESC NULLS LAST]
+         +- Sort [_w1#47730 ASC NULLS FIRST, _w2#47731 ASC NULLS FIRST, _w0#47726 DESC NULLS LAST], false, 0
+            +- Exchange hashpartitioning(_w1#47730, _w2#47731, 200), ENSURE_REQUIREMENTS, [plan_id=164605]
+               +- HashAggregate(keys=[i_category#47716, i_class#47717, spark_grouping_id#47715L], functions=[sum(ws_net_paid#456)], output=[total_sum#47706, i_category#47716, i_class#47717, lochierarchy#47707, _w0#47726, _w1#47730, _w2#47731, spark_grouping_id#47715L])
+                  +- Exchange hashpartitioning(i_category#47716, i_class#47717, spark_grouping_id#47715L, 200), ENSURE_REQUIREMENTS, [plan_id=164602]
+                     +- HashAggregate(keys=[i_category#47716, i_class#47717, spark_grouping_id#47715L], functions=[partial_sum(ws_net_paid#456)], output=[i_category#47716, i_class#47717, spark_grouping_id#47715L, sum#47758])
+                        +- Expand [[ws_net_paid#456, i_category#1283, i_class#1281, 0], [ws_net_paid#456, i_category#1283, null, 1], [ws_net_paid#456, null, null, 3]], [ws_net_paid#456, i_category#47716, i_class#47717, spark_grouping_id#47715L]
+                           +- Project [ws_net_paid#456, i_category#1283, i_class#1281]
+                              +- BroadcastHashJoin [ws_item_sk#430], [i_item_sk#1271], Inner, BuildRight, false
+                                 :- Project [ws_item_sk#430, ws_net_paid#456]
+                                 :  +- BroadcastHashJoin [ws_sold_date_sk#427], [d_date_sk#24], Inner, BuildRight, false
+                                 :     :- Filter (isnotnull(ws_sold_date_sk#427) AND isnotnull(ws_item_sk#430))
+                                 :     :  +- FileScan parquet spark_catalog.m.web_sales[ws_sold_date_sk#427,ws_item_sk#430,ws_net_paid#456] Batched: true, DataFilters: [isnotnull(ws_sold_date_sk#427), isnotnull(ws_item_sk#430)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_sold_date_sk), IsNotNull(ws_item_sk)], ReadSchema: struct<ws_sold_date_sk:int,ws_item_sk:int,ws_net_paid:double>
+                                 :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=164592]
+                                 :        +- Project [d_date_sk#24]
+                                 :           +- Filter (((isnotnull(d_month_seq#27) AND (d_month_seq#27 >= 1210)) AND (d_month_seq#27 <= 1221)) AND isnotnull(d_date_sk#24))
+                                 :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_month_seq#27] Batched: true, DataFilters: [isnotnull(d_month_seq#27), (d_month_seq#27 >= 1210), (d_month_seq#27 <= 1221), isnotnull(d_date_..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_month_seq), GreaterThanOrEqual(d_month_seq,1210), LessThanOrEqual(d_month_seq,1221),..., ReadSchema: struct<d_date_sk:int,d_month_seq:int>
+                                 +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=164596]
+                                    +- Filter isnotnull(i_item_sk#1271)
+                                       +- FileScan parquet spark_catalog.m.item[i_item_sk#1271,i_class#1281,i_category#1283] Batched: true, DataFilters: [isnotnull(i_item_sk#1271)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [IsNotNull(i_item_sk)], ReadSchema: struct<i_item_sk:int,i_class:string,i_category:string>

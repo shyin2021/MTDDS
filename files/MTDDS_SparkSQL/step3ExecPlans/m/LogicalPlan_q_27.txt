@@ -1,0 +1,14 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['i_item_id ASC NULLS FIRST, 's_state ASC NULLS FIRST], true
+      +- 'Aggregate [rollup(Vector(0), Vector(1), 'i_item_id, 's_state)], ['i_item_id, 's_state, 'grouping('s_state) AS g_state#25567, 'avg('ss_quantity) AS agg1#25568, 'avg('ss_list_price) AS agg2#25569, 'avg('ss_coupon_amt) AS agg3#25570, 'avg('ss_sales_price) AS agg4#25571]
+         +- 'Filter ((((('ss_sold_date_sk = 'd_date_sk) AND ('ss_item_sk = 'i_item_sk)) AND ('ss_store_sk = 's_store_sk)) AND (('ss_cdemo_sk = 'cd_demo_sk) AND ('cd_gender = F))) AND ((('cd_marital_status = M) AND ('cd_education_status = Advanced Degree)) AND (('d_year = 1998) AND 's_state IN (TN,AL,SD,AL,SD,SD))))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'Join Inner
+               :  :  :  :- 'UnresolvedRelation [store_sales], [], false
+               :  :  :  +- 'UnresolvedRelation [customer_demographics], [], false
+               :  :  +- 'UnresolvedRelation [date_dim], [], false
+               :  +- 'UnresolvedRelation [store], [], false
+               +- 'UnresolvedRelation [item], [], false

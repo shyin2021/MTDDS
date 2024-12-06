@@ -1,0 +1,53 @@
+CTE [ss, cs, ws]
+:  :- 'SubqueryAlias ss
+:  :  +- 'Aggregate ['i_manufact_id], ['i_manufact_id, 'sum('ss_ext_sales_price) AS total_sales#28676]
+:  :     +- 'Filter ((('i_manufact_id IN (list#28677 []) AND ('ss_item_sk = 'i_item_sk)) AND (('ss_sold_date_sk = 'd_date_sk) AND ('d_year = 2000))) AND ((('d_moy = 6) AND ('ss_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -6)))
+:  :        :  +- 'Project ['i_manufact_id]
+:  :        :     +- 'Filter 'i_category IN (Jewelry)
+:  :        :        +- 'UnresolvedRelation [item], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'UnresolvedRelation [store_sales], [], false
+:  :           :  :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           :  +- 'UnresolvedRelation [customer_address], [], false
+:  :           +- 'UnresolvedRelation [item], [], false
+:  :- 'SubqueryAlias cs
+:  :  +- 'Aggregate ['i_manufact_id], ['i_manufact_id, 'sum('cs_ext_sales_price) AS total_sales#28678]
+:  :     +- 'Filter ((('i_manufact_id IN (list#28679 []) AND ('cs_item_sk = 'i_item_sk)) AND (('cs_sold_date_sk = 'd_date_sk) AND ('d_year = 2000))) AND ((('d_moy = 6) AND ('cs_bill_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -6)))
+:  :        :  +- 'Project ['i_manufact_id]
+:  :        :     +- 'Filter 'i_category IN (Jewelry)
+:  :        :        +- 'UnresolvedRelation [item], [], false
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'Join Inner
+:  :           :  :  :- 'UnresolvedRelation [catalog_sales], [], false
+:  :           :  :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           :  +- 'UnresolvedRelation [customer_address], [], false
+:  :           +- 'UnresolvedRelation [item], [], false
+:  +- 'SubqueryAlias ws
+:     +- 'Aggregate ['i_manufact_id], ['i_manufact_id, 'sum('ws_ext_sales_price) AS total_sales#28680]
+:        +- 'Filter ((('i_manufact_id IN (list#28681 []) AND ('ws_item_sk = 'i_item_sk)) AND (('ws_sold_date_sk = 'd_date_sk) AND ('d_year = 2000))) AND ((('d_moy = 6) AND ('ws_bill_addr_sk = 'ca_address_sk)) AND ('ca_gmt_offset = -6)))
+:           :  +- 'Project ['i_manufact_id]
+:           :     +- 'Filter 'i_category IN (Jewelry)
+:           :        +- 'UnresolvedRelation [item], [], false
+:           +- 'Join Inner
+:              :- 'Join Inner
+:              :  :- 'Join Inner
+:              :  :  :- 'UnresolvedRelation [web_sales], [], false
+:              :  :  +- 'UnresolvedRelation [date_dim], [], false
+:              :  +- 'UnresolvedRelation [customer_address], [], false
+:              +- 'UnresolvedRelation [item], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['total_sales ASC NULLS FIRST], true
+         +- 'Aggregate ['i_manufact_id], ['i_manufact_id, 'sum('total_sales) AS total_sales#28675]
+            +- 'SubqueryAlias tmp1
+               +- 'Union false, false
+                  :- 'Union false, false
+                  :  :- 'Project [*]
+                  :  :  +- 'UnresolvedRelation [ss], [], false
+                  :  +- 'Project [*]
+                  :     +- 'UnresolvedRelation [cs], [], false
+                  +- 'Project [*]
+                     +- 'UnresolvedRelation [ws], [], false

@@ -1,0 +1,99 @@
+== Parsed Logical Plan ==
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['avg_quarterly_sales ASC NULLS FIRST, 'sum_sales ASC NULLS FIRST, 'i_manufact_id ASC NULLS FIRST], true
+      +- 'Project [*]
+         +- 'Filter (CASE WHEN ('avg_quarterly_sales > 0) THEN ('abs(('sum_sales - 'avg_quarterly_sales)) / 'avg_quarterly_sales) ELSE null END > 0.1)
+            +- 'SubqueryAlias tmp1
+               +- 'Aggregate ['i_manufact_id, 'd_qoy], ['i_manufact_id, 'sum('ss_sales_price) AS sum_sales#33900, 'avg('sum('ss_sales_price)) windowspecdefinition('i_manufact_id, unspecifiedframe$()) AS avg_quarterly_sales#33901]
+                  +- 'Filter (((('ss_item_sk = 'i_item_sk) AND ('ss_sold_date_sk = 'd_date_sk)) AND ('ss_store_sk = 's_store_sk)) AND ('d_month_seq IN (1189,(1189 + 1),(1189 + 2),(1189 + 3),(1189 + 4),(1189 + 5),(1189 + 6),(1189 + 7),(1189 + 8),(1189 + 9),(1189 + 10),(1189 + 11)) AND ((('i_category IN (Books,Children,Electronics) AND 'i_class IN (personal,portable,reference,self-help)) AND 'i_brand IN (scholaramalgamalg #14,scholaramalgamalg #7,exportiunivamalg #9,scholaramalgamalg #9)) OR (('i_category IN (Women,Music,Men) AND 'i_class IN (accessories,classical,fragrances,pants)) AND 'i_brand IN (amalgimporto #1,edu packscholar #1,exportiimporto #1,importoamalg #1)))))
+                     +- 'Join Inner
+                        :- 'Join Inner
+                        :  :- 'Join Inner
+                        :  :  :- 'UnresolvedRelation [item], [], false
+                        :  :  +- 'UnresolvedRelation [store_sales], [], false
+                        :  +- 'UnresolvedRelation [date_dim], [], false
+                        +- 'UnresolvedRelation [store], [], false
+
+== Analyzed Logical Plan ==
+i_manufact_id: int, sum_sales: double, avg_quarterly_sales: double
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [avg_quarterly_sales#33901 ASC NULLS FIRST, sum_sales#33900 ASC NULLS FIRST, i_manufact_id#1284 ASC NULLS FIRST], true
+      +- Project [i_manufact_id#1284, sum_sales#33900, avg_quarterly_sales#33901]
+         +- Filter (CASE WHEN (avg_quarterly_sales#33901 > cast(0 as double)) THEN (abs((sum_sales#33900 - avg_quarterly_sales#33901)) / avg_quarterly_sales#33901) ELSE cast(null as double) END > cast(0.1 as double))
+            +- SubqueryAlias tmp1
+               +- Project [i_manufact_id#1284, sum_sales#33900, avg_quarterly_sales#33901]
+                  +- Project [i_manufact_id#1284, sum_sales#33900, _w0#33905, avg_quarterly_sales#33901, avg_quarterly_sales#33901]
+                     +- Window [avg(_w0#33905) windowspecdefinition(i_manufact_id#1284, specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS avg_quarterly_sales#33901], [i_manufact_id#1284]
+                        +- Aggregate [i_manufact_id#1284, d_qoy#34], [i_manufact_id#1284, sum(ss_sales_price#1261) AS sum_sales#33900, sum(ss_sales_price#1261) AS _w0#33905]
+                           +- Filter ((((ss_item_sk#1250 = i_item_sk#1271) AND (ss_sold_date_sk#1248 = d_date_sk#24)) AND (ss_store_sk#1255 = s_store_sk#52)) AND (d_month_seq#27 IN (1189,(1189 + 1),(1189 + 2),(1189 + 3),(1189 + 4),(1189 + 5),(1189 + 6),(1189 + 7),(1189 + 8),(1189 + 9),(1189 + 10),(1189 + 11)) AND (((i_category#1283 IN (Books,Children,Electronics) AND i_class#1281 IN (personal,portable,reference,self-help)) AND i_brand#1279 IN (scholaramalgamalg #14,scholaramalgamalg #7,exportiunivamalg #9,scholaramalgamalg #9)) OR ((i_category#1283 IN (Women,Music,Men) AND i_class#1281 IN (accessories,classical,fragrances,pants)) AND i_brand#1279 IN (amalgimporto #1,edu packscholar #1,exportiimporto #1,importoamalg #1)))))
+                              +- Join Inner
+                                 :- Join Inner
+                                 :  :- Join Inner
+                                 :  :  :- SubqueryAlias spark_catalog.m.item
+                                 :  :  :  +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+                                 :  :  +- SubqueryAlias spark_catalog.m.store_sales
+                                 :  :     +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+                                 :  +- SubqueryAlias spark_catalog.m.date_dim
+                                 :     +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+                                 +- SubqueryAlias spark_catalog.m.store
+                                    +- Relation spark_catalog.m.store[s_store_sk#52,s_store_id#53,s_rec_start_date#54,s_rec_end_date#55,s_closed_date_sk#56,s_store_name#57,s_number_employees#58,s_floor_space#59,s_hours#60,s_manager#61,s_market_id#62,s_geography_class#63,s_market_desc#64,s_market_manager#65,s_division_id#66,s_division_name#67,s_company_id#68,s_company_name#69,s_street_number#70,s_street_name#71,s_street_type#72,s_suite_number#73,s_city#74,s_county#75,... 5 more fields] parquet
+
+== Optimized Logical Plan ==
+GlobalLimit 100
++- LocalLimit 100
+   +- Sort [avg_quarterly_sales#33901 ASC NULLS FIRST, sum_sales#33900 ASC NULLS FIRST, i_manufact_id#1284 ASC NULLS FIRST], true
+      +- Project [i_manufact_id#1284, sum_sales#33900, avg_quarterly_sales#33901]
+         +- Filter CASE WHEN (avg_quarterly_sales#33901 > 0.0) THEN ((abs((sum_sales#33900 - avg_quarterly_sales#33901)) / avg_quarterly_sales#33901) > 0.1) ELSE false END
+            +- Window [avg(_w0#33905) windowspecdefinition(i_manufact_id#1284, specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS avg_quarterly_sales#33901], [i_manufact_id#1284]
+               +- Aggregate [i_manufact_id#1284, d_qoy#34], [i_manufact_id#1284, sum(ss_sales_price#1261) AS sum_sales#33900, sum(ss_sales_price#1261) AS _w0#33905]
+                  +- Project [i_manufact_id#1284, ss_sales_price#1261, d_qoy#34]
+                     +- Join Inner, (ss_store_sk#1255 = s_store_sk#52)
+                        :- Project [i_manufact_id#1284, ss_store_sk#1255, ss_sales_price#1261, d_qoy#34]
+                        :  +- Join Inner, (ss_sold_date_sk#1248 = d_date_sk#24)
+                        :     :- Project [i_manufact_id#1284, ss_sold_date_sk#1248, ss_store_sk#1255, ss_sales_price#1261]
+                        :     :  +- Join Inner, (ss_item_sk#1250 = i_item_sk#1271)
+                        :     :     :- Project [i_item_sk#1271, i_manufact_id#1284]
+                        :     :     :  +- Filter ((((i_category#1283 IN (Books,Children,Electronics) AND i_class#1281 IN (personal,portable,reference,self-help)) AND i_brand#1279 IN (scholaramalgamalg #14,scholaramalgamalg #7,exportiunivamalg #9,scholaramalgamalg #9)) OR ((i_category#1283 IN (Women,Music,Men) AND i_class#1281 IN (accessories,classical,fragrances,pants)) AND i_brand#1279 IN (amalgimporto #1,edu packscholar #1,exportiimporto #1,importoamalg #1))) AND isnotnull(i_item_sk#1271))
+                        :     :     :     +- Relation spark_catalog.m.item[i_item_sk#1271,i_item_id#1272,i_rec_start_date#1273,i_rec_end_date#1274,i_item_desc#1275,i_current_price#1276,i_wholesale_cost#1277,i_brand_id#1278,i_brand#1279,i_class_id#1280,i_class#1281,i_category_id#1282,i_category#1283,i_manufact_id#1284,i_manufact#1285,i_size#1286,i_formulation#1287,i_color#1288,i_units#1289,i_container#1290,i_manager_id#1291,i_product_name#1292] parquet
+                        :     :     +- Project [ss_sold_date_sk#1248, ss_item_sk#1250, ss_store_sk#1255, ss_sales_price#1261]
+                        :     :        +- Filter (isnotnull(ss_item_sk#1250) AND (isnotnull(ss_sold_date_sk#1248) AND isnotnull(ss_store_sk#1255)))
+                        :     :           +- Relation spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_sold_time_sk#1249,ss_item_sk#1250,ss_customer_sk#1251,ss_cdemo_sk#1252,ss_hdemo_sk#1253,ss_addr_sk#1254,ss_store_sk#1255,ss_promo_sk#1256,ss_ticket_number#1257,ss_quantity#1258,ss_wholesale_cost#1259,ss_list_price#1260,ss_sales_price#1261,ss_ext_discount_amt#1262,ss_ext_sales_price#1263,ss_ext_wholesale_cost#1264,ss_ext_list_price#1265,ss_ext_tax#1266,ss_coupon_amt#1267,ss_net_paid#1268,ss_net_paid_inc_tax#1269,ss_net_profit#1270] parquet
+                        :     +- Project [d_date_sk#24, d_qoy#34]
+                        :        +- Filter (d_month_seq#27 INSET 1189, 1190, 1191, 1192, 1193, 1194, 1195, 1196, 1197, 1198, 1199, 1200 AND isnotnull(d_date_sk#24))
+                        :           +- Relation spark_catalog.m.date_dim[d_date_sk#24,d_date_id#25,d_date#26,d_month_seq#27,d_week_seq#28,d_quarter_seq#29,d_year#30,d_dow#31,d_moy#32,d_dom#33,d_qoy#34,d_fy_year#35,d_fy_quarter_seq#36,d_fy_week_seq#37,d_day_name#38,d_quarter_name#39,d_holiday#40,d_weekend#41,d_following_holiday#42,d_first_dom#43,d_last_dom#44,d_same_day_ly#45,d_same_day_lq#46,d_current_day#47,... 4 more fields] parquet
+                        +- Project [s_store_sk#52]
+                           +- Filter isnotnull(s_store_sk#52)
+                              +- Relation spark_catalog.m.store[s_store_sk#52,s_store_id#53,s_rec_start_date#54,s_rec_end_date#55,s_closed_date_sk#56,s_store_name#57,s_number_employees#58,s_floor_space#59,s_hours#60,s_manager#61,s_market_id#62,s_geography_class#63,s_market_desc#64,s_market_manager#65,s_division_id#66,s_division_name#67,s_company_id#68,s_company_name#69,s_street_number#70,s_street_name#71,s_street_type#72,s_suite_number#73,s_city#74,s_county#75,... 5 more fields] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[avg_quarterly_sales#33901 ASC NULLS FIRST,sum_sales#33900 ASC NULLS FIRST,i_manufact_id#1284 ASC NULLS FIRST], output=[i_manufact_id#1284,sum_sales#33900,avg_quarterly_sales#33901])
+   +- Project [i_manufact_id#1284, sum_sales#33900, avg_quarterly_sales#33901]
+      +- Filter CASE WHEN (avg_quarterly_sales#33901 > 0.0) THEN ((abs((sum_sales#33900 - avg_quarterly_sales#33901)) / avg_quarterly_sales#33901) > 0.1) ELSE false END
+         +- Window [avg(_w0#33905) windowspecdefinition(i_manufact_id#1284, specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS avg_quarterly_sales#33901], [i_manufact_id#1284]
+            +- Sort [i_manufact_id#1284 ASC NULLS FIRST], false, 0
+               +- Exchange hashpartitioning(i_manufact_id#1284, 200), ENSURE_REQUIREMENTS, [plan_id=103898]
+                  +- HashAggregate(keys=[i_manufact_id#1284, d_qoy#34], functions=[sum(ss_sales_price#1261)], output=[i_manufact_id#1284, sum_sales#33900, _w0#33905])
+                     +- Exchange hashpartitioning(i_manufact_id#1284, d_qoy#34, 200), ENSURE_REQUIREMENTS, [plan_id=103895]
+                        +- HashAggregate(keys=[i_manufact_id#1284, d_qoy#34], functions=[partial_sum(ss_sales_price#1261)], output=[i_manufact_id#1284, d_qoy#34, sum#33919])
+                           +- Project [i_manufact_id#1284, ss_sales_price#1261, d_qoy#34]
+                              +- BroadcastHashJoin [ss_store_sk#1255], [s_store_sk#52], Inner, BuildRight, false
+                                 :- Project [i_manufact_id#1284, ss_store_sk#1255, ss_sales_price#1261, d_qoy#34]
+                                 :  +- BroadcastHashJoin [ss_sold_date_sk#1248], [d_date_sk#24], Inner, BuildRight, false
+                                 :     :- Project [i_manufact_id#1284, ss_sold_date_sk#1248, ss_store_sk#1255, ss_sales_price#1261]
+                                 :     :  +- BroadcastHashJoin [i_item_sk#1271], [ss_item_sk#1250], Inner, BuildLeft, false
+                                 :     :     :- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=103882]
+                                 :     :     :  +- Project [i_item_sk#1271, i_manufact_id#1284]
+                                 :     :     :     +- Filter ((((i_category#1283 IN (Books,Children,Electronics) AND i_class#1281 IN (personal,portable,reference,self-help)) AND i_brand#1279 IN (scholaramalgamalg #14,scholaramalgamalg #7,exportiunivamalg #9,scholaramalgamalg #9)) OR ((i_category#1283 IN (Women,Music,Men) AND i_class#1281 IN (accessories,classical,fragrances,pants)) AND i_brand#1279 IN (amalgimporto #1,edu packscholar #1,exportiimporto #1,importoamalg #1))) AND isnotnull(i_item_sk#1271))
+                                 :     :     :        +- FileScan parquet spark_catalog.m.item[i_item_sk#1271,i_brand#1279,i_class#1281,i_category#1283,i_manufact_id#1284] Batched: true, DataFilters: [(((i_category#1283 IN (Books,Children,Electronics) AND i_class#1281 IN (personal,portable,refere..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/item], PartitionFilters: [], PushedFilters: [Or(And(And(In(i_category, [Books,Children,Electronics]),In(i_class, [personal,portable,reference..., ReadSchema: struct<i_item_sk:int,i_brand:string,i_class:string,i_category:string,i_manufact_id:int>
+                                 :     :     +- Filter ((isnotnull(ss_item_sk#1250) AND isnotnull(ss_sold_date_sk#1248)) AND isnotnull(ss_store_sk#1255))
+                                 :     :        +- FileScan parquet spark_catalog.m.store_sales[ss_sold_date_sk#1248,ss_item_sk#1250,ss_store_sk#1255,ss_sales_price#1261] Batched: true, DataFilters: [isnotnull(ss_item_sk#1250), isnotnull(ss_sold_date_sk#1248), isnotnull(ss_store_sk#1255)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ss_item_sk), IsNotNull(ss_sold_date_sk), IsNotNull(ss_store_sk)], ReadSchema: struct<ss_sold_date_sk:int,ss_item_sk:int,ss_store_sk:int,ss_sales_price:double>
+                                 :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=103886]
+                                 :        +- Project [d_date_sk#24, d_qoy#34]
+                                 :           +- Filter (d_month_seq#27 INSET 1189, 1190, 1191, 1192, 1193, 1194, 1195, 1196, 1197, 1198, 1199, 1200 AND isnotnull(d_date_sk#24))
+                                 :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_month_seq#27,d_qoy#34] Batched: true, DataFilters: [d_month_seq#27 INSET 1189, 1190, 1191, 1192, 1193, 1194, 1195, 1196, 1197, 1198, 1199, 1200, isn..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [In(d_month_seq, [1189,1190,1191,1192,1193,1194,1195,1196,1197,1198,1199,1200]), IsNotNull(d_date..., ReadSchema: struct<d_date_sk:int,d_month_seq:int,d_qoy:int>
+                                 +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=103890]
+                                    +- Filter isnotnull(s_store_sk#52)
+                                       +- FileScan parquet spark_catalog.m.store[s_store_sk#52] Batched: true, DataFilters: [isnotnull(s_store_sk#52)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store], PartitionFilters: [], PushedFilters: [IsNotNull(s_store_sk)], ReadSchema: struct<s_store_sk:int>

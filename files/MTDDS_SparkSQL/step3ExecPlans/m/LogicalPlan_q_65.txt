@@ -1,0 +1,24 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['s_store_name ASC NULLS FIRST, 'i_item_desc ASC NULLS FIRST], true
+      +- 'Project ['s_store_name, 'i_item_desc, 'sc.revenue, 'i_current_price, 'i_wholesale_cost, 'i_brand]
+         +- 'Filter ((('sb.ss_store_sk = 'sc.ss_store_sk) AND ('sc.revenue <= (0.1 * 'sb.ave))) AND (('s_store_sk = 'sc.ss_store_sk) AND ('i_item_sk = 'sc.ss_item_sk)))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'Join Inner
+               :  :  :- 'UnresolvedRelation [store], [], false
+               :  :  +- 'UnresolvedRelation [item], [], false
+               :  +- 'SubqueryAlias sb
+               :     +- 'Aggregate ['ss_store_sk], ['ss_store_sk, 'avg('revenue) AS ave#39369]
+               :        +- 'SubqueryAlias sa
+               :           +- 'Aggregate ['ss_store_sk, 'ss_item_sk], ['ss_store_sk, 'ss_item_sk, 'sum('ss_sales_price) AS revenue#39368]
+               :              +- 'Filter (('ss_sold_date_sk = 'd_date_sk) AND (('d_month_seq >= 1207) AND ('d_month_seq <= (1207 + 11))))
+               :                 +- 'Join Inner
+               :                    :- 'UnresolvedRelation [store_sales], [], false
+               :                    +- 'UnresolvedRelation [date_dim], [], false
+               +- 'SubqueryAlias sc
+                  +- 'Aggregate ['ss_store_sk, 'ss_item_sk], ['ss_store_sk, 'ss_item_sk, 'sum('ss_sales_price) AS revenue#39370]
+                     +- 'Filter (('ss_sold_date_sk = 'd_date_sk) AND (('d_month_seq >= 1207) AND ('d_month_seq <= (1207 + 11))))
+                        +- 'Join Inner
+                           :- 'UnresolvedRelation [store_sales], [], false
+                           +- 'UnresolvedRelation [date_dim], [], false

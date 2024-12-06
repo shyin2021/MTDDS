@@ -1,0 +1,36 @@
+AdaptiveSparkPlan isFinalPlan=false
++- HashAggregate(keys=[], functions=[sum(cs_ext_ship_cost#489), sum(cs_net_profit#494), count(distinct cs_order_number#478)], output=[order_count#20242L, total_shipping_cost#20243, total_net_profit#20244])
+   +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=49478]
+      +- HashAggregate(keys=[], functions=[merge_sum(cs_ext_ship_cost#489), merge_sum(cs_net_profit#494), partial_count(distinct cs_order_number#478)], output=[sum#20330, sum#20332, count#20335L])
+         +- HashAggregate(keys=[cs_order_number#478], functions=[merge_sum(cs_ext_ship_cost#489), merge_sum(cs_net_profit#494)], output=[cs_order_number#478, sum#20330, sum#20332])
+            +- HashAggregate(keys=[cs_order_number#478], functions=[partial_sum(cs_ext_ship_cost#489), partial_sum(cs_net_profit#494)], output=[cs_order_number#478, sum#20330, sum#20332])
+               +- Project [cs_order_number#478, cs_ext_ship_cost#489, cs_net_profit#494]
+                  +- BroadcastHashJoin [cs_call_center_sk#472], [cc_call_center_sk#20247], Inner, BuildRight, false
+                     :- Project [cs_call_center_sk#472, cs_order_number#478, cs_ext_ship_cost#489, cs_net_profit#494]
+                     :  +- BroadcastHashJoin [cs_ship_addr_sk#471], [ca_address_sk#8171], Inner, BuildRight, false
+                     :     :- Project [cs_ship_addr_sk#471, cs_call_center_sk#472, cs_order_number#478, cs_ext_ship_cost#489, cs_net_profit#494]
+                     :     :  +- BroadcastHashJoin [cs_ship_date_sk#463], [d_date_sk#24], Inner, BuildRight, false
+                     :     :     :- BroadcastHashJoin [cs_order_number#478], [cr_order_number#7827], LeftAnti, BuildRight, false
+                     :     :     :  :- Project [cs_ship_date_sk#463, cs_ship_addr_sk#471, cs_call_center_sk#472, cs_order_number#478, cs_ext_ship_cost#489, cs_net_profit#494]
+                     :     :     :  :  +- SortMergeJoin [cs_order_number#478], [cs_order_number#20295], LeftSemi, NOT (cs_warehouse_sk#475 = cs_warehouse_sk#20292)
+                     :     :     :  :     :- Sort [cs_order_number#478 ASC NULLS FIRST], false, 0
+                     :     :     :  :     :  +- Exchange hashpartitioning(cs_order_number#478, 200), ENSURE_REQUIREMENTS, [plan_id=49453]
+                     :     :     :  :     :     +- Filter ((isnotnull(cs_ship_date_sk#463) AND isnotnull(cs_ship_addr_sk#471)) AND isnotnull(cs_call_center_sk#472))
+                     :     :     :  :     :        +- FileScan parquet spark_catalog.m.catalog_sales[cs_ship_date_sk#463,cs_ship_addr_sk#471,cs_call_center_sk#472,cs_warehouse_sk#475,cs_order_number#478,cs_ext_ship_cost#489,cs_net_profit#494] Batched: true, DataFilters: [isnotnull(cs_ship_date_sk#463), isnotnull(cs_ship_addr_sk#471), isnotnull(cs_call_center_sk#472)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/catalog_sales], PartitionFilters: [], PushedFilters: [IsNotNull(cs_ship_date_sk), IsNotNull(cs_ship_addr_sk), IsNotNull(cs_call_center_sk)], ReadSchema: struct<cs_ship_date_sk:int,cs_ship_addr_sk:int,cs_call_center_sk:int,cs_warehouse_sk:int,cs_order...
+                     :     :     :  :     +- Sort [cs_order_number#20295 ASC NULLS FIRST], false, 0
+                     :     :     :  :        +- Exchange hashpartitioning(cs_order_number#20295, 200), ENSURE_REQUIREMENTS, [plan_id=49454]
+                     :     :     :  :           +- FileScan parquet spark_catalog.m.catalog_sales[cs_warehouse_sk#20292,cs_order_number#20295] Batched: true, DataFilters: [], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/catalog_sales], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<cs_warehouse_sk:int,cs_order_number:int>
+                     :     :     :  +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=49460]
+                     :     :     :     +- FileScan parquet spark_catalog.m.catalog_returns[cr_order_number#7827] Batched: true, DataFilters: [], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/catalog_returns], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<cr_order_number:int>
+                     :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=49463]
+                     :     :        +- Project [d_date_sk#24]
+                     :     :           +- Filter (((isnotnull(d_date#26) AND (d_date#26 >= 2002-2-01)) AND (cast(d_date#26 as date) <= 2002-04-02)) AND isnotnull(d_date_sk#24))
+                     :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_date#26] Batched: true, DataFilters: [isnotnull(d_date#26), (d_date#26 >= 2002-2-01), (cast(d_date#26 as date) <= 2002-04-02), isnotnu..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_date), GreaterThanOrEqual(d_date,2002-2-01), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_date:string>
+                     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=49467]
+                     :        +- Project [ca_address_sk#8171]
+                     :           +- Filter ((isnotnull(ca_state#8179) AND (ca_state#8179 = WA)) AND isnotnull(ca_address_sk#8171))
+                     :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#8171,ca_state#8179] Batched: true, DataFilters: [isnotnull(ca_state#8179), (ca_state#8179 = WA), isnotnull(ca_address_sk#8171)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_state), EqualTo(ca_state,WA), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_state:string>
+                     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=49471]
+                        +- Project [cc_call_center_sk#20247]
+                           +- Filter (cc_county#20272 IN (Ziebach County,Walker County,Williamson County) AND isnotnull(cc_call_center_sk#20247))
+                              +- FileScan parquet spark_catalog.m.call_center[cc_call_center_sk#20247,cc_county#20272] Batched: true, DataFilters: [cc_county#20272 IN (Ziebach County,Walker County,Williamson County), isnotnull(cc_call_center_sk..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/call_center], PartitionFilters: [], PushedFilters: [In(cc_county, [Walker County,Williamson County,Ziebach County]), IsNotNull(cc_call_center_sk)], ReadSchema: struct<cc_call_center_sk:int,cc_county:string>

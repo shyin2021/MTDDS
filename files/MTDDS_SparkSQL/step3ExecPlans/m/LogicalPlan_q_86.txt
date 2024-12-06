@@ -1,0 +1,11 @@
+'GlobalLimit 100
++- 'LocalLimit 100
+   +- 'Sort ['lochierarchy DESC NULLS LAST, CASE WHEN (('grouping('i_category) + 'grouping('i_class)) = 0) THEN 'i_category END ASC NULLS FIRST, 'rank_within_parent ASC NULLS FIRST], true
+      +- 'Aggregate [rollup(Vector(0), Vector(1), 'i_category, 'i_class)], ['sum('ws_net_paid) AS total_sum#47706, 'i_category, 'i_class, ('grouping('i_category) + 'grouping('i_class)) AS lochierarchy#47707, 'rank() windowspecdefinition(('grouping('i_category) + 'grouping('i_class)), CASE WHEN ('grouping('i_class) = 0) THEN 'i_category END, 'sum('ws_net_paid) DESC NULLS LAST, unspecifiedframe$()) AS rank_within_parent#47708]
+         +- 'Filter (((('d1.d_month_seq >= 1210) AND ('d1.d_month_seq <= (1210 + 11))) AND ('d1.d_date_sk = 'ws_sold_date_sk)) AND ('i_item_sk = 'ws_item_sk))
+            +- 'Join Inner
+               :- 'Join Inner
+               :  :- 'UnresolvedRelation [web_sales], [], false
+               :  +- 'SubqueryAlias d1
+               :     +- 'UnresolvedRelation [date_dim], [], false
+               +- 'UnresolvedRelation [item], [], false

@@ -1,0 +1,31 @@
+AdaptiveSparkPlan isFinalPlan=false
++- TakeOrderedAndProject(limit=100, orderBy=[c_customer_id#82 ASC NULLS FIRST], output=[customer_id#47622,customername#47623])
+   +- Project [c_customer_id#82 AS customer_id#47622, concat(coalesce(c_last_name#90, ), , , coalesce(c_first_name#89, )) AS customername#47623, c_customer_id#82]
+      +- BroadcastHashJoin [cd_demo_sk#8266], [sr_cdemo_sk#8], Inner, BuildRight, false
+         :- Project [c_customer_id#82, c_first_name#89, c_last_name#90, cd_demo_sk#8266]
+         :  +- BroadcastHashJoin [hd_income_band_sk#12111], [ib_income_band_sk#37253], Inner, BuildRight, false
+         :     :- Project [c_customer_id#82, c_first_name#89, c_last_name#90, cd_demo_sk#8266, hd_income_band_sk#12111]
+         :     :  +- BroadcastHashJoin [c_current_hdemo_sk#84], [hd_demo_sk#12110], Inner, BuildRight, false
+         :     :     :- Project [c_customer_id#82, c_current_hdemo_sk#84, c_first_name#89, c_last_name#90, cd_demo_sk#8266]
+         :     :     :  +- BroadcastHashJoin [c_current_cdemo_sk#83], [cd_demo_sk#8266], Inner, BuildRight, false
+         :     :     :     :- Project [c_customer_id#82, c_current_cdemo_sk#83, c_current_hdemo_sk#84, c_first_name#89, c_last_name#90]
+         :     :     :     :  +- BroadcastHashJoin [c_current_addr_sk#85], [ca_address_sk#8171], Inner, BuildRight, false
+         :     :     :     :     :- Filter ((isnotnull(c_current_addr_sk#85) AND isnotnull(c_current_cdemo_sk#83)) AND isnotnull(c_current_hdemo_sk#84))
+         :     :     :     :     :  +- FileScan parquet spark_catalog.m.customer[c_customer_id#82,c_current_cdemo_sk#83,c_current_hdemo_sk#84,c_current_addr_sk#85,c_first_name#89,c_last_name#90] Batched: true, DataFilters: [isnotnull(c_current_addr_sk#85), isnotnull(c_current_cdemo_sk#83), isnotnull(c_current_hdemo_sk#..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer], PartitionFilters: [], PushedFilters: [IsNotNull(c_current_addr_sk), IsNotNull(c_current_cdemo_sk), IsNotNull(c_current_hdemo_sk)], ReadSchema: struct<c_customer_id:string,c_current_cdemo_sk:int,c_current_hdemo_sk:int,c_current_addr_sk:int,c...
+         :     :     :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=162781]
+         :     :     :     :        +- Project [ca_address_sk#8171]
+         :     :     :     :           +- Filter ((isnotnull(ca_city#8177) AND (ca_city#8177 = Belmont)) AND isnotnull(ca_address_sk#8171))
+         :     :     :     :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#8171,ca_city#8177] Batched: true, DataFilters: [isnotnull(ca_city#8177), (ca_city#8177 = Belmont), isnotnull(ca_address_sk#8171)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_city), EqualTo(ca_city,Belmont), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_city:string>
+         :     :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=162785]
+         :     :     :        +- Filter isnotnull(cd_demo_sk#8266)
+         :     :     :           +- FileScan parquet spark_catalog.m.customer_demographics[cd_demo_sk#8266] Batched: true, DataFilters: [isnotnull(cd_demo_sk#8266)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_demograph..., PartitionFilters: [], PushedFilters: [IsNotNull(cd_demo_sk)], ReadSchema: struct<cd_demo_sk:int>
+         :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=162789]
+         :     :        +- Filter (isnotnull(hd_demo_sk#12110) AND isnotnull(hd_income_band_sk#12111))
+         :     :           +- FileScan parquet spark_catalog.m.household_demographics[hd_demo_sk#12110,hd_income_band_sk#12111] Batched: true, DataFilters: [isnotnull(hd_demo_sk#12110), isnotnull(hd_income_band_sk#12111)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/household_demograp..., PartitionFilters: [], PushedFilters: [IsNotNull(hd_demo_sk), IsNotNull(hd_income_band_sk)], ReadSchema: struct<hd_demo_sk:int,hd_income_band_sk:int>
+         :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=162793]
+         :        +- Project [ib_income_band_sk#37253]
+         :           +- Filter ((((isnotnull(ib_lower_bound#37254) AND isnotnull(ib_upper_bound#37255)) AND (ib_lower_bound#37254 >= 15969)) AND (ib_upper_bound#37255 <= 65969)) AND isnotnull(ib_income_band_sk#37253))
+         :              +- FileScan parquet spark_catalog.m.income_band[ib_income_band_sk#37253,ib_lower_bound#37254,ib_upper_bound#37255] Batched: true, DataFilters: [isnotnull(ib_lower_bound#37254), isnotnull(ib_upper_bound#37255), (ib_lower_bound#37254 >= 15969..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/income_band], PartitionFilters: [], PushedFilters: [IsNotNull(ib_lower_bound), IsNotNull(ib_upper_bound), GreaterThanOrEqual(ib_lower_bound,15969), ..., ReadSchema: struct<ib_income_band_sk:int,ib_lower_bound:int,ib_upper_bound:int>
+         +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=162797]
+            +- Filter isnotnull(sr_cdemo_sk#8)
+               +- FileScan parquet spark_catalog.m.store_returns[sr_cdemo_sk#8] Batched: true, DataFilters: [isnotnull(sr_cdemo_sk#8)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/store_returns], PartitionFilters: [], PushedFilters: [IsNotNull(sr_cdemo_sk)], ReadSchema: struct<sr_cdemo_sk:int>

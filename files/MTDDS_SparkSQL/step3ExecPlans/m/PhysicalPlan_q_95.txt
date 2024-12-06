@@ -1,0 +1,53 @@
+AdaptiveSparkPlan isFinalPlan=false
++- HashAggregate(keys=[], functions=[sum(ws_ext_ship_cost#48906), sum(ws_net_profit#48911), count(distinct ws_order_number#48895)], output=[order_count#48837L, total_shipping_cost#48838, total_net_profit#48839])
+   +- Exchange SinglePartition, ENSURE_REQUIREMENTS, [plan_id=176613]
+      +- HashAggregate(keys=[], functions=[merge_sum(ws_ext_ship_cost#48906), merge_sum(ws_net_profit#48911), partial_count(distinct ws_order_number#48895)], output=[sum#49214, sum#49216, count#49219L])
+         +- HashAggregate(keys=[ws_order_number#48895], functions=[merge_sum(ws_ext_ship_cost#48906), merge_sum(ws_net_profit#48911)], output=[ws_order_number#48895, sum#49214, sum#49216])
+            +- HashAggregate(keys=[ws_order_number#48895], functions=[partial_sum(ws_ext_ship_cost#48906), partial_sum(ws_net_profit#48911)], output=[ws_order_number#48895, sum#49214, sum#49216])
+               +- Project [ws_order_number#48895, ws_ext_ship_cost#48906, ws_net_profit#48911]
+                  +- BroadcastHashJoin [ws_web_site_sk#48891], [web_site_sk#7871], Inner, BuildRight, false
+                     :- Project [ws_web_site_sk#48891, ws_order_number#48895, ws_ext_ship_cost#48906, ws_net_profit#48911]
+                     :  +- BroadcastHashJoin [ws_ship_addr_sk#48889], [ca_address_sk#8171], Inner, BuildRight, false
+                     :     :- Project [ws_ship_addr_sk#48889, ws_web_site_sk#48891, ws_order_number#48895, ws_ext_ship_cost#48906, ws_net_profit#48911]
+                     :     :  +- BroadcastHashJoin [ws_ship_date_sk#48880], [d_date_sk#24], Inner, BuildRight, false
+                     :     :     :- SortMergeJoin [ws_order_number#48895], [wr_order_number#7860], LeftSemi
+                     :     :     :  :- SortMergeJoin [ws_order_number#48895], [ws_order_number#444], LeftSemi
+                     :     :     :  :  :- Sort [ws_order_number#48895 ASC NULLS FIRST], false, 0
+                     :     :     :  :  :  +- Exchange hashpartitioning(ws_order_number#48895, 200), ENSURE_REQUIREMENTS, [plan_id=176580]
+                     :     :     :  :  :     +- Filter ((isnotnull(ws_ship_date_sk#48880) AND isnotnull(ws_ship_addr_sk#48889)) AND isnotnull(ws_web_site_sk#48891))
+                     :     :     :  :  :        +- FileScan parquet spark_catalog.m.web_sales[ws_ship_date_sk#48880,ws_ship_addr_sk#48889,ws_web_site_sk#48891,ws_order_number#48895,ws_ext_ship_cost#48906,ws_net_profit#48911] Batched: true, DataFilters: [isnotnull(ws_ship_date_sk#48880), isnotnull(ws_ship_addr_sk#48889), isnotnull(ws_web_site_sk#488..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_ship_date_sk), IsNotNull(ws_ship_addr_sk), IsNotNull(ws_web_site_sk)], ReadSchema: struct<ws_ship_date_sk:int,ws_ship_addr_sk:int,ws_web_site_sk:int,ws_order_number:int,ws_ext_ship...
+                     :     :     :  :  +- Sort [ws_order_number#444 ASC NULLS FIRST], false, 0
+                     :     :     :  :     +- Exchange hashpartitioning(ws_order_number#444, 200), ENSURE_REQUIREMENTS, [plan_id=176581]
+                     :     :     :  :        +- Project [ws_order_number#444]
+                     :     :     :  :           +- BroadcastHashJoin [ws_order_number#444], [ws_order_number#48861], Inner, BuildRight, NOT (ws_warehouse_sk#442 = ws_warehouse_sk#48859), false
+                     :     :     :  :              :- Filter (isnotnull(ws_order_number#444) AND isnotnull(ws_warehouse_sk#442))
+                     :     :     :  :              :  +- FileScan parquet spark_catalog.m.web_sales[ws_warehouse_sk#442,ws_order_number#444] Batched: true, DataFilters: [isnotnull(ws_order_number#444), isnotnull(ws_warehouse_sk#442)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_order_number), IsNotNull(ws_warehouse_sk)], ReadSchema: struct<ws_warehouse_sk:int,ws_order_number:int>
+                     :     :     :  :              +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[1, int, false] as bigint)),false), [plan_id=176575]
+                     :     :     :  :                 +- Filter (isnotnull(ws_order_number#48861) AND isnotnull(ws_warehouse_sk#48859))
+                     :     :     :  :                    +- FileScan parquet spark_catalog.m.web_sales[ws_warehouse_sk#48859,ws_order_number#48861] Batched: true, DataFilters: [isnotnull(ws_order_number#48861), isnotnull(ws_warehouse_sk#48859)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_order_number), IsNotNull(ws_warehouse_sk)], ReadSchema: struct<ws_warehouse_sk:int,ws_order_number:int>
+                     :     :     :  +- Sort [wr_order_number#7860 ASC NULLS FIRST], false, 0
+                     :     :     :     +- Exchange hashpartitioning(wr_order_number#7860, 200), ENSURE_REQUIREMENTS, [plan_id=176594]
+                     :     :     :        +- Project [wr_order_number#7860]
+                     :     :     :           +- BroadcastHashJoin [wr_order_number#7860], [ws_order_number#49282], Inner, BuildLeft, false
+                     :     :     :              :- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, false] as bigint)),false), [plan_id=176589]
+                     :     :     :              :  +- Filter isnotnull(wr_order_number#7860)
+                     :     :     :              :     +- FileScan parquet spark_catalog.m.web_returns[wr_order_number#7860] Batched: true, DataFilters: [isnotnull(wr_order_number#7860)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_returns], PartitionFilters: [], PushedFilters: [IsNotNull(wr_order_number)], ReadSchema: struct<wr_order_number:int>
+                     :     :     :              +- Project [ws_order_number#49282]
+                     :     :     :                 +- BroadcastHashJoin [ws_order_number#49282], [ws_order_number#49316], Inner, BuildRight, NOT (ws_warehouse_sk#49280 = ws_warehouse_sk#49314), false
+                     :     :     :                    :- Filter (isnotnull(ws_order_number#49282) AND isnotnull(ws_warehouse_sk#49280))
+                     :     :     :                    :  +- FileScan parquet spark_catalog.m.web_sales[ws_warehouse_sk#49280,ws_order_number#49282] Batched: true, DataFilters: [isnotnull(ws_order_number#49282), isnotnull(ws_warehouse_sk#49280)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_order_number), IsNotNull(ws_warehouse_sk)], ReadSchema: struct<ws_warehouse_sk:int,ws_order_number:int>
+                     :     :     :                    +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[1, int, false] as bigint)),false), [plan_id=176585]
+                     :     :     :                       +- Filter (isnotnull(ws_order_number#49316) AND isnotnull(ws_warehouse_sk#49314))
+                     :     :     :                          +- FileScan parquet spark_catalog.m.web_sales[ws_warehouse_sk#49314,ws_order_number#49316] Batched: true, DataFilters: [isnotnull(ws_order_number#49316), isnotnull(ws_warehouse_sk#49314)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_sales], PartitionFilters: [], PushedFilters: [IsNotNull(ws_order_number), IsNotNull(ws_warehouse_sk)], ReadSchema: struct<ws_warehouse_sk:int,ws_order_number:int>
+                     :     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=176598]
+                     :     :        +- Project [d_date_sk#24]
+                     :     :           +- Filter (((isnotnull(d_date#26) AND (d_date#26 >= 2001-2-01)) AND (cast(d_date#26 as date) <= 2001-04-02)) AND isnotnull(d_date_sk#24))
+                     :     :              +- FileScan parquet spark_catalog.m.date_dim[d_date_sk#24,d_date#26] Batched: true, DataFilters: [isnotnull(d_date#26), (d_date#26 >= 2001-2-01), (cast(d_date#26 as date) <= 2001-04-02), isnotnu..., Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/date_dim], PartitionFilters: [], PushedFilters: [IsNotNull(d_date), GreaterThanOrEqual(d_date,2001-2-01), IsNotNull(d_date_sk)], ReadSchema: struct<d_date_sk:int,d_date:string>
+                     :     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=176602]
+                     :        +- Project [ca_address_sk#8171]
+                     :           +- Filter ((isnotnull(ca_state#8179) AND (ca_state#8179 = KY)) AND isnotnull(ca_address_sk#8171))
+                     :              +- FileScan parquet spark_catalog.m.customer_address[ca_address_sk#8171,ca_state#8179] Batched: true, DataFilters: [isnotnull(ca_state#8179), (ca_state#8179 = KY), isnotnull(ca_address_sk#8171)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/customer_address], PartitionFilters: [], PushedFilters: [IsNotNull(ca_state), EqualTo(ca_state,KY), IsNotNull(ca_address_sk)], ReadSchema: struct<ca_address_sk:int,ca_state:string>
+                     +- BroadcastExchange HashedRelationBroadcastMode(List(cast(input[0, int, true] as bigint)),false), [plan_id=176606]
+                        +- Project [web_site_sk#7871]
+                           +- Filter ((isnotnull(web_company_name#7885) AND (web_company_name#7885 = pri)) AND isnotnull(web_site_sk#7871))
+                              +- FileScan parquet spark_catalog.m.web_site[web_site_sk#7871,web_company_name#7885] Batched: true, DataFilters: [isnotnull(web_company_name#7885), (web_company_name#7885 = pri), isnotnull(web_site_sk#7871)], Format: Parquet, Location: InMemoryFileIndex(1 paths)[hdfs://gros-121:9000/usr/spark/spark-warehouse/m.db/web_site], PartitionFilters: [], PushedFilters: [IsNotNull(web_company_name), EqualTo(web_company_name,pri), IsNotNull(web_site_sk)], ReadSchema: struct<web_site_sk:int,web_company_name:string>

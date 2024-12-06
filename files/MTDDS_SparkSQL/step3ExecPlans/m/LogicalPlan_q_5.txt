@@ -1,0 +1,55 @@
+CTE [ssr, csr, wsr]
+:  :- 'SubqueryAlias ssr
+:  :  +- 'Aggregate ['s_store_id], ['s_store_id, 'sum('sales_price) AS sales#7775, 'sum('profit) AS profit#7776, 'sum('return_amt) AS returns#7777, 'sum('net_loss) AS profit_loss#7778]
+:  :     +- 'Filter ((('date_sk = 'd_date_sk) AND (('d_date >= cast(2000-08-19 as date)) AND ('d_date <= (cast(2000-08-19 as date) + 14)))) AND ('store_sk = 's_store_sk))
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'SubqueryAlias salesreturns
+:  :           :  :  +- 'Union false, false
+:  :           :  :     :- 'Project ['ss_store_sk AS store_sk#7763, 'ss_sold_date_sk AS date_sk#7764, 'ss_ext_sales_price AS sales_price#7765, 'ss_net_profit AS profit#7766, cast(0 as decimal(7,2)) AS return_amt#7767, cast(0 as decimal(7,2)) AS net_loss#7768]
+:  :           :  :     :  +- 'UnresolvedRelation [store_sales], [], false
+:  :           :  :     +- 'Project ['sr_store_sk AS store_sk#7769, 'sr_returned_date_sk AS date_sk#7770, cast(0 as decimal(7,2)) AS sales_price#7771, cast(0 as decimal(7,2)) AS profit#7772, 'sr_return_amt AS return_amt#7773, 'sr_net_loss AS net_loss#7774]
+:  :           :  :        +- 'UnresolvedRelation [store_returns], [], false
+:  :           :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           +- 'UnresolvedRelation [store], [], false
+:  :- 'SubqueryAlias csr
+:  :  +- 'Aggregate ['cp_catalog_page_id], ['cp_catalog_page_id, 'sum('sales_price) AS sales#7791, 'sum('profit) AS profit#7792, 'sum('return_amt) AS returns#7793, 'sum('net_loss) AS profit_loss#7794]
+:  :     +- 'Filter ((('date_sk = 'd_date_sk) AND (('d_date >= cast(2000-08-19 as date)) AND ('d_date <= (cast(2000-08-19 as date) + 14)))) AND ('page_sk = 'cp_catalog_page_sk))
+:  :        +- 'Join Inner
+:  :           :- 'Join Inner
+:  :           :  :- 'SubqueryAlias salesreturns
+:  :           :  :  +- 'Union false, false
+:  :           :  :     :- 'Project ['cs_catalog_page_sk AS page_sk#7779, 'cs_sold_date_sk AS date_sk#7780, 'cs_ext_sales_price AS sales_price#7781, 'cs_net_profit AS profit#7782, cast(0 as decimal(7,2)) AS return_amt#7783, cast(0 as decimal(7,2)) AS net_loss#7784]
+:  :           :  :     :  +- 'UnresolvedRelation [catalog_sales], [], false
+:  :           :  :     +- 'Project ['cr_catalog_page_sk AS page_sk#7785, 'cr_returned_date_sk AS date_sk#7786, cast(0 as decimal(7,2)) AS sales_price#7787, cast(0 as decimal(7,2)) AS profit#7788, 'cr_return_amount AS return_amt#7789, 'cr_net_loss AS net_loss#7790]
+:  :           :  :        +- 'UnresolvedRelation [catalog_returns], [], false
+:  :           :  +- 'UnresolvedRelation [date_dim], [], false
+:  :           +- 'UnresolvedRelation [catalog_page], [], false
+:  +- 'SubqueryAlias wsr
+:     +- 'Aggregate ['web_site_id], ['web_site_id, 'sum('sales_price) AS sales#7807, 'sum('profit) AS profit#7808, 'sum('return_amt) AS returns#7809, 'sum('net_loss) AS profit_loss#7810]
+:        +- 'Filter ((('date_sk = 'd_date_sk) AND (('d_date >= cast(2000-08-19 as date)) AND ('d_date <= (cast(2000-08-19 as date) + 14)))) AND ('wsr_web_site_sk = 'web_site_sk))
+:           +- 'Join Inner
+:              :- 'Join Inner
+:              :  :- 'SubqueryAlias salesreturns
+:              :  :  +- 'Union false, false
+:              :  :     :- 'Project ['ws_web_site_sk AS wsr_web_site_sk#7795, 'ws_sold_date_sk AS date_sk#7796, 'ws_ext_sales_price AS sales_price#7797, 'ws_net_profit AS profit#7798, cast(0 as decimal(7,2)) AS return_amt#7799, cast(0 as decimal(7,2)) AS net_loss#7800]
+:              :  :     :  +- 'UnresolvedRelation [web_sales], [], false
+:              :  :     +- 'Project ['ws_web_site_sk AS wsr_web_site_sk#7801, 'wr_returned_date_sk AS date_sk#7802, cast(0 as decimal(7,2)) AS sales_price#7803, cast(0 as decimal(7,2)) AS profit#7804, 'wr_return_amt AS return_amt#7805, 'wr_net_loss AS net_loss#7806]
+:              :  :        +- 'Join LeftOuter, (('wr_item_sk = 'ws_item_sk) AND ('wr_order_number = 'ws_order_number))
+:              :  :           :- 'UnresolvedRelation [web_returns], [], false
+:              :  :           +- 'UnresolvedRelation [web_sales], [], false
+:              :  +- 'UnresolvedRelation [date_dim], [], false
+:              +- 'UnresolvedRelation [web_site], [], false
++- 'GlobalLimit 100
+   +- 'LocalLimit 100
+      +- 'Sort ['channel ASC NULLS FIRST, 'id ASC NULLS FIRST], true
+         +- 'Aggregate [rollup(Vector(0), Vector(1), 'channel, 'id)], ['channel, 'id, 'sum('sales) AS sales#7760, 'sum('returns) AS returns#7761, 'sum('profit) AS profit#7762]
+            +- 'SubqueryAlias x
+               +- 'Union false, false
+                  :- 'Union false, false
+                  :  :- 'Project [store channel AS channel#7751, concat(store, 's_store_id) AS id#7752, 'sales, 'returns, ('profit - 'profit_loss) AS profit#7753]
+                  :  :  +- 'UnresolvedRelation [ssr], [], false
+                  :  +- 'Project [catalog channel AS channel#7754, concat(catalog_page, 'cp_catalog_page_id) AS id#7755, 'sales, 'returns, ('profit - 'profit_loss) AS profit#7756]
+                  :     +- 'UnresolvedRelation [csr], [], false
+                  +- 'Project [web channel AS channel#7757, concat(web_site, 'web_site_id) AS id#7758, 'sales, 'returns, ('profit - 'profit_loss) AS profit#7759]
+                     +- 'UnresolvedRelation [wsr], [], false
