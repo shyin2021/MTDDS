@@ -3,7 +3,7 @@ package reproducibility;
  * This program is only used to merge the individual execution traces of all tenants after a CAB run. 
  * The driver programs used to run CAB experiments are in the folder "files/CABTests_SparkSQL".
  * The final results are calculated within an excel file ("files/excelFilesforFigures/Figure14.xlsx"), based on the merged traces.
- * **/
+***/
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
