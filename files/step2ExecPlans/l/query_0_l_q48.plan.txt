@@ -1,8 +1,0 @@
-                                                                              QUERY PLAN                                                                               
------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- Finalize Aggregate  (cost=10120839.78..10120839.79 rows=1 width=8) (actual time=12298.674..12298.675 rows=1 loops=1)
-   ->  Remote Subquery Scan on all (dn1,dn2,dn3,dn4,dn5,dn6,dn7,dn8)  (cost=10120839.76..10120839.78 rows=1 width=8) (actual time=11868.444..12298.639 rows=8 loops=1)
- Planning time: 0.783 ms
- Execution time: 12305.174 ms
-(4 rows)
-
